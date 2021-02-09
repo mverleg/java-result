@@ -11,6 +11,11 @@ public final record Err<T, E>(E value) implements Result<T, E> {
 		return false;
 	}
 
+	@Override
+	public Object getUnified() {
+		return value;
+	}
+
 	public E get() {
 		return value;
 	}

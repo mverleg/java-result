@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 class OkTest {
 
-	//TODO @mark: test Result.ok()
+	//TODO @mark: test toString, hashCode, equals
 	//TODO @mark: test subtypes (i.e. Ok<Integer, ?> <- Ok<Number, ?>
 
 	@Nested

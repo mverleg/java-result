@@ -12,6 +12,11 @@ public final record Ok<T, E>(T value) implements Result<T, E> {
 		return true;
 	}
 
+	@Override
+	public Object getUnified() {
+		return value;
+	}
+
 	public T get() {
 		return value;
 	}
