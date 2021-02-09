@@ -9,11 +9,12 @@ class OkTest {
 	//TODO @mark: test subtypes (i.e. Ok<Integer, ?> <- Ok<Number, ?>
 
 	@Nested
-	class CreateOkOf {
+	class Create {
 		@Test
 		void string() {
 			Result<String, String> res = Ok.of("hello");
 			assert res.isOk();
+			assert !res.isErr();
 			//noinspection ConstantConditions
 			if (res instanceof Ok<String, ?> ok) {
 				assert "hello".equals(ok.get());
@@ -24,7 +25,7 @@ class OkTest {
 
 		@Test
 		void number() {
-			Result<Integer, String> res = Ok.of(1);
+			Result<Integer, String> res = Result.ok(1);
 			assert res.isOk();
 			//noinspection ConstantConditions
 			if (res instanceof Ok<Integer, ?> ok) {
@@ -36,7 +37,7 @@ class OkTest {
 
 		@Test
 		void nested() {
-			Result<Result<Integer, String>, String> res = Ok.of(Ok.of(1));
+			Result<Result<Integer, String>, String> res = Result.ok(Ok.of(1));
 			assert res.isOk();
 			//noinspection ConstantConditions
 			if (res instanceof Ok<Result<Integer, String>, ?> ok1) {
@@ -52,7 +53,7 @@ class OkTest {
 
 		@Test
 		void inferType() {
-			var res = Ok.of(1.0);
+			var res = Result.ok(1.0);
 			assert res.isOk();
 			//noinspection ConstantConditions
 			if (res instanceof Ok<Double, ?> ok) {
@@ -62,5 +63,4 @@ class OkTest {
 			}
 		}
 	}
-
 }
