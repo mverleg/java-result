@@ -10,4 +10,8 @@ public final record Err<T, E>(E value) implements Result<T, E> {
 	public boolean isOk() {
 		return false;
 	}
+
+	public E get() {
+		return value;
+	}
 }
