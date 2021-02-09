@@ -9,4 +9,10 @@ public sealed interface Result<T, E> permits Ok, Err {
 	static <T, E> Err<T, E> err(E value) {
 		return new Err<>(value);
 	}
+
+	boolean isOk();
+
+	default boolean isErr() {
+		return !isOk();
+	}
 }
