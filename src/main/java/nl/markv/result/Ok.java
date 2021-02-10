@@ -1,5 +1,7 @@
 package nl.markv.result;
 
+import java.util.function.Supplier;
+
 //TODO @mark: nn
 public final record Ok<T, E>(T value) implements Result<T, E> {
 
@@ -12,12 +14,22 @@ public final record Ok<T, E>(T value) implements Result<T, E> {
 		return true;
 	}
 
-	@Override
-	public Object getUnified() {
+	public T get() {
 		return value;
 	}
 
-	public T get() {
+	@Override
+	public T getOrThrow(Supplier<? extends RuntimeException> exceptionSupplier) {
+		return value;
+	}
+
+	@Override
+	public E getErrOrThrow(Supplier<? extends RuntimeException> exceptionSupplier) {
+		throw exceptionSupplier.get();
+	}
+
+	@Override
+	public Object getUnified() {
 		return value;
 	}
 }
