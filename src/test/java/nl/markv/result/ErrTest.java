@@ -89,6 +89,16 @@ class ErrTest {
 	}
 
 	@Nested
+	class Unified {
+		@Test
+		void get() {
+			TestData content = new TestData(1);
+			Result<String, TestData> err = Err.of(content);
+			assert content == err.getUnified();
+		}
+	}
+
+	@Nested
 	class ObjectMethods {
 
 		@Test

@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class OkTest {
 
-	//TODO @mark: test toString, hashCode, equals
 	//TODO @mark: test subtypes (i.e. Ok<Integer, ?> <- Ok<Number, ?>
 
 	@Nested
@@ -87,6 +86,16 @@ class OkTest {
 			Result<String, String> res = Ok.of("hello");
 			assertThrows(WrongResultVariantException.class, res::getErrOrThrow);
 			assertThrows(IllegalStateException.class, () -> res.getErrOrThrow(IllegalStateException::new));
+		}
+	}
+
+	@Nested
+	class Unified {
+		@Test
+		void get() {
+			TestData content = new TestData(1);
+			Result<TestData, String> ok = Ok.of(content);
+			assert content == ok.getUnified();
 		}
 	}
 
