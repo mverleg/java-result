@@ -1,5 +1,6 @@
 package nl.markv.result;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
@@ -48,5 +49,24 @@ public final class Ok<T, E> implements Result<T, E> {
 	@Override
 	public Object getUnified() {
 		return value;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) return true;
+		if (!(other instanceof Ok<?, ?> otherOk)) {
+			return false;
+		}
+		return value.equals(otherOk.value);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(1, value);
+	}
+
+	@Override
+	public String toString() {
+		return "Ok(" + value + ")";
 	}
 }

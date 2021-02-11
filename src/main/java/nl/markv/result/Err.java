@@ -1,5 +1,6 @@
 package nl.markv.result;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
@@ -48,5 +49,24 @@ public final class Err<T, E> implements Result<T, E> {
 	@Override
 	public Object getUnified() {
 		return value;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) return true;
+		if (!(other instanceof Err<?, ?> otherErr)) {
+			return false;
+		}
+		return value.equals(otherErr.value);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(2, value);
+	}
+
+	@Override
+	public String toString() {
+		return "Err(" + value + ")";
 	}
 }
