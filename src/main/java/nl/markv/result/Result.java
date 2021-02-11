@@ -43,6 +43,6 @@ public sealed interface Result<T, E> permits Ok, Err {
 	 *
 	 * Since success and failure types are in general different, type information is lost.
 	 */
-	@Nonnull 
+	@Nonnull
 	Object getUnified();
 }

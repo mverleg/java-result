@@ -33,12 +33,14 @@ public final class Ok<T, E> implements Result<T, E> {
 	@Nonnull
 	@Override
 	public T getOrThrow(@Nonnull Supplier<? extends RuntimeException> exceptionSupplier) {
+		requireNonNull(exceptionSupplier);
 		return value;
 	}
 
 	@Nonnull
 	@Override
 	public E getErrOrThrow(@Nonnull Supplier<? extends RuntimeException> exceptionSupplier) {
+		requireNonNull(exceptionSupplier);
 		throw exceptionSupplier.get();
 	}
 

@@ -3,6 +3,8 @@ package nl.markv.result;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 class ErrTest {
 
 	@Nested
@@ -58,6 +60,13 @@ class ErrTest {
 			} else {
 				throw new AssertionError();
 			}
+		}
+
+		@Test
+		@SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})
+		void notNull() {
+			assertThrows(NullPointerException.class, () -> Result.err(null));
+			assertThrows(NullPointerException.class, () -> Err.of(null));
 		}
 	}
 }

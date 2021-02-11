@@ -3,6 +3,8 @@ package nl.markv.result;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 class OkTest {
 
 	//TODO @mark: test toString, hashCode, equals
@@ -61,6 +63,13 @@ class OkTest {
 			} else {
 				throw new AssertionError();
 			}
+		}
+
+		@Test
+		@SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})
+		void notNull() {
+			assertThrows(NullPointerException.class, () -> Result.ok(null));
+			assertThrows(NullPointerException.class, () -> Ok.of(null));
 		}
 	}
 }
