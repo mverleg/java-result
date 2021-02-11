@@ -87,4 +87,34 @@ class ErrTest {
 			assert "hello".equals(res.getErrOrThrow(IllegalStateException::new));
 		}
 	}
+
+	@Nested
+	class ObjectMethods {
+
+		@Test
+		@SuppressWarnings({"EqualsWithItself", "EqualsBetweenInconvertibleTypes", "ConstantConditions"})
+		void testEquals() {
+			Result<String, String> err = Err.of("hello");
+			assert err.equals(err);
+			assert Err.of("hello").equals(Err.of("hello"));
+			assert !Err.of("hello").equals(Err.of("bye"));
+			assert !Err.of("hello").equals(Err.of(1));
+			assert !Err.of("bye").equals(Ok.of("hello"));
+			assert !Err.of("hello").equals(null);
+		}
+
+		@Test
+		void testHashCode() {
+			assert Err.of("hello").hashCode() == Err.of("hello").hashCode();
+			assert Err.of("hello").hashCode() != Err.of("bye").hashCode();
+			assert Err.of("hello").hashCode() != Err.of(1).hashCode();
+			assert Err.of("bye").hashCode() != Ok.of("hello").hashCode();
+		}
+
+		@Test
+		void testToString() {
+			assert "Err(1)".equals(Err.of(1).toString());
+			assert "Err(hello)".equals(Err.of("hello").toString());
+		}
+	}
 }

@@ -89,4 +89,34 @@ class OkTest {
 			assertThrows(IllegalStateException.class, () -> res.getErrOrThrow(IllegalStateException::new));
 		}
 	}
+
+	@Nested
+	class ObjectMethods {
+
+		@Test
+		@SuppressWarnings({"EqualsWithItself", "EqualsBetweenInconvertibleTypes", "ConstantConditions"})
+		void testEquals() {
+			Result<String, String> ok = Ok.of("hello");
+			assert ok.equals(ok);
+			assert Ok.of("hello").equals(Ok.of("hello"));
+			assert !Ok.of("hello").equals(Ok.of("bye"));
+			assert !Ok.of("hello").equals(Ok.of(1));
+			assert !Ok.of("hello").equals(Err.of("bye"));
+			assert !Ok.of("hello").equals(null);
+		}
+
+		@Test
+		void testHashCode() {
+			assert Ok.of("hello").hashCode() == Ok.of("hello").hashCode();
+			assert Ok.of("hello").hashCode() != Ok.of("bye").hashCode();
+			assert Ok.of("hello").hashCode() != Ok.of(1).hashCode();
+			assert Ok.of("hello").hashCode() != Err.of("bye").hashCode();
+		}
+
+		@Test
+		void testToString() {
+			assert "Ok(1)".equals(Ok.of(1).toString());
+			assert "Ok(hello)".equals(Ok.of("hello").toString());
+		}
+	}
 }
