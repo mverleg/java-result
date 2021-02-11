@@ -72,4 +72,21 @@ class OkTest {
 			assertThrows(NullPointerException.class, () -> Ok.of(null));
 		}
 	}
+
+	@Nested
+	class GetOrThrow {
+		@Test
+		void getOk() {
+			Result<String, String> res = Ok.of("hello");
+			assert "hello".equals(res.getOrThrow());
+			assert "hello".equals(res.getOrThrow(IllegalStateException::new));
+		}
+
+		@Test
+		void getErr() {
+			Result<String, String> res = Ok.of("hello");
+			assertThrows(WrongResultVariantException.class, res::getErrOrThrow);
+			assertThrows(IllegalStateException.class, () -> res.getErrOrThrow(IllegalStateException::new));
+		}
+	}
 }

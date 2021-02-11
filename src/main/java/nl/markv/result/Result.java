@@ -22,8 +22,6 @@ public sealed interface Result<T, E> permits Ok, Err {
 		return !isOk();
 	}
 
-	//TODO @mark: test all:
-
 	@Nonnull
 	default T getOrThrow() {
 		return getOrThrow(() -> new WrongResultVariantException("Attempted to get Ok from Result, but content is Err(" + getUnified().toString() + ")"));
@@ -37,6 +35,8 @@ public sealed interface Result<T, E> permits Ok, Err {
 	}
 
 	E getErrOrThrow(@Nonnull Supplier<? extends RuntimeException> exceptionSupplier);
+
+	//TODO @mark: test all:
 
 	/**
 	 * Get the content of the result, whether it is inside {@link Ok} or {@link Err}.
