@@ -2,9 +2,21 @@ package nl.markv.result;
 
 import java.util.function.Supplier;
 
-public final record Err<T, E>(E value) implements Result<T, E> {
+import javax.annotation.Nonnull;
 
-	public static <T, E> Err<T, E> of(E value) {
+import static java.util.Objects.requireNonNull;
+
+public final class Err<T, E> implements Result<T, E> {
+
+	private final @Nonnull E value;
+
+	public Err(@Nonnull E value) {
+		requireNonNull(value, "cannot construct Err from a null value");
+		this.value = value;
+	}
+
+	@Nonnull
+	public static <T, E> Err<T, E> of(@Nonnull E value) {
 		return new Err<>(value);
 	}
 
@@ -13,20 +25,24 @@ public final record Err<T, E>(E value) implements Result<T, E> {
 		return false;
 	}
 
+	@Nonnull
 	public E get() {
 		return value;
 	}
 
+	@Nonnull
 	@Override
-	public T getOrThrow(Supplier<? extends RuntimeException> exceptionSupplier) {
+	public T getOrThrow(@Nonnull Supplier<? extends RuntimeException> exceptionSupplier) {
 		throw exceptionSupplier.get();
 	}
 
+	@Nonnull
 	@Override
-	public E getErrOrThrow(Supplier<? extends RuntimeException> exceptionSupplier) {
+	public E getErrOrThrow(@Nonnull Supplier<? extends RuntimeException> exceptionSupplier) {
 		return value;
 	}
 
+	@Nonnull
 	@Override
 	public Object getUnified() {
 		return value;
