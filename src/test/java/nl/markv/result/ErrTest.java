@@ -1,8 +1,12 @@
 package nl.markv.result;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ErrTest {
@@ -104,6 +108,32 @@ class ErrTest {
 			TestData content = new TestData(1);
 			Result<String, TestData> err = Err.of(content);
 			assert content == err.getUnified();
+		}
+	}
+
+	@Nested
+	class Sequence {
+		private final Result<String, Integer> result = Err.of(2);
+
+		@Test
+		void iterator() {
+			Iterator<String> iterator = result.iterator();
+			assert !iterator.hasNext();
+		}
+
+		@Test
+		void forLoop() {
+			int count = 0;
+			for (String ignored : result) {
+				count++;
+			}
+			assert count == 0;
+		}
+
+		@Test
+		void stream() {
+			List<String> list = result.stream().collect(toList());
+			assert list.isEmpty();
 		}
 	}
 

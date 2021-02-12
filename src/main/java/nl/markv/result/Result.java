@@ -1,12 +1,13 @@
 package nl.markv.result;
 
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
 import static java.util.Objects.requireNonNull;
 
-public sealed interface Result<T, E> permits Ok, Err {
+public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 
 	@Nonnull
 	static <T, E> Ok<T, E> ok(@Nonnull T value) {
@@ -70,4 +71,7 @@ public sealed interface Result<T, E> permits Ok, Err {
 	 */
 	@Nonnull
 	Object getUnified();
+
+	@Nonnull
+	Stream<T> stream();
 }

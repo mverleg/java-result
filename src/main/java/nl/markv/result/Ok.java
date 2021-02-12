@@ -1,10 +1,13 @@
 package nl.markv.result;
 
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
 public final class Ok<T, E> implements Result<T, E> {
@@ -72,7 +75,20 @@ public final class Ok<T, E> implements Result<T, E> {
 	}
 
 	@Override
+	@Nonnull
 	public String toString() {
 		return "Ok(" + value + ")";
+	}
+
+	@Override
+	@Nonnull
+	public Iterator<T> iterator() {
+		return singletonList(value).iterator();
+	}
+
+	@Override
+	@Nonnull
+	public Stream<T> stream() {
+		return Stream.of(value);
 	}
 }

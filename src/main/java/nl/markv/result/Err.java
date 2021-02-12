@@ -1,10 +1,17 @@
 package nl.markv.result;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
+import static java.util.Collections.emptyIterator;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
 public final class Err<T, E> implements Result<T, E> {
@@ -73,7 +80,19 @@ public final class Err<T, E> implements Result<T, E> {
 	}
 
 	@Override
+	@Nonnull
 	public String toString() {
 		return "Err(" + value + ")";
+	}
+
+	@Override
+	@Nonnull
+	public Iterator<T> iterator() {
+		return emptyIterator();
+	}
+
+	@Nonnull
+	public Stream<T> stream() {
+		return Stream.of();
 	}
 }
