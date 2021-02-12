@@ -26,7 +26,8 @@ public sealed interface Result<T, E> permits Ok, Err {
 
 	@Nonnull
 	default T getOrThrow() {
-		return getOrThrow(() -> new WrongResultVariantException("Attempted to get Ok from Result, but content is Err(" + getUnified().toString() + ")"));
+		return getOrThrow(() -> new WrongResultVariantException(
+				"Attempted to get Ok from Result, but content is " + toString()));
 	}
 
 	@Nonnull
@@ -34,11 +35,19 @@ public sealed interface Result<T, E> permits Ok, Err {
 
 	@Nonnull
 	default E getErrOrThrow() {
-		return getErrOrThrow(() -> new WrongResultVariantException("Attempted to get Err from Result, but content is Ok(" + getUnified().toString() + ")"));
+		return getErrOrThrow(() -> new WrongResultVariantException(
+				"Attempted to get Err from Result, but content is " + getUnified().toString()));
 	}
 
 	@Nonnull
 	E getErrOrThrow(@Nonnull Supplier<? extends RuntimeException> exceptionSupplier);
+
+	/**
+	 * If this result is {@link Ok}, re-wrap the same value  with a different generic type for {@link Err}.
+	 * This will throw {@link WrongResultVariantException} if called on an {@link Err}, as the type cannot be changed in that case.
+	 */
+	@Nonnull
+	<F> Result<T, F> adaptErr();
 
 	/**
 	 * Attempt to run the given operation. Return the non-null result as {@link Ok} on success, or the
@@ -47,7 +56,8 @@ public sealed interface Result<T, E> permits Ok, Err {
 	@Nonnull
 	static <U> Result<U, Exception> attempt(@Nonnull Attempt<U> attemptedOperation) {
 		try {
-			return Ok.of(requireNonNull(attemptedOperation.attempt(), "Operation for 'attempt' must not return null"));
+			return Ok.of(requireNonNull(attemptedOperation.attempt(),
+					"Operation for 'attempt' must not return null"));
 		} catch (Exception exception) {
 			return Err.of(exception);
 		}

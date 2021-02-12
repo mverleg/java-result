@@ -47,6 +47,12 @@ public final class Ok<T, E> implements Result<T, E> {
 
 	@Nonnull
 	@Override
+	public <F> Result<T, F> adaptErr() {
+		return Result.ok(value);
+	}
+
+	@Nonnull
+	@Override
 	public Object getUnified() {
 		return value;
 	}

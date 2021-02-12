@@ -47,6 +47,13 @@ public final class Err<T, E> implements Result<T, E> {
 
 	@Nonnull
 	@Override
+	public <F> Result<T, F> adaptErr() {
+		throw new WrongResultVariantException("Attempted to call 'adaptErr' on a Result containing " + toString() +
+				"; this only succeeds if the Result is Ok.");
+	}
+
+	@Nonnull
+	@Override
 	public Object getUnified() {
 		return value;
 	}
