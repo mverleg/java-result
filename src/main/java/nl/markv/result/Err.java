@@ -1,17 +1,14 @@
 package nl.markv.result;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
 import static java.util.Collections.emptyIterator;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
 public final class Err<T, E> implements Result<T, E> {
@@ -54,9 +51,32 @@ public final class Err<T, E> implements Result<T, E> {
 
 	@Nonnull
 	@Override
+	public <U> Result<U, E> map(@Nonnull Function<T, U> converter) {
+		return adaptOk();
+	}
+
+	@Nonnull
+	@Override
+	public <F> Result<T, F> mapErr(@Nonnull Function<E, F> converter) {
+		return Err.of(converter.apply(value));
+	}
+
+	@Nonnull
+	@Override
+	public <U> Result<U, E> adaptOk() {
+		// This is implemented using a cast. It feels a bit dirty to cast something that it genuinely of
+		// type Result<T, E> to a different type Result<U, E>, which is not a supertype. But generic types
+		// are erased at runtime, so it works well, and it's more efficient than making a new object.
+
+		//noinspection unchecked
+		return (Result<U, E>) this;
+	}
+
+	@Nonnull
+	@Override
 	public <F> Result<T, F> adaptErr() {
 		throw new WrongResultVariantException("Attempted to call 'adaptErr' on a Result containing " + toString() +
-				"; this only succeeds if the Result is Ok.");
+				"; this only succeeds if the Result is Ok. Use 'mapErr' to convert the error value.");
 	}
 
 	@Nonnull

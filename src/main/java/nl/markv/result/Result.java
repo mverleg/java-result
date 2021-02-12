@@ -1,5 +1,6 @@
 package nl.markv.result;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -7,6 +8,7 @@ import javax.annotation.Nonnull;
 
 import static java.util.Objects.requireNonNull;
 
+//TODO @mark: @Nonnull everywhere, and requireNonNull for arguments
 public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 
 	@Nonnull
@@ -42,6 +44,18 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 
 	@Nonnull
 	E getErrOrThrow(@Nonnull Supplier<? extends RuntimeException> exceptionSupplier);
+
+	@Nonnull
+	<U> Result<U, E> map(@Nonnull Function<T, U> converter);
+
+	@Nonnull
+	<F> Result<T, F> mapErr(@Nonnull Function<E, F> converter);
+
+	/**
+	 * Dual of {@link #adaptErr()}.
+	 */
+	@Nonnull
+	<U> Result<U, E> adaptOk();
 
 	/**
 	 * If this result is {@link Ok}, re-wrap the same value  with a different generic type for {@link Err}.

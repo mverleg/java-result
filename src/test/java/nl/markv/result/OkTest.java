@@ -97,6 +97,12 @@ class OkTest {
 	@Nested
 	class Adapt {
 		@Test
+		void changeOkType() {
+			Result<Integer, Integer> ok = Ok.of(1);
+			assertThrows(WrongResultVariantException.class, ok::adaptOk);
+		}
+
+		@Test
 		void changeErrType() {
 			Result<Integer, String> ok1 = Ok.of(1);
 			Result<Integer, Integer> ok2 = ok1.adaptErr();
