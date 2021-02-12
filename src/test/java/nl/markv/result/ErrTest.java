@@ -89,6 +89,15 @@ class ErrTest {
 	}
 
 	@Nested
+	class Adapt {
+		@Test
+		void changeErrType() {
+			Result<Integer, Integer> err = Err.of(1);
+			assertThrows(WrongResultVariantException.class, err::adaptErr);
+		}
+	}
+
+	@Nested
 	class Unified {
 		@Test
 		void get() {

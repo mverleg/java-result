@@ -90,6 +90,16 @@ class OkTest {
 	}
 
 	@Nested
+	class Adapt {
+		@Test
+		void changeErrType() {
+			Result<Integer, String> ok1 = Ok.of(1);
+			Result<Integer, Integer> ok2 = ok1.adaptErr();
+			assert ok2.getOrThrow() == 1;
+		}
+	}
+
+	@Nested
 	class Unified {
 		@Test
 		void get() {
