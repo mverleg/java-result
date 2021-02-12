@@ -95,6 +95,23 @@ class OkTest {
 	}
 
 	@Nested
+	class Mapping {
+		@Test
+		void okMap() {
+			Result<Integer, Integer> ok1 = Ok.of(2);
+			Result<String, Integer> ok2 = ok1.map(nr -> String.valueOf(2 * nr));
+			assert "4".equals(ok2.getOrThrow());
+		}
+
+		@Test
+		void errMap() {
+			Result<Integer, Integer> ok1 = Ok.of(2);
+			Result<Integer, String> ok2 = ok1.mapErr(nr -> String.valueOf(2 * nr));
+			assert ok2.getOrThrow() == 2;
+		}
+	}
+
+	@Nested
 	class Adapt {
 		@Test
 		void changeOkType() {
