@@ -1,10 +1,17 @@
 package nl.markv.result;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -153,4 +160,43 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 
 	@Nonnull
 	Stream<T> stream();
+
+	//TODO @mark: collector like this for streams:
+	/**
+	 * Given a list of results, if it contains an error, return the first one. If there are no errors,
+	 * return a list of all the success values.
+	 */
+	@Nonnull
+	@CheckReturnValue
+	//TODO @mark:
+	static <U, F> Result<List<U>, F> transpose(@Nonnull List<Result<U, F>> resultList) {
+		final List<U> okList = new ArrayList<>(resultList.size());
+		for (Result<U, F> item : resultList) {
+			if (item instanceof Ok<U, F> ok) {
+				okList.add(ok.get());
+			} else {
+				return item.adaptOk();
+			}
+		}
+		return Ok.of(okList);
+	}
+
+	/**
+	 * Given a set of results, if it contains any errors, return the 'first' one ('first' may be arbitrary
+	 * for many {@link Set} implementation). If there are no errors, return a set of all the success values.
+	 */
+	@Nonnull
+	@CheckReturnValue
+	static <U, F> Result<Set<U>, F> transpose(@Nonnull Set<Result<U, F>> resultSet) {
+		//TODO @mark: is initial capacity correct for hashset?
+		final Set<U> okSet = new LinkedHashSet<>((int)(resultSet.size() / 0.7 + 1), 0.7f);
+		for (Result<U, F> item : resultSet) {
+			if (item instanceof Ok<U, F> ok) {
+				okSet.add(ok.get());
+			} else {
+				return item.adaptOk();
+			}
+		}
+		return Ok.of(okSet);
+	}
 }
