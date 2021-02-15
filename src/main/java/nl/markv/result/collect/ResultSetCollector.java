@@ -16,7 +16,6 @@ import static java.util.Collections.emptySet;
 import static java.util.Objects.requireNonNull;
 
 public class ResultSetCollector<T, E> implements Collector<Result<T, E>, ResultBuilder<Set<T>, E>, Result<Set<T>, E>> {
-	//TODO @mark: tests
 
 	private final @Nonnull Supplier<Set<T>> setCreator;
 	private final @Nonnull Function<ResultBuilder<Set<T>, E>, Result<Set<T>, E>> finisher;
@@ -41,6 +40,7 @@ public class ResultSetCollector<T, E> implements Collector<Result<T, E>, ResultB
 		}
 		if (newResult instanceof Err<T, E> err) {
 			currentList.toErr(err.get());
+			return;
 		}
 		currentList.getOrThrow().add(newResult.getOrThrow());
 	}

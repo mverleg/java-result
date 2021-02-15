@@ -18,7 +18,6 @@ import static java.util.Collections.emptySet;
 import static java.util.Objects.requireNonNull;
 
 public class ResultListCollector<T, E> implements Collector<Result<T, E>, ResultBuilder<List<T>, E>, Result<List<T>, E>> {
-	//TODO @mark: tests
 
 	@Nonnull
 	private final Function<ResultBuilder<List<T>, E>, Result<List<T>, E>> finisher;

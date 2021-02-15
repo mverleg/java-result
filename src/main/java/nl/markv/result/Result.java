@@ -15,8 +15,6 @@ import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import nl.markv.result.collect.ResultListCollector;
-
 import static java.util.Objects.requireNonNull;
 
 //TODO @mark: Collection<Result<.>> to Result<Collection<.>>

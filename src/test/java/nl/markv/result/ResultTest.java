@@ -122,51 +122,51 @@ class ResultTest {
 	class TransposeSet {
 		@Test
 		void empty() {
-			var resultList = transpose(emptySet());
-			assert resultList.isOk();
-			assert resultList.getOrThrow().isEmpty();
+			var resultSet = transpose(emptySet());
+			assert resultSet.isOk();
+			assert resultSet.getOrThrow().isEmpty();
 		}
 
 		@Test
 		void singleOk() {
-			var resultList = transpose(singleton(Ok.of(2)));
-			assert resultList.isOk();
-			var list = resultList.getOrThrow();
-			assert list.size() == 1;
-			assert list.contains(2);
+			var resultSet = transpose(singleton(Ok.of(2)));
+			assert resultSet.isOk();
+			var set = resultSet.getOrThrow();
+			assert set.size() == 1;
+			assert set.contains(2);
 		}
 
 		@Test
 		void singleErr() {
-			var resultList = transpose(singleton(Err.of(2)));
-			assert resultList.isErr();
-			assert resultList.getErrOrThrow() == 2;
+			var resultSet = transpose(singleton(Err.of(2)));
+			assert resultSet.isErr();
+			assert resultSet.getErrOrThrow() == 2;
 		}
 
 		@Test
 		void multipleOk() {
-			var resultList = transpose(Set.of(Ok.of(2), Ok.of(4), Ok.of(8)));
-			assert resultList.isOk();
-			var list = resultList.getOrThrow();
-			assert list.size() == 3;
-			assert list.contains(2);
-			assert list.contains(4);
-			assert list.contains(8);
+			var resultSet = transpose(Set.of(Ok.of(2), Ok.of(4), Ok.of(8)));
+			assert resultSet.isOk();
+			var set = resultSet.getOrThrow();
+			assert set.size() == 3;
+			assert set.contains(2);
+			assert set.contains(4);
+			assert set.contains(8);
 		}
 
 		@Test
 		void containsErr() {
-			var resultList = transpose(Set.of(Ok.of(2), Err.of(4), Ok.of(8)));
-			assert resultList.isErr();
-			assert resultList.getErrOrThrow() == 4;
+			var resultSet = transpose(Set.of(Ok.of(2), Err.of(4), Ok.of(8)));
+			assert resultSet.isErr();
+			assert resultSet.getErrOrThrow() == 4;
 		}
 
 		@Test
 		void multipleErrs() {
 			// Cannot know which error will be returned in this case
-			var resultList = transpose(Set.of(Err.of(2), Err.of(4), Err.of(8)));
-			assert resultList.isErr();
-			assert Set.of(2, 4, 8).contains(resultList.getErrOrThrow());
+			var resultSet = transpose(Set.of(Err.of(2), Err.of(4), Err.of(8)));
+			assert resultSet.isErr();
+			assert Set.of(2, 4, 8).contains(resultSet.getErrOrThrow());
 		}
 	}
 	
