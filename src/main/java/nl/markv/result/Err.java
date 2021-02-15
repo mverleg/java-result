@@ -62,6 +62,7 @@ public final class Err<T, E> implements Result<T, E> {
 	@Nonnull
 	@Override
 	public <U> Result<U, E> map(@Nonnull Function<T, U> converter) {
+		requireNonNull(converter);
 		return adaptOk();
 	}
 
@@ -73,7 +74,7 @@ public final class Err<T, E> implements Result<T, E> {
 
 	@Override
 	public void ifOk(@Nonnull Consumer<T> action) {
-		// Do nothing.
+		requireNonNull(action);
 	}
 
 	@Override
@@ -82,37 +83,39 @@ public final class Err<T, E> implements Result<T, E> {
 	}
 
 	@Override
-	public void ifEither(@Nonnull Consumer<T> okAction, Consumer<E> errAction) {
+	public void ifEither(@Nonnull Consumer<T> okAction, @Nonnull Consumer<E> errAction) {
 		errAction.accept(value);
 	}
 
 	@Nonnull
 	@Override
-	public <R> R branch(@Nonnull Function<T, R> okConverter, Function<E, R> errHandler) {
-		return errHandler.apply(value);
+	public <R> R branch(@Nonnull Function<T, R> okConverter, @Nonnull Function<E, R> errHandler) {
+		return requireNonNull(errHandler.apply(value));
 	}
 
 	@Nonnull
 	@Override
-	public T solve(Function<E, T> errToOkConverter) {
-		return errToOkConverter.apply(value);
+	public T solve(@Nonnull Function<E, T> errToOkConverter) {
+		return requireNonNull(errToOkConverter.apply(value));
 	}
 
 	@Nonnull
 	@Override
 	public T okOr(@Nonnull T alternative) {
+		requireNonNull(alternative);
 		return alternative;
 	}
 
 	@Nonnull
 	@Override
 	public T okOr(@Nonnull Supplier<T> alternativeSupplier) {
-		return alternativeSupplier.get();
+		return requireNonNull(alternativeSupplier.get());
 	}
 
 	@Nonnull
 	@Override
 	public E errOr(@Nonnull E alternative) {
+		requireNonNull(alternative);
 		return value;
 	}
 
@@ -171,13 +174,13 @@ public final class Err<T, E> implements Result<T, E> {
 	@Nonnull
 	@Override
 	public <F> Result<T, F> or(@Nonnull Result<T, F> next) {
-		return next;
+		return requireNonNull(next);
 	}
 
 	@Nonnull
 	@Override
 	public <F> Result<T, F> or(@Nonnull Supplier<Result<T, F>> nextSupplier) {
-		return nextSupplier.get();
+		return requireNonNull(nextSupplier.get());
 	}
 
 	@Override
@@ -195,6 +198,7 @@ public final class Err<T, E> implements Result<T, E> {
 
 	@Override
 	public boolean matches(@Nonnull Predicate<T> okPredicate) {
+		requireNonNull(okPredicate);
 		return false;
 	}
 
@@ -210,7 +214,7 @@ public final class Err<T, E> implements Result<T, E> {
 	}
 
 	@Override
-	public boolean equals(Object other) {
+	public boolean equals(@Nullable Object other) {
 		if (this == other) return true;
 		if (!(other instanceof Err<?, ?> otherErr)) {
 			return false;

@@ -84,21 +84,21 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * Call the action for either {@link Ok} or {@link Err}. If the actions return something, use
 	 * {@link #branch(Function, Function)} instead.
 	 */
-	void ifEither(@Nonnull Consumer<T> okAction, Consumer<E> errAction);
+	void ifEither(@Nonnull Consumer<T> okAction, @Nonnull Consumer<E> errAction);
 
 	/**
 	 * Call on of the functions, depending on {@link Ok} or {@link Err}. Both should return the same type.
 	 * If the functions return nothing, use {@link #ifEither(Consumer, Consumer)} instead.
 	 */
 	@Nonnull
-	<R> R branch(@Nonnull Function<T, R> okConverter, Function<E, R> errHandler);
+	<R> R branch(@Nonnull Function<T, R> okConverter, @Nonnull Function<E, R> errHandler);
 
 	/**
 	 * If this {@link Result} is {@link Ok}, return the value. If it is not, then map the error to something
 	 * of the same type as {@link Result}, and return that.
 	 */
 	@Nonnull
-	T solve(Function<E, T> errToOkConverter);
+	T solve(@Nonnull Function<E, T> errToOkConverter);
 
 	//TODO @mark: test null everywhere
 	@Nonnull

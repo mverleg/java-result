@@ -49,19 +49,19 @@ public final class Ok<T, E> implements Result<T, E> {
 	@Nonnull
 	@Override
 	public E getErrOrThrow(@Nonnull Supplier<? extends RuntimeException> exceptionSupplier) {
-		requireNonNull(exceptionSupplier);
 		throw exceptionSupplier.get();
 	}
 
 	@Nonnull
 	@Override
 	public <U> Result<U, E> map(@Nonnull Function<T, U> converter) {
-		return Ok.of(converter.apply(value));
+		return Ok.of(requireNonNull(converter.apply(value)));
 	}
 
 	@Nonnull
 	@Override
 	public <F> Result<T, F> mapErr(@Nonnull Function<E, F> converter) {
+		requireNonNull(converter);
 		return adaptErr();
 	}
 
@@ -72,48 +72,54 @@ public final class Ok<T, E> implements Result<T, E> {
 
 	@Override
 	public void ifErr(@Nonnull Consumer<E> action) {
-		// Do nothing.
+		requireNonNull(action);
 	}
 
 	@Override
-	public void ifEither(@Nonnull Consumer<T> okAction, Consumer<E> errAction) {
+	public void ifEither(@Nonnull Consumer<T> okAction, @Nonnull Consumer<E> errAction) {
+		requireNonNull(errAction);
 		okAction.accept(value);
 	}
 
 	@Nonnull
 	@Override
-	public <R> R branch(@Nonnull Function<T, R> okConverter, Function<E, R> errHandler) {
-		return okConverter.apply(value);
+	public <R> R branch(@Nonnull Function<T, R> okConverter, @Nonnull Function<E, R> errHandler) {
+		requireNonNull(errHandler);
+		return requireNonNull(okConverter.apply(value));
 	}
 
 	@Nonnull
 	@Override
-	public T solve(Function<E, T> errToOkConverter) {
+	public T solve(@Nonnull Function<E, T> errToOkConverter) {
+		requireNonNull(errToOkConverter);
 		return value;
 	}
 
 	@Nonnull
 	@Override
 	public T okOr(@Nonnull T alternative) {
+		requireNonNull(alternative);
 		return value;
 	}
 
 	@Nonnull
 	@Override
 	public T okOr(@Nonnull Supplier<T> alternativeSupplier) {
+		requireNonNull(alternativeSupplier);
 		return value;
 	}
 
 	@Nonnull
 	@Override
 	public E errOr(@Nonnull E alternative) {
+		requireNonNull(alternative);
 		return alternative;
 	}
 
 	@Nonnull
 	@Override
 	public E errOr(@Nonnull Supplier<E> alternativeSupplier) {
-		return alternativeSupplier.get();
+		return requireNonNull(alternativeSupplier.get());
 	}
 
 	@Nonnull
@@ -149,13 +155,13 @@ public final class Ok<T, E> implements Result<T, E> {
 	@Nonnull
 	@Override
 	public <U> Result<U, E> and(@Nonnull Result<U, E> next) {
-		return next;
+		return requireNonNull(next);
 	}
 
 	@Nonnull
 	@Override
 	public <U> Result<U, E> and(@Nonnull Supplier<Result<U, E>> nextSupplier) {
-		return nextSupplier.get();
+		return requireNonNull(nextSupplier.get());
 	}
 
 	@Nonnull
@@ -194,6 +200,7 @@ public final class Ok<T, E> implements Result<T, E> {
 
 	@Override
 	public boolean errMatches(@Nonnull Predicate<E> errPredicate) {
+		requireNonNull(errPredicate);
 		return false;
 	}
 
@@ -204,7 +211,7 @@ public final class Ok<T, E> implements Result<T, E> {
 	}
 
 	@Override
-	public boolean equals(Object other) {
+	public boolean equals(@Nullable Object other) {
 		if (this == other) return true;
 		if (!(other instanceof Ok<?, ?> otherOk)) {
 			return false;
