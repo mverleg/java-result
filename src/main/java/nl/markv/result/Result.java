@@ -242,4 +242,13 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 			throw new IllegalStateException("unreachable");
 		}
 	}
+
+	@Nonnull
+	@CheckReturnValue
+	static <U, F> Result<U, F> flatten(@Nonnull Result<Result<U, F>, F> result) {
+		if (result instanceof Ok<Result<U, F>, F> ok) {
+			return ok.get();
+		}
+		return result.adaptOk();
+	}
 }

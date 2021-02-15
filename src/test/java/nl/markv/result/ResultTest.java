@@ -11,6 +11,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
+import static nl.markv.result.Result.flatten;
 import static nl.markv.result.Result.transpose;
 
 class ResultTest {
@@ -213,6 +214,30 @@ class ResultTest {
 			assert result.isPresent();
 			assert result.get().isErr();
 			assert result.get().getErrOrThrow() == 2;
+		}
+	}
+	
+	@Nested
+	class Flatten {
+		@Test
+	    void OkOk() {
+			var result = flatten(Ok.of(Ok.of(2)));
+		    assert result.isOk();
+		    assert result.getOrThrow() == 2;
+		}
+
+		@Test
+	    void OkErr() {
+			var result = flatten(Ok.of(Err.of(2)));
+		    assert result.isErr();
+		    assert result.getErrOrThrow() == 2;
+		}
+
+		@Test
+		void Err() {
+			var result = flatten(Err.of(2));
+			assert result.isErr();
+			assert result.getErrOrThrow() == 2;
 		}
 	}
 }
