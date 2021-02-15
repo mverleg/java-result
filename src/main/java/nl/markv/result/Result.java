@@ -136,33 +136,60 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 *
 	 * @throws WrongResultVariantException if this object is {@link Err}.
 	 * @see #getErrOrThrow()
+	 * @see #getOrThrow(String)
 	 * @see #getOrThrow(Supplier)
 	 */
 	@Nonnull
 	T getOrThrow();
 
 	/**
+	 * If the {@link Result} is {@link Ok}, return its content, otherwise throw
+	 * {@link WrongResultVariantException} with the given message.
+	 *
+	 * @see #getOrThrow()
+	 * @see #getOrThrow(Supplier)
+	 * @see #getErrOrThrow()
+	 */
+	@Nonnull
+	T getOrThrow(@Nonnull String exceptionSupplier);
+
+	/**
 	 * If the {@link Result} is {@link Ok}, return its content, otherwise throw the given exception.
 	 *
 	 * @throws NullPointerException if the exception supplier is called and returns {@code null}.
 	 * @see #getOrThrow()
+	 * @see #getOrThrow(String)
 	 * @see #getErrOrThrow()
 	 */
 	//TODO @mark: test NPE
 	@Nonnull
-	T getOrThrow(@Nonnull Supplier<? extends RuntimeException> exceptionSupplier);
+	T getOrThrow(@Nonnull Supplier<RuntimeException> exceptionSupplier);
 
 	/**
-	 * If the {@link Result} is {@link Err}, return its content. Otherwise, throw {@link WrongResultVariantException}.
+	 * If the {@link Result} is {@link Err}, return its content. Otherwise, throw
+	 * {@link WrongResultVariantException}.
 	 * <p>
 	 * This is the dual of {@link #getOrThrow()}, which describes more details.
 	 *
 	 * @throws WrongResultVariantException if this object is {@link Err}.
 	 * @see #getOrThrow()
+	 * @see #getErrOrThrow(String)
 	 * @see #getErrOrThrow(Supplier)
 	 */
 	@Nonnull
 	E getErrOrThrow();
+
+	/**
+	 * If the {@link Result} is {@link Err}, return its content, otherwise throw
+	 * {@link WrongResultVariantException} with the given message.
+	 *
+	 * @throws NullPointerException if the exception supplier is called and returns {@code null}.
+	 * @see #getOrThrow()
+	 * @see #getErrOrThrow()
+	 * @see #getErrOrThrow(Supplier)
+	 */
+	@Nonnull
+	E getErrOrThrow(@Nonnull String exceptionMessage);
 
 	/**
 	 * If the {@link Result} is {@link Err}, return its content, otherwise throw the given exception.
@@ -170,10 +197,11 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * @throws NullPointerException if the exception supplier is called and returns {@code null}.
 	 * @see #getOrThrow()
 	 * @see #getErrOrThrow()
+	 * @see #getErrOrThrow(String)
 	 */
 	//TODO @mark: test NPE
 	@Nonnull
-	E getErrOrThrow(@Nonnull Supplier<? extends RuntimeException> exceptionSupplier);
+	E getErrOrThrow(@Nonnull Supplier<RuntimeException> exceptionSupplier);
 
 	/**
 	 * Map the {@link Ok} value to a new value of a different type. Does nothing on {@link Err}.
