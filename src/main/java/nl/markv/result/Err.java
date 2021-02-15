@@ -73,20 +73,20 @@ public final class Err<T, E> implements Result<T, E> {
 	@Nonnull
 	@Override
 	public T getOrThrow() {
-		return getOrThrow(err -> "Attempted to get Ok from Result, but content is " + err);
+		return getOrThrow("Attempted to get Ok from Result, but content is " + value);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 *
-	 * @deprecated Marked as deprecated because calling {@link #getOrThrow(Function)} on {@link Err} always fails.
+	 * @deprecated Marked as deprecated because calling {@link #getOrThrow(String)} on {@link Err} always fails.
 	 * 	It is not deprecated to call this on {@link Result}, but on {@link Err} use {@link #get()}.
 	 */
 	@Deprecated
 	@Nonnull
 	@Override
-	public T getOrThrow(@Nonnull Function<E, String> exceptionMessage) {
-		return getOrThrow(() -> new WrongResultVariantException(exceptionMessage.apply(value)));
+	public T getOrThrow(@Nonnull String exceptionMessage) {
+		return getOrThrow(() -> new WrongResultVariantException(exceptionMessage));
 	}
 
 	/**
@@ -117,7 +117,7 @@ public final class Err<T, E> implements Result<T, E> {
 	 */
 	@Nonnull
 	@Override
-	public E getErrOrThrow(@Nonnull Function<T, String> exceptionMessage) {
+	public E getErrOrThrow(@Nonnull String exceptionMessage) {
 		return value;
 	}
 
