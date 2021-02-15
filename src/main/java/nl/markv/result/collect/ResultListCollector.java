@@ -12,7 +12,10 @@ import java.util.stream.Collector;
 import nl.markv.result.Err;
 import nl.markv.result.Result;
 
+import static java.util.Collections.emptySet;
+
 public class ResultListCollector<T, E> implements Collector<Result<T, E>, ResultBuilder<List<T>, E>, Result<List<T>, E>> {
+	//TODO @mark: tests
 
 	@Override
 	public Supplier<ResultBuilder<List<T>, E>> supplier() {
@@ -48,35 +51,11 @@ public class ResultListCollector<T, E> implements Collector<Result<T, E>, Result
 
 	@Override
 	public Function<ResultBuilder<List<T>, E>, Result<List<T>, E>> finisher() {
-		throw new IllegalStateException("todo: ");  //TODO @mark: implement
+		return ResultBuilder::build;
 	}
 
 	@Override
 	public Set<Characteristics> characteristics() {
-		throw new IllegalStateException("todo: ");  //TODO @mark: implement
+		return emptySet();
 	}
-//
-//	@Override
-//	public Supplier<Result<ArrayList<T>, E>> supplier() {
-//		return () -> Ok.of(new ArrayList<>());
-//	}
-//
-//	@Override
-//	public BiConsumer<Result<ArrayList<T>, E>, Result<T, E>> accumulator() {
-//		return (currentListResult, newResult) -> {
-//			currentListResult.ifOk(list -> {
-//				if (newResult instanceof Ok<T, E> ok) {
-//					list.add(ok.get());
-//				} else {
-//
-//				}
-//			});
-//			currentListResult
-//			if (newResult instanceof  Ok<T, E> ok) {
-//				currentList.add(ok.get());
-//			} else {
-//
-//			}
-//		}
-//	}
 }
