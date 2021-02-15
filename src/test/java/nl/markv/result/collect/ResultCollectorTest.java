@@ -1,6 +1,7 @@
 package nl.markv.result.collect;
 
 import java.util.Set;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Nested;
@@ -97,6 +98,16 @@ class ResultCollectorTest {
 			var resultList = Stream.of(Ok.of(2), Ok.of(4)).collect(toList());
 			assertThrows(RuntimeException.class, () -> resultList.ifOk(list -> list.add(7)));
 		}
+
+		@Test
+		void parallel() {
+			var result = Stream.concat(
+					IntStream.range(0, 1000).<Result<Integer, Integer>>mapToObj(Result::ok),
+					IntStream.range(0, 10).<Result<Integer, Integer>>mapToObj(Result::err));
+			var list = result.parallel().collect(toList());
+			assert list.isErr();
+			assert list.getErrOrThrow() == 0;
+		}
 	}
 
 	@Nested
@@ -173,6 +184,17 @@ class ResultCollectorTest {
 			assert iter.next() == 8;
 			assert iter.next() == 16;
 			assert iter.next() == 32;
+		}
+
+		@Test
+		void parallel() {
+			var result = Stream.concat(
+					IntStream.range(0, 1000).<Result<Integer, Integer>>mapToObj(Result::ok),
+					IntStream.range(0, 10).<Result<Integer, Integer>>mapToObj(Result::err));
+			var list = result.parallel().collect(toSet());
+			assert list.isErr();
+			assert list.getErrOrThrow() >= 0;
+			assert list.getErrOrThrow() < 10;
 		}
 	}
 }

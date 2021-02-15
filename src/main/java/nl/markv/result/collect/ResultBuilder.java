@@ -9,7 +9,7 @@ import nl.markv.result.Err;
 import nl.markv.result.Ok;
 import nl.markv.result.Result;
 
-public final class ResultBuilder<T, E> {
+final class ResultBuilder<T, E> {
 
 	@Nonnull
 	private Result<T, E> current;
