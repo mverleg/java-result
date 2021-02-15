@@ -223,7 +223,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * @see #flatten(Result)
 	 * @see Stream#flatMap(Function)
 	 */
-	//TODO @mark: test
+	//TODO @mark: document NPE
 	@Nonnull
 	<U> Result<U, E> flatMap(@Nonnull Function<T, Result<U, E>> converter);
 
@@ -247,7 +247,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * @see #flatten(Result)
 	 * @see Stream#flatMap(Function)
 	 */
-	//TODO @mark: test
+	//TODO @mark: document NPE
 	@Nonnull
 	<F> Result<T, F> flatMapErr(@Nonnull Function<E, Result<T, F>> converter);
 
