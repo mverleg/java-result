@@ -1,8 +1,6 @@
 package nl.markv.result;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +15,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static java.util.Objects.requireNonNull;
+import static nl.markv.result.None.none;
 
 //TODO @mark: Collection<Result<.>> to Result<Collection<.>>
 //TODO @mark: Result<Result<.>> to Result<.>, if possible with generics
@@ -32,6 +31,16 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	@Nonnull
 	static <T, E> Err<T, E> err(@Nonnull E value) {
 		return new Err<>(value);
+	}
+
+	//TODO @mark: test
+	@Nonnull
+	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+	static <T> Result<T, None> from(@Nonnull Optional<T> optional) {
+		if (optional.isPresent()) {
+			return Ok.of(optional.get());
+		}
+		return Err.empty();
 	}
 
 	boolean isOk();

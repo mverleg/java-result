@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 
 import static java.util.Collections.emptyIterator;
 import static java.util.Objects.requireNonNull;
+import static nl.markv.result.None.none;
 
 public final class Err<T, E> implements Result<T, E> {
 
@@ -26,6 +27,11 @@ public final class Err<T, E> implements Result<T, E> {
 	@Nonnull
 	public static <T, E> Err<T, E> of(@Nonnull E value) {
 		return new Err<>(value);
+	}
+
+	@Nonnull
+	public static <T> Err<T, None> empty() {
+		return Err.of(none);
 	}
 
 	@Override
