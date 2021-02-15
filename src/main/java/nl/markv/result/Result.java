@@ -215,6 +215,19 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	<U> Result<U, E> map(@Nonnull Function<T, U> converter);
 
 	/**
+	 * Map the {@link Ok} value to a new {@link Result} value, flattening the two results to a single one.
+	 * Does nothing on {@link Err}.
+	 *
+	 * @see #map(Function)
+	 * @see #flatMapErr(Function)
+	 * @see #flatten(Result)
+	 * @see Stream#flatMap(Function)
+	 */
+	//TODO @mark: test
+	@Nonnull
+	<U> Result<U, E> flatMap(@Nonnull Function<T, Result<U, E>> converter);
+
+	/**
 	 * Map the {@link Err} value to a new value of a different type. Does nothing on {@link Ok}.
 	 *
 	 * @throws NullPointerException if the map is called and returns {@code null}.
@@ -224,6 +237,19 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 */
 	@Nonnull
 	<F> Result<T, F> mapErr(@Nonnull Function<E, F> converter);
+
+	/**
+	 * Map the {@link Err} value to a new {@link Result} value, flattening the two results to a single one.
+	 * Does nothing on {@link Ok}.
+	 *
+	 * @see #mapErr(Function) 
+	 * @see #flatMap(Function)
+	 * @see #flatten(Result)
+	 * @see Stream#flatMap(Function)
+	 */
+	//TODO @mark: test
+	@Nonnull
+	<F> Result<T, F> flatMapErr(@Nonnull Function<E, Result<T, F>> converter);
 
 	/**
 	 * Run an action on the value of {@link Ok}. Does nothing on {@link Err}.
@@ -270,6 +296,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * @see #mapErr(Function)
 	 * @see #solve(Function)
 	 */
+	//TODO @mark: Kotlin calls this `fold`, consider renaming
 	@Nonnull
 	<R> R branch(@Nonnull Function<T, R> okConverter, @Nonnull Function<E, R> errHandler);
 
@@ -286,6 +313,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * @see #branch(Function, Function)
 	 * @see #okOr(Supplier)
 	 */
+	//TODO @mark: Kotlin calls this `recover`, consider renaming
 	//TODO @mark: test NPE
 	@Nonnull
 	T solve(@Nonnull Function<E, T> errToOkConverter);
@@ -318,6 +346,16 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	@Nonnull
 	T okOr(@Nonnull Supplier<T> alternativeSupplier);
 
+	//TODO @mark: javadoc
+	//TODO @mark: test
+	@Nullable
+	T okOrNullable(@Nullable T alternative);
+
+	//TODO @mark: javadoc
+	//TODO @mark: test
+	@Nullable
+	T okOrNull();
+
 	/**
 	 * If this {@link Result} is {@link Err}, return the value. If it is not, return the given alternative.
 	 * <p>
@@ -341,6 +379,16 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	//TODO @mark: test NPE
 	@Nonnull
 	E errOr(@Nonnull Supplier<E> alternativeSupplier);
+
+	//TODO @mark: javadoc
+	//TODO @mark: test
+	@Nullable
+	E errOrNullable(@Nullable T alternative);
+
+	//TODO @mark: javadoc
+	//TODO @mark: test
+	@Nullable
+	E errOrNull();
 
 	/**
 	 * If this result is {@link Err}, change the generic type for {@link Ok}.
@@ -603,6 +651,8 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	/**
 	 * Flatten a nested result. Returns the inner {@link Ok} if both are successful. Otherwise, returns the
 	 * {@link Err} of whichever one failed (the errors must be the same type).
+	 * 
+	 * @see #flatMap(Function)
 	 */
 	@Nonnull
 	@CheckReturnValue
