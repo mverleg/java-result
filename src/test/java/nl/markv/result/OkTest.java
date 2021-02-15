@@ -83,6 +83,7 @@ class OkTest {
 		void getOk() {
 			Result<String, String> res = Ok.of("hello");
 			assert "hello".equals(res.getOrThrow());
+			assert "hello".equals(res.getOrThrow("my error"));
 			assert "hello".equals(res.getOrThrow(IllegalStateException::new));
 		}
 
@@ -90,6 +91,8 @@ class OkTest {
 		void getErr() {
 			Result<String, String> res = Ok.of("hello");
 			assertThrows(WrongResultVariantException.class, res::getErrOrThrow);
+			var ex = assertThrows(WrongResultVariantException.class, () -> res.getErrOrThrow("my error"));
+			assert "my error".equals(ex.getMessage());
 			assertThrows(IllegalStateException.class, () -> res.getErrOrThrow(IllegalStateException::new));
 		}
 	}

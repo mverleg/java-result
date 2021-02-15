@@ -83,6 +83,8 @@ class ErrTest {
 		void getOk() {
 			Result<String, String> res = Err.of("hello");
 			assertThrows(WrongResultVariantException.class, res::getOrThrow);
+			var ex = assertThrows(WrongResultVariantException.class, () -> res.getOrThrow("my error"));
+			assert "my error".equals(ex.getMessage());
 			assertThrows(IllegalStateException.class, () -> res.getOrThrow(IllegalStateException::new));
 		}
 
@@ -90,6 +92,7 @@ class ErrTest {
 		void getErr() {
 			Result<String, String> res = Err.of("hello");
 			assert "hello".equals(res.getErrOrThrow());
+			assert "hello".equals(res.getErrOrThrow("my error"));
 			assert "hello".equals(res.getErrOrThrow(IllegalStateException::new));
 		}
 	}
