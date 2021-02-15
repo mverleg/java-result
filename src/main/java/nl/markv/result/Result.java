@@ -161,6 +161,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	@Nonnull
 	Stream<T> stream();
 
+	//TODO @mark: test all the transposes
 	//TODO @mark: collector like this for streams:
 	/**
 	 * Given a list of results, if it contains an error, return the first one. If there are no errors,
@@ -188,7 +189,6 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	@Nonnull
 	@CheckReturnValue
 	static <U, F> Result<Set<U>, F> transpose(@Nonnull Set<Result<U, F>> resultSet) {
-		//TODO @mark: is initial capacity correct for hashset?
 		final Set<U> okSet = new LinkedHashSet<>((int)(resultSet.size() / 0.7 + 1), 0.7f);
 		for (Result<U, F> item : resultSet) {
 			if (item instanceof Ok<U, F> ok) {
@@ -198,5 +198,48 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 			}
 		}
 		return Ok.of(okSet);
+	}
+
+	//TODO @mark: javadoc
+	/**
+	 * Transform {@link Optional} of {@link Result} to {@link Result} of {@link Optional}, by keeping errors
+	 * <ol>
+	 * <li> {@code Ok(empty)} to {@code Ok(empty)}
+	 * <li> {@code Ok(empty)} to {@code Ok(empty)}
+	 * </ol>
+	 */
+	@Nonnull
+	@CheckReturnValue
+	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+	static <U, F> Result<Optional<U>, F> transpose(@Nonnull Optional<Result<U, F>> optionalResult) {
+		if (optionalResult.isEmpty()) {
+			return Ok.of(Optional.empty());
+		}
+		Result<U, F> result = optionalResult.get();
+		if (result instanceof Ok<U, F> ok) {
+			return Ok.of(Optional.of(ok.get()));
+		} else if (result instanceof Err<U, F> err) {
+			return Err.of(err.get());
+		} else {
+			throw new IllegalStateException("unreachable");
+		}
+// 		Use this switch expression?
+//		return switch (result) {
+//			case Ok ok -> Ok.of(Optional.of(ok.get()));
+//			case Err err -> Err.of(err.get());
+//		};
+	}
+
+	//TODO @mark: javadoc
+	@Nonnull
+	@CheckReturnValue
+	static <U, F> Optional<Result<U, F>> transpose(@Nonnull Result<Optional<U>, F> resultOptional) {
+		if (resultOptional instanceof Ok<Optional<U>, F> ok) {
+			return ok.get().map(Ok::of);
+		} else if (resultOptional instanceof Err<Optional<U>, F> err) {
+			return Optional.of(err.adaptOk());
+		} else {
+			throw new IllegalStateException("unreachable");
+		}
 	}
 }
