@@ -136,7 +136,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 *
 	 * @throws WrongResultVariantException if this object is {@link Err}.
 	 * @see #getErrOrThrow()
-	 * @see #getOrThrow(String)
+	 * @see #getOrThrow(Function)
 	 * @see #getOrThrow(Supplier)
 	 */
 	@Nonnull
@@ -151,14 +151,14 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * @see #getErrOrThrow()
 	 */
 	@Nonnull
-	T getOrThrow(@Nonnull String exceptionSupplier);
+	T getOrThrow(@Nonnull Function<E, String> exceptionMessage);
 
 	/**
 	 * If the {@link Result} is {@link Ok}, return its content, otherwise throw the given exception.
 	 *
 	 * @throws NullPointerException if the exception supplier is called and returns {@code null}.
 	 * @see #getOrThrow()
-	 * @see #getOrThrow(String)
+	 * @see #getOrThrow(Function)
 	 * @see #getErrOrThrow()
 	 */
 	//TODO @mark: test NPE
@@ -173,7 +173,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 *
 	 * @throws WrongResultVariantException if this object is {@link Err}.
 	 * @see #getOrThrow()
-	 * @see #getErrOrThrow(String)
+	 * @see #getErrOrThrow(Function)
 	 * @see #getErrOrThrow(Supplier)
 	 */
 	@Nonnull
@@ -189,7 +189,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * @see #getErrOrThrow(Supplier)
 	 */
 	@Nonnull
-	E getErrOrThrow(@Nonnull String exceptionMessage);
+	E getErrOrThrow(@Nonnull Function<T, String> exceptionMessage);
 
 	/**
 	 * If the {@link Result} is {@link Err}, return its content, otherwise throw the given exception.
@@ -197,7 +197,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * @throws NullPointerException if the exception supplier is called and returns {@code null}.
 	 * @see #getOrThrow()
 	 * @see #getErrOrThrow()
-	 * @see #getErrOrThrow(String)
+	 * @see #getErrOrThrow(Function)
 	 */
 	//TODO @mark: test NPE
 	@Nonnull
