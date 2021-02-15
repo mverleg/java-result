@@ -291,8 +291,4 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 		}
 		return result.adaptOk();
 	}
-
-	static <T, E> ResultListCollector<T, E> toList() {
-		return new ResultListCollector<>();
-	}
 }
