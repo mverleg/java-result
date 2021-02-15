@@ -117,6 +117,34 @@ public final class Err<T, E> implements Result<T, E> {
 		return Optional.of(value);
 	}
 
+	@Nonnull
+	@Override
+	public <U> Result<U, E> and(@Nonnull Result<U, E> next) {
+		// See note about casting in 'adaptOk'
+		//noinspection unchecked
+		return (Result<U, E>) this;
+	}
+
+	@Nonnull
+	@Override
+	public <U> Result<U, E> and(@Nonnull Supplier<Result<U, E>> nextSupplier) {
+		// See note about casting in 'adaptOk'
+		//noinspection unchecked
+		return (Result<U, E>) this;
+	}
+
+	@Nonnull
+	@Override
+	public <F> Result<T, F> or(@Nonnull Result<T, F> next) {
+		return next;
+	}
+
+	@Nonnull
+	@Override
+	public <F> Result<T, F> or(@Nonnull Supplier<Result<T, F>> nextSupplier) {
+		return nextSupplier.get();
+	}
+
 	@Override
 	public boolean contains(@Nullable T ok) {
 		return false;

@@ -117,6 +117,34 @@ public final class Ok<T, E> implements Result<T, E> {
 		return Optional.empty();
 	}
 
+	@Nonnull
+	@Override
+	public <U> Result<U, E> and(@Nonnull Result<U, E> next) {
+		return next;
+	}
+
+	@Nonnull
+	@Override
+	public <U> Result<U, E> and(@Nonnull Supplier<Result<U, E>> nextSupplier) {
+		return nextSupplier.get();
+	}
+
+	@Nonnull
+	@Override
+	public <F> Result<T, F> or(@Nonnull Result<T, F> next) {
+		// See note about casting in 'adaptErr'
+		//noinspection unchecked
+		return (Result<T, F>) this;
+	}
+
+	@Nonnull
+	@Override
+	public <F> Result<T, F> or(@Nonnull Supplier<Result<T, F>> nextSupplier) {
+		// See note about casting in 'adaptErr'
+		//noinspection unchecked
+		return (Result<T, F>) this;
+	}
+
 	@Override
 	public boolean contains(@Nullable T ok) {
 		if (ok == null) {

@@ -47,12 +47,14 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	@Nonnull
 	E getErrOrThrow(@Nonnull Supplier<? extends RuntimeException> exceptionSupplier);
 
+	//TODO @mark: test null
 	@Nonnull
 	<U> Result<U, E> map(@Nonnull Function<T, U> converter);
 
 	@Nonnull
 	<F> Result<T, F> mapErr(@Nonnull Function<E, F> converter);
 
+	//TODO @mark: test null
 	@Nonnull
 	T okOr(@Nonnull T alternative);
 
@@ -98,13 +100,49 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 		}
 	}
 
+	/**
+	 * @see #and(Supplier)
+	 */
+	@Nonnull
+	<U> Result<U, E> and(@Nonnull Result<U, E> next);
+
+	/**
+	 * Returns the current {@link Result} if it is {@link Err}, and produces the next result (given by
+	 * argument) otherwise.
+	 * <p>
+	 * This simulates '{@code &&}' in the sense that the result is {@link Ok} if and only if both inputs are
+	 * {@link Ok}. The supplier is only called if the current object is {@link Ok}.
+	 * <p>
+	 * This returns the last object that had to be evaluated, like '{@code and}' in Python.
+	 */
+	@Nonnull
+	<U> Result<U, E> and(@Nonnull Supplier<Result<U, E>> nextSupplier);
+
+	/**
+	 * @see #or(Supplier)
+	 */
+	@Nonnull
+	<F> Result<T, F> or(@Nonnull Result<T, F> next);
+
+	/**
+	 * Returns the current {@link Result} if it is {@link Ok}, and produces the next result (given by
+	 * argument) otherwise.
+	 * <p>
+	 * This simulates '{@code ||}' in the sense that the result is {@link Ok} if at least one of the inputs
+	 * is {@link Ok}. The supplier is only called if the current object is {@link Err}.
+	 * <p>
+	 * This returns the last object that had to be evaluated, like '{@code or}' in Python.
+	 */
+	@Nonnull
+	<F> Result<T, F> or(@Nonnull Supplier<Result<T, F>> nextSupplier);
+
 	boolean contains(@Nullable T ok);
 
 	boolean containsErr(@Nullable E err);
 
 	/**
 	 * Get the content of the result, whether it is inside {@link Ok} or {@link Err}.
-	 *
+	 * <p>
 	 * Since success and failure types are generally different, type information is lost.
 	 */
 	@Nonnull
