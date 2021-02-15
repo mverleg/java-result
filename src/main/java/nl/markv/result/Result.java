@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -63,6 +64,10 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 
 	@Nonnull
 	<F> Result<T, F> mapErr(@Nonnull Function<E, F> converter);
+
+	void ifOk(@Nonnull Consumer<T> action);
+
+	void ifErr(@Nonnull Consumer<E> action);
 
 	//TODO @mark: test null
 	@Nonnull

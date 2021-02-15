@@ -111,6 +111,26 @@ class ErrTest {
 	}
 
 	@Nested
+	class IfOkErr {
+		@Test
+		void ifOk() {
+			Err.of(2).ifOk(value -> {
+				throw new AssertionError();
+			});
+		}
+
+		@Test
+		void ifErr() {
+			var toggle = new TestUtil.Toggle();
+			Err.of(2).ifErr(value -> {
+				assert value == 2;
+				toggle.turnOn();
+			});
+			assert toggle.isOn();
+		}
+	}
+
+	@Nested
 	class Alternative {
 		Result<Double, Integer> result = Result.err(1);
 

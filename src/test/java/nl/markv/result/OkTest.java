@@ -112,6 +112,26 @@ class OkTest {
 	}
 
 	@Nested
+	class IfOkErr {
+		@Test
+	    void ifOk() {
+			var toggle = new TestUtil.Toggle();
+		    Ok.of(2).ifOk(value -> {
+		    	assert value == 2;
+				toggle.turnOn();
+			});
+		    assert toggle.isOn();
+		}
+
+		@Test
+		void ifErr() {
+			Ok.of(2).ifErr(value -> {
+				throw new AssertionError();
+			});
+		}
+	}
+
+	@Nested
 	class Alternative {
 		Result<Integer, Double> result = Result.ok(1);
 

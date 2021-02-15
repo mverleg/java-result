@@ -3,6 +3,7 @@ package nl.markv.result;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -61,6 +62,16 @@ public final class Err<T, E> implements Result<T, E> {
 	@Override
 	public <F> Result<T, F> mapErr(@Nonnull Function<E, F> converter) {
 		return Err.of(converter.apply(value));
+	}
+
+	@Override
+	public void ifOk(@Nonnull Consumer<T> action) {
+		// Do nothing.
+	}
+
+	@Override
+	public void ifErr(@Nonnull Consumer<E> action) {
+		action.accept(value);
 	}
 
 	@Nonnull
