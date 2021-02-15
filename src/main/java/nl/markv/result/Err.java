@@ -2,6 +2,7 @@ package nl.markv.result;
 
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -77,6 +78,18 @@ public final class Err<T, E> implements Result<T, E> {
 	public <F> Result<T, F> adaptErr() {
 		throw new WrongResultVariantException("Attempted to call 'adaptErr' on a Result containing " + toString() +
 				"; this only succeeds if the Result is Ok. Use 'mapErr' to convert the error value.");
+	}
+
+	@Nonnull
+	@Override
+	public Optional<T> withoutErr() {
+		return Optional.empty();
+	}
+
+	@Nonnull
+	@Override
+	public Optional<E> withoutOk() {
+		return Optional.of(value);
 	}
 
 	@Nonnull

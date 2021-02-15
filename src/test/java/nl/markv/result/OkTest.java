@@ -2,7 +2,7 @@ package nl.markv.result;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -124,6 +124,24 @@ class OkTest {
 			Result<Integer, String> ok1 = Ok.of(1);
 			Result<Integer, Integer> ok2 = ok1.adaptErr();
 			assert ok2.getOrThrow() == 1;
+		}
+	}
+
+	@Nested
+	class Without {
+		private final Result<Integer, String> result = Ok.of(2);
+
+		@Test
+		void withoutOk() {
+			Optional<String> option = result.withoutOk();
+			assert option.isEmpty();
+		}
+
+		@Test
+		void withoutErr() {
+			Optional<Integer> option = result.withoutErr();
+			assert option.isPresent();
+			assert option.get() == 2;
 		}
 	}
 

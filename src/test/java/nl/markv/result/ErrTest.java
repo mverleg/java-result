@@ -2,6 +2,7 @@ package nl.markv.result;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -122,6 +123,24 @@ class ErrTest {
 		void changeErrType() {
 			Result<Integer, Integer> err = Err.of(1);
 			assertThrows(WrongResultVariantException.class, err::adaptErr);
+		}
+	}
+
+	@Nested
+	class Without {
+		private final Result<String, Integer> result = Err.of(2);
+
+		@Test
+	    void withoutOk() {
+			Optional<Integer> option = result.withoutOk();
+			assert option.isPresent();
+			assert option.get() == 2;
+		}
+
+		@Test
+		void withoutErr() {
+			Optional<String> option = result.withoutErr();
+			assert option.isEmpty();
 		}
 	}
 

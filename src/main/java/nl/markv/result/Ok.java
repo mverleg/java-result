@@ -2,6 +2,7 @@ package nl.markv.result;
 
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -77,6 +78,18 @@ public final class Ok<T, E> implements Result<T, E> {
 
 		//noinspection unchecked
 		return (Result<T, F>) this;
+	}
+
+	@Nonnull
+	@Override
+	public Optional<T> withoutErr() {
+		return Optional.of(value);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<E> withoutOk() {
+		return Optional.empty();
 	}
 
 	@Nonnull

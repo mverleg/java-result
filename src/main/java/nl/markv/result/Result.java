@@ -1,5 +1,6 @@
 package nl.markv.result;
 
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -63,6 +64,12 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 */
 	@Nonnull
 	<F> Result<T, F> adaptErr();
+
+	@Nonnull
+	Optional<T> withoutErr();
+
+	@Nonnull
+	Optional<E> withoutOk();
 
 	/**
 	 * Attempt to run the given operation. Return the non-null result as {@link Ok} on success, or the
