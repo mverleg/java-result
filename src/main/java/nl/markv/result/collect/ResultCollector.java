@@ -7,28 +7,39 @@ import javax.annotation.Nonnull;
 
 import nl.markv.result.Err;
 import nl.markv.result.Ok;
+import nl.markv.result.Result;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableSet;
 
 public class ResultCollector {
-	//TODO @mark: javadocs
 
+	/**
+	 * Collector to collect a stream of {@link Result}s to a list. If any of the items is unsuccessful,
+	 * the collection is stopped (if serial) and the error is returned. Otherwise all the stream's {@link Ok}
+	 * items are collected to an unmodifiable list.
+	 */
 	@Nonnull
-	static <T, E> ResultListCollector<T, E> toList() {
+	public static <T, E> ResultListCollector<T, E> toList() {
 		return new ResultListCollector<>(builder ->
 				builder.build().branch(
 						list -> Ok.of(unmodifiableList(list)),
 						Err::of));
 	}
 
+	/**
+	 * Returns the first failure or a list of all okay values. Like {@link #toList()}, but the list is mutable.
+	 */
 	@Nonnull
-	static <T, E> ResultListCollector<T, E> toMutableList() {
+	public static <T, E> ResultListCollector<T, E> toMutableList() {
 		return new ResultListCollector<>(ResultBuilder::build);
 	}
 
+	/**
+	 * Returns any failure or a list of all okay values. Like {@link #toList()}, but uses an unmodifiable, unordered set.
+	 */
 	@Nonnull
-	static <T, E> ResultSetCollector<T, E> toSet() {
+	public static <T, E> ResultSetCollector<T, E> toSet() {
 		return new ResultSetCollector<>(
 				LinkedHashSet::new,
 				builder -> builder.build().branch(
@@ -36,13 +47,19 @@ public class ResultCollector {
 						Err::of));
 	}
 
+	/**
+	 * Returns any failure or a list of all okay values. Like {@link #toSet()}, but uses a mutable set.
+	 */
 	@Nonnull
-	static <T, E> ResultSetCollector<T, E> toMutableSet() {
+	public static <T, E> ResultSetCollector<T, E> toMutableSet() {
 		return new ResultSetCollector<>(HashSet::new, ResultBuilder::build);
 	}
 
+	/**
+	 * Returns any failure or a list of all okay values. Like {@link #toList()}, but uses an ordered set.
+	 */
 	@Nonnull
-	static <T, E> ResultSetCollector<T, E> toOrderedSet() {
+	public static <T, E> ResultSetCollector<T, E> toOrderedSet() {
 		return new ResultSetCollector<>(
 				LinkedHashSet::new,
 				builder -> builder.build().branch(

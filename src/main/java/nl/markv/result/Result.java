@@ -15,6 +15,8 @@ import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import nl.markv.result.collect.ResultCollector;
+
 import static java.util.Objects.requireNonNull;
 
 //TODO @mark: Collection<Result<.>> to Result<Collection<.>>
@@ -199,15 +201,14 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	@Nonnull
 	Stream<T> stream();
 
-	//TODO @mark: test all the transposes
-	//TODO @mark: collector like this for streams:
 	/**
 	 * Given a list of results, if it contains an error, return the first one. If there are no errors,
 	 * return a list of all the success values.
+	 *
+	 * See {@link ResultCollector#toList()} for the stream equivalent.
 	 */
 	@Nonnull
 	@CheckReturnValue
-	//TODO @mark:
 	static <U, F> Result<List<U>, F> transpose(@Nonnull List<Result<U, F>> resultList) {
 		final List<U> okList = new ArrayList<>(resultList.size());
 		for (Result<U, F> item : resultList) {
@@ -223,6 +224,8 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	/**
 	 * Given a set of results, if it contains any errors, return the 'first' one ('first' may be arbitrary
 	 * for many {@link Set} implementation). If there are no errors, return a set of all the success values.
+	 *
+	 * See {@link ResultCollector#toSet()} for the stream equivalent.
 	 */
 	@Nonnull
 	@CheckReturnValue
@@ -240,7 +243,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 
 	//TODO @mark: javadoc
 	/**
-	 * Transform {@link Optional} of {@link Result} to {@link Result} of {@link Optional}, by keeping errors
+	 * Transform {@link Optional} of {@link Result} to {@link Result} of {@link Optional}:
 	 * <ol>
 	 * <li> {@code Ok(empty)} to {@code Ok(empty)}
 	 * <li> {@code Ok(empty)} to {@code Ok(empty)}

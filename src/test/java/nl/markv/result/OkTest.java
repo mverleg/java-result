@@ -391,7 +391,7 @@ class OkTest {
 			assert Ok.of("hello").hashCode() == Ok.of("hello").hashCode();
 			assert Ok.of("hello").hashCode() != Ok.of("bye").hashCode();
 			assert Ok.of("hello").hashCode() != Ok.of(1).hashCode();
-			assert Ok.of("hello").hashCode() != Err.of("bye").hashCode();
+			assert Ok.of("hello").hashCode() != Err.of("hello").hashCode();
 		}
 
 		@Test

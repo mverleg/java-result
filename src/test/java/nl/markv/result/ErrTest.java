@@ -385,7 +385,7 @@ class ErrTest {
 			assert Err.of("hello").hashCode() == Err.of("hello").hashCode();
 			assert Err.of("hello").hashCode() != Err.of("bye").hashCode();
 			assert Err.of("hello").hashCode() != Err.of(1).hashCode();
-			assert Err.of("bye").hashCode() != Ok.of("hello").hashCode();
+			assert Err.of("hello").hashCode() != Ok.of("hello").hashCode();
 		}
 
 		@Test
