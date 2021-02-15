@@ -48,10 +48,12 @@ public class ResultListCollector<T, E> implements Collector<Result<T, E>, Result
 
 	@Override
 	public Function<ResultBuilder<List<T>, E>, Result<List<T>, E>> finisher() {
+		throw new IllegalStateException("todo: ");  //TODO @mark: implement
 	}
 
 	@Override
 	public Set<Characteristics> characteristics() {
+		throw new IllegalStateException("todo: ");  //TODO @mark: implement
 	}
 //
 //	@Override

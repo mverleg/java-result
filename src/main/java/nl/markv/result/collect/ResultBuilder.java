@@ -2,14 +2,12 @@ package nl.markv.result.collect;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 
 import nl.markv.result.Err;
 import nl.markv.result.Ok;
 import nl.markv.result.Result;
-import nl.markv.result.WrongResultVariantException;
 
 public final class ResultBuilder<T, E> {
 
@@ -63,12 +61,12 @@ public final class ResultBuilder<T, E> {
 		current.ifErr(action);
 	}
 
-	public void branch(@Nonnull Consumer<T> okAction, Consumer<E> errAction) {
-		current.branch(okAction, errAction);
+	public void ifEither(@Nonnull Consumer<T> okAction, Consumer<E> errAction) {
+		current.ifEither(okAction, errAction);
 	}
 
 	@Nonnull
-	public <G> G branch(@Nonnull Function<T, G> okConverter, Function<E, G> errHandler) {
+	public <R> R branch(@Nonnull Function<T, R> okConverter, Function<E, R> errHandler) {
 		return current.branch(okConverter, errHandler);
 	}
 

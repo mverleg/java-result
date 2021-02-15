@@ -125,9 +125,42 @@ class OkTest {
 
 		@Test
 		void ifErr() {
-			Ok.of(2).ifErr(value -> {
-				throw new AssertionError();
-			});
+			Ok.of(2).ifErr(TestUtil::failIfCalled);
+		}
+	}
+	
+	@Nested
+	class IfEither {
+		@Test
+		void ifEither() {
+			var toggle = new TestUtil.Toggle();
+			Ok.of(2).ifEither(
+					ok -> toggle.turnOn(),
+					TestUtil::failIfCalled
+			);
+			assert toggle.isOn();
+		}
+	}
+
+	@Nested
+	class Branch {
+		@Test
+	    void toNumber() {
+			int result = Ok.of(2).branch(
+					ok -> ok * 3,
+					TestUtil::failIfCalled
+			);
+			assert result == 6;
+		}
+
+		@Test
+	    void toResult() {
+			var result = Ok.of(2).branch(
+					ok -> Err.of("wrong!"),
+					TestUtil::failIfCalled
+			);
+			assert result.isErr();
+			assert "wrong!".equals(result.getErrOrThrow());
 		}
 	}
 
@@ -226,9 +259,7 @@ class OkTest {
 
 		@Test
 		void orOkLazy() {
-			var res = result.or(() -> {
-				throw new AssertionError();
-			});
+			var res = result.or(TestUtil::failIfCalled);
 			assert Ok.of(2).equals(res);
 		}
 
@@ -240,9 +271,7 @@ class OkTest {
 
 		@Test
 	    void orErrLazy() {
-			var res = result.or(() -> {
-				throw new AssertionError();
-			});
+			var res = result.or(TestUtil::failIfCalled);
 			assert result.getOrThrow() == 2;
 		}
 	}

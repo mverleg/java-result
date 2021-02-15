@@ -15,7 +15,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static java.util.Objects.requireNonNull;
-import static nl.markv.result.None.none;
 
 //TODO @mark: Collection<Result<.>> to Result<Collection<.>>
 //TODO @mark: Result<Result<.>> to Result<.>, if possible with generics
@@ -78,11 +77,18 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 
 	void ifErr(@Nonnull Consumer<E> action);
 
-	void branch(@Nonnull Consumer<T> okAction, Consumer<E> errAction);
+	/**
+	 * Call the action for either {@link Ok} or {@link Err}. If the actions return something, use
+	 * {@link #branch(Function, Function)} instead.
+	 */
+	void ifEither(@Nonnull Consumer<T> okAction, Consumer<E> errAction);
 
-	//TODO @mark: make sure type inference can distinguish these lambdas in most cases, otherwise rename
+	/**
+	 * Call on of the functions, depending on {@link Ok} or {@link Err}. Both should return the same type.
+	 * If the functions return nothing, use {@link #ifEither(Consumer, Consumer)} instead.
+	 */
 	@Nonnull
-	<G> G branch(@Nonnull Function<T, G> okConverter, Function<E, G> errHandler);
+	<R> R branch(@Nonnull Function<T, R> okConverter, Function<E, R> errHandler);
 
 	/**
 	 * If this {@link Result} is {@link Ok}, return the value. If it is not, then map the error to something

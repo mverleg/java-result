@@ -1,6 +1,5 @@
 package nl.markv.result;
 
-import java.lang.invoke.VarHandle;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
@@ -82,13 +81,13 @@ public final class Err<T, E> implements Result<T, E> {
 	}
 
 	@Override
-	public void branch(@Nonnull Consumer<T> okAction, Consumer<E> errAction) {
+	public void ifEither(@Nonnull Consumer<T> okAction, Consumer<E> errAction) {
 		errAction.accept(value);
 	}
 
 	@Nonnull
 	@Override
-	public <G> G branch(@Nonnull Function<T, G> okConverter, Function<E, G> errHandler) {
+	public <R> R branch(@Nonnull Function<T, R> okConverter, Function<E, R> errHandler) {
 		return errHandler.apply(value);
 	}
 

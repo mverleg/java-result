@@ -75,13 +75,13 @@ public final class Ok<T, E> implements Result<T, E> {
 	}
 
 	@Override
-	public void branch(@Nonnull Consumer<T> okAction, Consumer<E> errAction) {
+	public void ifEither(@Nonnull Consumer<T> okAction, Consumer<E> errAction) {
 		okAction.accept(value);
 	}
 
 	@Nonnull
 	@Override
-	public <G> G branch(@Nonnull Function<T, G> okConverter, Function<E, G> errHandler) {
+	public <R> R branch(@Nonnull Function<T, R> okConverter, Function<E, R> errHandler) {
 		return okConverter.apply(value);
 	}
 

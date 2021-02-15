@@ -114,9 +114,7 @@ class ErrTest {
 	class IfOkErr {
 		@Test
 		void ifOk() {
-			Err.of(2).ifOk(value -> {
-				throw new AssertionError();
-			});
+			Err.of(2).ifOk(TestUtil::failIfCalled);
 		}
 
 		@Test
@@ -127,6 +125,42 @@ class ErrTest {
 				toggle.turnOn();
 			});
 			assert toggle.isOn();
+		}
+	}
+
+	@Nested
+	class IfEither {
+		@Test
+		void ifEither() {
+			var toggle = new TestUtil.Toggle();
+			Err.of(2).ifEither(
+					TestUtil::failIfCalled,
+					err -> toggle.turnOn()
+			);
+			assert toggle.isOn();
+		}
+	}
+
+	@Nested
+	class Branch {
+		@Test
+		void toNumber() {
+			int result = Err.of(2).branch(
+					TestUtil::failIfCalled,
+					err -> err * 3
+			);
+			assert result == 6;
+		}
+
+		@Test
+		void toResult() {
+			var result = Err.of(2).branch(
+					TestUtil::failIfCalled,
+					err -> Ok.of("ok!")
+
+			);
+			assert result.isOk();
+			assert "ok!".equals(result.getOrThrow());
 		}
 	}
 
@@ -194,9 +228,7 @@ class ErrTest {
 
 		@Test
 		void andOkLazy() {
-			var res = result.and(() -> {
-					throw new AssertionError();
-			});
+			var res = result.and(TestUtil::failIfCalled);
 			assert result.getErrOrThrow() == 2;
 		}
 
@@ -208,9 +240,7 @@ class ErrTest {
 
 		@Test
 		void andErrLazy() {
-			var res = result.and(() -> {
-				throw new AssertionError();
-			});
+			var res = result.and(TestUtil::failIfCalled);
 			assert result.getErrOrThrow() == 2;
 		}
 	}
