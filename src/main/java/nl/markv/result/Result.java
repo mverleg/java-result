@@ -15,6 +15,8 @@ import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import nl.markv.result.collect.ResultListCollector;
+
 import static java.util.Objects.requireNonNull;
 
 //TODO @mark: Collection<Result<.>> to Result<Collection<.>>
@@ -288,5 +290,9 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 			return ok.get();
 		}
 		return result.adaptOk();
+	}
+
+	static <T, E> ResultListCollector<T, E> toList() {
+		return new ResultListCollector<>();
 	}
 }
