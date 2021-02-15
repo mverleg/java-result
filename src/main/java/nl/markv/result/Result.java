@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -182,6 +183,10 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	boolean contains(@Nullable T ok);
 
 	boolean containsErr(@Nullable E err);
+
+	boolean matches(@Nonnull Predicate<T> okPredicate);
+
+	boolean errMatches(@Nonnull Predicate<E> errPredicate);
 
 	/**
 	 * Get the content of the result, whether it is inside {@link Ok} or {@link Err}.

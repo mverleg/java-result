@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -190,6 +191,16 @@ public final class Err<T, E> implements Result<T, E> {
 			return false;
 		}
 		return value.equals(err);
+	}
+
+	@Override
+	public boolean matches(@Nonnull Predicate<T> okPredicate) {
+		return false;
+	}
+
+	@Override
+	public boolean errMatches(@Nonnull Predicate<E> errPredicate) {
+		return errPredicate.test(value);
 	}
 
 	@Nonnull
