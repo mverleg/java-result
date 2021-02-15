@@ -139,10 +139,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * @see #getOrThrow(Supplier)
 	 */
 	@Nonnull
-	default T getOrThrow() {
-		return getOrThrow(() -> new WrongResultVariantException(
-				"Attempted to get Ok from Result, but content is " + toString()));
-	}
+	T getOrThrow();
 
 	/**
 	 * If the {@link Result} is {@link Ok}, return its content, otherwise throw the given exception.
@@ -165,10 +162,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * @see #getErrOrThrow(Supplier)
 	 */
 	@Nonnull
-	default E getErrOrThrow() {
-		return getErrOrThrow(() -> new WrongResultVariantException(
-				"Attempted to get Err from Result, but content is " + getUnified().toString()));
-	}
+	E getErrOrThrow();
 
 	/**
 	 * If the {@link Result} is {@link Err}, return its content, otherwise throw the given exception.

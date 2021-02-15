@@ -72,9 +72,32 @@ public final class Err<T, E> implements Result<T, E> {
 	@Deprecated
 	@Nonnull
 	@Override
+	public T getOrThrow() {
+		return getOrThrow(() -> new WrongResultVariantException(
+				"Attempted to get Ok from Result, but content is " + toString()));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @deprecated Marked as deprecated because calling {@link #getOrThrow()} on {@link Err} always fails.
+	 * 	It is not deprecated to call this on {@link Result}, but on {@link Err} use {@link #get()}.
+	 */
+	@Deprecated
+	@Nonnull
+	@Override
 	public T getOrThrow(@Nonnull Supplier<? extends RuntimeException> exceptionSupplier) {
 		requireNonNull(exceptionSupplier);
 		throw exceptionSupplier.get();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Nonnull
+	@Override
+	public E getErrOrThrow() {
+		return value;
 	}
 
 	/**

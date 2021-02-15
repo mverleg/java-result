@@ -57,6 +57,15 @@ public final class Ok<T, E> implements Result<T, E> {
 	 */
 	@Nonnull
 	@Override
+	public T getOrThrow() {
+		return value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Nonnull
+	@Override
 	public T getOrThrow(@Nonnull Supplier<? extends RuntimeException> exceptionSupplier) {
 		requireNonNull(exceptionSupplier);
 		return value;
@@ -73,6 +82,20 @@ public final class Ok<T, E> implements Result<T, E> {
 	@Override
 	public E getErrOrThrow(@Nonnull Supplier<? extends RuntimeException> exceptionSupplier) {
 		throw exceptionSupplier.get();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @deprecated Marked as deprecated because calling {@link #getErrOrThrow()} on {@link Ok} always fails.
+	 * 	It is not deprecated to call this on {@link Result}, but on {@link Ok} use {@link #get()}.
+	 */
+	@Deprecated
+	@Nonnull
+	@Override
+	public E getErrOrThrow() {
+		return getErrOrThrow(() -> new WrongResultVariantException(
+				"Attempted to get Err from Result, but content is " + getUnified().toString()));
 	}
 
 	/**
@@ -249,16 +272,10 @@ public final class Ok<T, E> implements Result<T, E> {
 		return (Result<T, F>) this;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Nonnull
 	@Override
-	public <F> Redeprecated Marked as deprecated because calling {@link #getOrThrow(Supplier)} on {@link Err} always
-	 * fails. It is not deprecated to call this on {@link Result}, but on {@link Err} use {@link #get()}.sult<T, F> or(@Nonnull Supplier<Result<T, F>> nextSupplier) {
-		// See note about casting in 'adaptErr'
-		//noinspection unchecked
-		return (Result<T, F>) this;
+	public <F> Result<T, F> or(@Nonnull Supplier<Result<T, F>> nextSupplier) {
+		return null;
 	}
 
 	/**
