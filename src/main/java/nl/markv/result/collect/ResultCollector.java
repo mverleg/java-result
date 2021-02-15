@@ -12,7 +12,12 @@ import nl.markv.result.Result;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableSet;
 
+/**
+ * Utility class with several methods to create {@link Result}-related collectors.
+ */
 public class ResultCollector {
+
+	private ResultCollector() {}
 
 	/**
 	 * Collector to collect a stream of {@link Result}s to a list. If any of the items is unsuccessful,

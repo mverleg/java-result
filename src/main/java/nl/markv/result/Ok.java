@@ -272,10 +272,15 @@ public final class Ok<T, E> implements Result<T, E> {
 		return (Result<T, F>) this;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Nonnull
 	@Override
 	public <F> Result<T, F> or(@Nonnull Supplier<Result<T, F>> nextSupplier) {
-		return null;
+		// See note about casting in 'adaptErr'
+		//noinspection unchecked
+		return (Result<T, F>) this;
 	}
 
 	/**

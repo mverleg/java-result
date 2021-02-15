@@ -30,7 +30,7 @@ class ResultTest {
 	    void empty() {
 		    var result = Result.from(Optional.empty());
 		    assert result.isErr();
-		    assert result.getErrOrThrow() == None.create();
+		    assert result.getErrOrThrow() == None.get();
 		}
 	}
 
@@ -47,7 +47,7 @@ class ResultTest {
 	    void isNull() {
 		    var result = Result.fromNullable(null);
 		    assert result.isErr();
-		    assert result.getErrOrThrow() == None.create();
+		    assert result.getErrOrThrow() == None.get();
 		}
 	}
 

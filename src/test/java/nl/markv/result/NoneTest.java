@@ -9,7 +9,7 @@ class NoneTest {
 	class Create {
 		@Test
 	    void singleInstance() {
-		    assert None.create() == None.create();
+		    assert None.get() == None.get();
 		}
 	}
 }
