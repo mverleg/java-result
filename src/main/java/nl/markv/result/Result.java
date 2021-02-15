@@ -383,7 +383,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	//TODO @mark: javadoc
 	//TODO @mark: test
 	@Nullable
-	E errOrNullable(@Nullable T alternative);
+	E errOrNullable(@Nullable E alternative);
 
 	//TODO @mark: javadoc
 	//TODO @mark: test

@@ -131,10 +131,30 @@ public final class Ok<T, E> implements Result<T, E> {
 	/**
 	 * {@inheritDoc}
 	 */
+	//TODO @mark: test
+	@Nonnull
+	@Override
+	public <U> Result<U, E> flatMap(@Nonnull Function<T, Result<U, E>> converter) {
+		return requireNonNull(converter.apply(value));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Nonnull
 	@Override
 	public <F> Result<T, F> mapErr(@Nonnull Function<E, F> converter) {
 		requireNonNull(converter);
+		return adaptErr();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	//TODO @mark: test
+	@Nonnull
+	@Override
+	public <F> Result<T, F> flatMapErr(@Nonnull Function<E, Result<T, F>> converter) {
 		return adaptErr();
 	}
 
@@ -206,6 +226,26 @@ public final class Ok<T, E> implements Result<T, E> {
 	/**
 	 * {@inheritDoc}
 	 */
+	//TODO @mark: test
+	@Nonnull
+	@Override
+	public T okOrNullable(@Nullable T alternative) {
+		return value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	//TODO @mark: test
+	@Nonnull
+	@Override
+	public T okOrNull() {
+		return value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Nonnull
 	@Override
 	public E errOr(@Nonnull E alternative) {
@@ -220,6 +260,26 @@ public final class Ok<T, E> implements Result<T, E> {
 	@Override
 	public E errOr(@Nonnull Supplier<E> alternativeSupplier) {
 		return requireNonNull(alternativeSupplier.get());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Nullable
+	@Override
+	//TODO @mark: test
+	public E errOrNullable(@Nullable E alternative) {
+		return alternative;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Nullable
+	@Override
+	//TODO @mark: test
+	public E errOrNull() {
+		return null;
 	}
 
 	/**
