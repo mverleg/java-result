@@ -14,6 +14,7 @@ import static java.util.Collections.singletonList;
 import static nl.markv.result.Result.flatten;
 import static nl.markv.result.Result.transpose;
 
+//TODO @mark: test null handling of all methods
 class ResultTest {
 
 	@Nested

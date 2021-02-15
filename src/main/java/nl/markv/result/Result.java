@@ -131,26 +131,66 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	@Nonnull
 	E getErrOrThrow(@Nonnull Supplier<? extends RuntimeException> exceptionSupplier);
 
-	//TODO @mark: test null
+	/**
+	 * Map the {@link Ok} value to a new value of a different type. Does nothing on {@link Err}.
+	 *
+	 * @see #mapErr(Function)
+	 * @see #branch(Function, Function)
+	 * @see Stream#map(Function)
+	 */
 	@Nonnull
 	<U> Result<U, E> map(@Nonnull Function<T, U> converter);
 
+	/**
+	 * Map the {@link Err} value to a new value of a different type. Does nothing on {@link Ok}.
+	 *
+	 * @see #map(Function)
+	 * @see #branch(Function, Function)
+	 * @see Stream#map(Function)
+	 */
 	@Nonnull
 	<F> Result<T, F> mapErr(@Nonnull Function<E, F> converter);
 
+	/**
+	 * Run an action on the value of {@link Ok}. Does nothing on {@link Err}.
+	 *
+	 * If the action is a transformation, {@link #map(Function)} should be preferred, which can take lambdas without side effects.
+	 *
+	 * @see #map(Function)
+	 * @see #ifErr(Consumer)  
+	 * @see #ifEither(Consumer, Consumer)
+	 * @see Optional#ifPresent(Consumer) 
+	 */
 	void ifOk(@Nonnull Consumer<T> action);
 
+	/**
+	 * Run an action on the value of {@link Err}. Does nothing on {@link Ok}.
+	 *
+	 * If the action is a transformation, {@link #mapErr(Function)} should be preferred, which can take lambdas without side effects.
+	 *
+	 * @see #mapErr(Function) 
+	 * @see #ifOk(Consumer)
+	 * @see #ifEither(Consumer, Consumer)
+	 */
 	void ifErr(@Nonnull Consumer<E> action);
 
 	/**
-	 * Call the action for either {@link Ok} or {@link Err}. If the actions return something, use
-	 * {@link #branch(Function, Function)} instead.
+	 * Call the action for either {@link Ok} or {@link Err}.
+	 *
+	 * @see #ifOk(Consumer)
+	 * @see #ifErr(Consumer) 
 	 */
 	void ifEither(@Nonnull Consumer<T> okAction, @Nonnull Consumer<E> errAction);
 
 	/**
 	 * Call on of the functions, depending on {@link Ok} or {@link Err}. Both should return the same type.
+	 * 
 	 * If the functions return nothing, use {@link #ifEither(Consumer, Consumer)} instead.
+	 *
+	 * @see #ifEither(Consumer, Consumer)
+	 * @see #map(Function)
+	 * @see #mapErr(Function)
+	 * @see #solve(Function)
 	 */
 	@Nonnull
 	<R> R branch(@Nonnull Function<T, R> okConverter, @Nonnull Function<E, R> errHandler);
@@ -158,20 +198,63 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	/**
 	 * If this {@link Result} is {@link Ok}, return the value. If it is not, then map the error to something
 	 * of the same type as {@link Result}, and return that.
+	 *
+	 * If the content of {@link Err} is not needed to produce an alternative value, use {@link #okOr(Supplier)} instead.
+	 *
+	 * @param errToOkConverter Function that takes the type of {@link Err} and returns the type of {@link Ok}.
+	 * @see #map(Function)
+	 * @see #mapErr(Function)
+	 * @see #branch(Function, Function)
+	 * @see #okOr(Supplier)
 	 */
 	@Nonnull
 	T solve(@Nonnull Function<E, T> errToOkConverter);
 
-	//TODO @mark: test null everywhere
+	/**
+	 * If this {@link Result} is {@link Ok}, return the value. If it is not, return the given alternative.
+	 *
+	 * If the result is heavy to compute, use {@link #okOr(Supplier)} or {@link #solve(Function)} instead.
+	 *
+	 * @param alternative The value that will replace {@link Err}.
+	 * @see #okOr(Supplier)
+	 * @see #solve(Function)
+	 * @see #errOr(T)
+	 */
+	//TODO @mark: accept null
+	//TODO @mark: unit test null everywhere
 	@Nonnull
 	T okOr(@Nonnull T alternative);
 
+	/**
+	 * If this {@link Result} is {@link Ok}, return the value. If it is not, produce an alternative using the given supplier.
+	 *
+	 * @param alternativeSupplier A function that will produce a value to replace {@link Err}. Will only be invoked if {@link Err}, and only once.
+	 * @see #okOr(T)
+	 * @see #solve(Function)
+	 * @see #errOr(T)
+	 */
 	@Nonnull
 	T okOr(@Nonnull Supplier<T> alternativeSupplier);
 
+	/**
+	 * If this {@link Result} is {@link Err}, return the value. If it is not, return the given alternative.
+	 *
+	 * If the result is heavy to compute, use {@link #errOr(Supplier)} instead.
+	 *
+	 * @param alternative The value that will replace {@link Ok}.
+	 * @see #errOr(Supplier)
+	 * @see #okOr(T)
+	 */
 	@Nonnull
 	E errOr(@Nonnull E alternative);
 
+	/**
+	 * If this {@link Result} is {@link Err}, return the value. If it is not, produce an alternative using the given supplier.
+	 *
+	 * @param alternativeSupplier A function that will produce a value to replace {@link Ok}. Will only be invoked if {@link Ok}, and only once.
+	 * @see #errOr(T)
+	 * @see #okOr(T)
+	 */
 	@Nonnull
 	E errOr(@Nonnull Supplier<E> alternativeSupplier);
 
