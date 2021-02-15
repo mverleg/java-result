@@ -241,13 +241,15 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 		return Ok.of(okSet);
 	}
 
-	//TODO @mark: javadoc
 	/**
 	 * Transform {@link Optional} of {@link Result} to {@link Result} of {@link Optional}:
 	 * <ol>
-	 * <li> {@code Ok(empty)} to {@code Ok(empty)}
-	 * <li> {@code Ok(empty)} to {@code Ok(empty)}
+	 * <li> {@code Some(Ok(x))} to {@code Ok(Some(x))}
+	 * <li> {@code Some(Err(y))} to {@code Err(y)}
+	 * <li> {@code None} to {@code Ok(None)}
 	 * </ol>
+	 *
+	 * See {@link #transpose(Result)} for the inverse.
 	 */
 	@Nonnull
 	@CheckReturnValue
@@ -264,14 +266,18 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 		} else {
 			throw new IllegalStateException("unreachable");
 		}
-// 		Use this switch expression?
-//		return switch (result) {
-//			case Ok ok -> Ok.of(Optional.of(ok.get()));
-//			case Err err -> Err.of(err.get());
-//		};
 	}
 
-	//TODO @mark: javadoc
+	/**
+	 * Transform {@link Result} of {@link Optional} to {@link Optional} of {@link Result}:
+	 * <ol>
+	 * <li> {@code Ok(Some(x))} to {@code Some(Ok(x))}
+	 * <li> {@code Ok(None)} to {@code None}
+	 * <li> {@code Err(y)} to {@code Some(Err(y))}
+	 * </ol>
+	 *
+	 * See {@link #transpose(Optional)} for the inverse.
+	 */
 	@Nonnull
 	@CheckReturnValue
 	static <U, F> Optional<Result<U, F>> transpose(@Nonnull Result<Optional<U>, F> resultOptional) {
