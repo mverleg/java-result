@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.CheckReturnValue;
@@ -17,9 +18,54 @@ import javax.annotation.Nullable;
 
 import nl.markv.result.collect.ResultCollector;
 
-import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Sometimes a method can either succeed or fail. This type is one way to handle that.
+ * <p>
+ * A {@link Result} can either be successful (subclass {@link Ok}) or unsuccessful (subclass {@link Err}).
+ * Using sealed types, the type system ensures that either one is always returned.
+ * <p>
+ * For example:
+ * <pre>
+ * var result = aFallibleMethode();
+ * if (result instanceof Ok<List<Integer>, String> ok) {
+ *     var value = ok.get();
+ * }
+ * </pre>
+ * <p>
+ * There are various alternatives, each of which might have their use, e.g.:
+ * <ul>
+ * <li> Throw a checked {@link Exception}: checked exceptions do not work so well with generics or lambdas.
+ * <li> Throw an unchecked {@link RuntimeException}: it is easy to forget to handle this, so works best
+ * 	if the error is likely fatal.
+ * <li> Return the success result, and use a separate status code to indicate failure: very easy to forget
+ * 	to check the status code, and the result and status must be kept in sync despite having different
+ * 	scopes and lifetimes.
+ * <li> Return a status code, and get the success result using a getter: while a bit harder to forget to
+ * 	check the status, there are still pieces of data that are connected, but with different scopes and
+ * 	lifetimes, making errors more likely.
+ * <li> Return {@link Optional} or {@link Nullable}: this nicely connects the success and error paths, but
+ * 	unfortunately it cannot contain any information about the error.
+ * <li> Return a type of {@code Pair<T, E>}: can contain both the success and error types, tied together
+ * 	nicely. But there is no guarantee that the pair does not contain both values, or neither.
+ * </ul>
+ * <p>
+ * This is where {@link Result} comes in. Inspires by functional programming languages with algebraic data
+ * types, it is like {@link Optional} in that it represents exactly one of two options, but it adds data to the
+ * non-ok path.
+ *	<p>
+ * {@link Result} has many useful methods: doing things conditionally ({@link #ifOk(Consumer)},
+ * {@link #contains(T)}, {@link #matches(Predicate)}), converting types into others
+ * ({@link #map(Function)}, {@link #okOr(Supplier)}, {@link #solve(Function)}, {@link #adaptErr()}),
+ * or combining multiple optionals ({@link #and(Supplier)}, {@link #or(Result)}, {@link ResultCollector}).
+ * Creation is easy ({@link #ok(T)}, {@link #err(E)}, {@link #attempt(Attempt)},
+ * {@link #from(Optional)}) and it integrates with {@link Stream}, {@link Iterable<T>} and collections
+ * (e.g. {@link #transpose(List)}).
+ *
+ * @param <T> The type that is contained by {@link Ok} if this {@link Result} is successful.
+ * @param <E> The type that is contained by {@link Err} if this {@link Result} is unsuccessful.
+ */
 //TODO @mark: make Ok and Err refer to documentation on parent method
 //TODO @mark: @Nonnull everywhere, and requireNonNull for arguments
 public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
@@ -159,24 +205,24 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 
 	/**
 	 * Run an action on the value of {@link Ok}. Does nothing on {@link Err}.
-	 *
+	 * <p>
 	 * If the action is a transformation, {@link #map(Function)} should be preferred, which can take lambdas without side effects.
 	 *
 	 * @throws NullPointerException if the action is called and returns {@code null}.
 	 * @see #map(Function)
-	 * @see #ifErr(Consumer)  
+	 * @see #ifErr(Consumer)
 	 * @see #ifEither(Consumer, Consumer)
-	 * @see Optional#ifPresent(Consumer) 
+	 * @see Optional#ifPresent(Consumer)
 	 */
 	void ifOk(@Nonnull Consumer<T> action);
 
 	/**
 	 * Run an action on the value of {@link Err}. Does nothing on {@link Ok}.
-	 *
+	 * <p>
 	 * If the action is a transformation, {@link #mapErr(Function)} should be preferred, which can take lambdas without side effects.
 	 *
 	 * @throws NullPointerException if the action is called and returns {@code null}.
-	 * @see #mapErr(Function) 
+	 * @see #mapErr(Function)
 	 * @see #ifOk(Consumer)
 	 * @see #ifEither(Consumer, Consumer)
 	 */
@@ -187,13 +233,13 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 *
 	 * @throws NullPointerException if the action is called and returns {@code null}.
 	 * @see #ifOk(Consumer)
-	 * @see #ifErr(Consumer) 
+	 * @see #ifErr(Consumer)
 	 */
 	void ifEither(@Nonnull Consumer<T> okAction, @Nonnull Consumer<E> errAction);
 
 	/**
 	 * Call on of the functions, depending on {@link Ok} or {@link Err}. Both should return the same type.
-	 * 
+	 * <p>
 	 * If the functions return nothing, use {@link #ifEither(Consumer, Consumer)} instead.
 	 *
 	 * @throws NullPointerException if either converter is called and returns {@code null}.
@@ -208,7 +254,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	/**
 	 * If this {@link Result} is {@link Ok}, return the value. If it is not, then map the error to something
 	 * of the same type as {@link Result}, and return that.
-	 *
+	 * <p>
 	 * If the content of {@link Err} is not needed to produce an alternative value, use {@link #okOr(Supplier)} instead.
 	 *
 	 * @param errToOkConverter Function that takes the type of {@link Err} and returns the type of {@link Ok}.
@@ -224,7 +270,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 
 	/**
 	 * If this {@link Result} is {@link Ok}, return the value. If it is not, return the given alternative.
-	 *
+	 * <p>
 	 * If the result is heavy to compute, use {@link #okOr(Supplier)} or {@link #solve(Function)} instead.
 	 *
 	 * @param alternative The value that will replace {@link Err}.
@@ -252,7 +298,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 
 	/**
 	 * If this {@link Result} is {@link Err}, return the value. If it is not, return the given alternative.
-	 *
+	 * <p>
 	 * If the result is heavy to compute, use {@link #errOr(Supplier)} instead.
 	 *
 	 * @param alternative The value that will replace {@link Ok}.
@@ -327,7 +373,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 
 	/**
 	 * Returns the current {@link Result} if it is {@link Err}, and the next one otherwise.
-	 *
+	 * <p>
 	 * See {@link #and(Supplier)} for more details.
 	 * 
 	 * @see #and(Supplier) 
@@ -357,7 +403,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 
 	/**
 	 * Returns the current {@link Result} if it is {@link Ok}, and the next one otherwise.
-	 *
+	 * <p>
 	 * See {@link #or(Supplier)} for more details.
 	 *
 	 * @see #and(Supplier)
@@ -431,6 +477,15 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	@Nonnull
 	Object getUnified();
 
+	/**
+	 * Return a {@link Stream}, containing either a single {@link Ok} value if this result is successful,
+	 * or containing nothing if it is an {@link Err}.
+	 * <p>
+	 * There are also {@link Collectors}s for streams of {@link Result}s, for example {@link ResultCollector#toList()}.
+	 *
+	 * @see ResultCollector
+	 * @see #iterator()
+	 */
 	@Nonnull
 	Stream<T> stream();
 
@@ -523,6 +578,10 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 		}
 	}
 
+	/**
+	 * Flatten a nested result. Returns the inner {@link Ok} if both are successful. Otherwise, returns the
+	 * {@link Err} of whichever one failed (the errors must be the same type).
+	 */
 	@Nonnull
 	@CheckReturnValue
 	static <U, F> Result<U, F> flatten(@Nonnull Result<Result<U, F>, F> result) {
