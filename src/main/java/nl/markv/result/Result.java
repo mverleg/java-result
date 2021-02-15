@@ -230,7 +230,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * @param alternative The value that will replace {@link Err}.
 	 * @see #okOr(Supplier)
 	 * @see #solve(Function)
-	 * @see #errOr(T)
+	 * @see #errOr(E)
 	 */
 	//TODO @mark: accept null
 	//TODO @mark: unit test null everywhere
@@ -244,7 +244,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * @throws NullPointerException if the alternative supplier is called and returns {@code null}.
 	 * @see #okOr(T)
 	 * @see #solve(Function)
-	 * @see #errOr(T)
+	 * @see #errOr(E)
 	 */
 	//TODO @mark: test NPE
 	@Nonnull
@@ -267,7 +267,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 *
 	 * @param alternativeSupplier A function that will produce a value to replace {@link Ok}. Will only be invoked if {@link Ok}, and only once.
 	 * @throws NullPointerException if the alternative supplier is called and returns {@code null}.
-	 * @see #errOr(T)
+	 * @see #errOr(E)
 	 * @see #okOr(T)
 	 */
 	//TODO @mark: test NPE
@@ -302,7 +302,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	Optional<T> withoutErr();
 
 	/**
-	 * Drop the {@link Ok} value, replacing {@link Err} by {@link Optional#of(T)} and replacing
+	 * Drop the {@link Ok} value, replacing {@link Err} by {@link Optional#of(E)} and replacing
 	 * {@link Ok} by {@link Optional#empty()}.
 	 */
 	@Nonnull
@@ -326,47 +326,101 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	}
 
 	/**
-	 * @see #and(Supplier)
+	 * Returns the current {@link Result} if it is {@link Err}, and the next one otherwise.
+	 *
+	 * See {@link #and(Supplier)} for more details.
+	 * 
+	 * @see #and(Supplier) 
+	 * @see #or(Result)
 	 */
 	@Nonnull
 	<U> Result<U, E> and(@Nonnull Result<U, E> next);
 
 	/**
-	 * Returns the current {@link Result} if it is {@link Err}, and produces the next result (given by
+	 * Returns the current {@link Result} if it is {@link Err}, and produces the next result (given by the
 	 * argument) otherwise.
 	 * <p>
 	 * This simulates '{@code &&}' in the sense that the result is {@link Ok} if and only if both inputs are
-	 * {@link Ok}. The supplier is only called if the current object is {@link Ok}.
+	 * {@link Ok}.
 	 * <p>
-	 * This returns the last object that had to be evaluated, like '{@code and}' in Python.
+	 * This returns the last object that had to be evaluated, like '{@code and}' in Python. I.e. if the current
+	 * {@link Result} is {@link Err}, the result must be {@link Err}, and the supplier is not called.
+	 *
+	 * @throws NullPointerException if the supplier is called and returns {@code null}.
+	 * @param nextSupplier Method that supplies the next {@link Result}. Only called (once) if current
+	 * 	{@link Result} is {@link Ok}.
+	 * @see #and(Result)    
+	 * @see #or(Supplier)
 	 */
 	@Nonnull
 	<U> Result<U, E> and(@Nonnull Supplier<Result<U, E>> nextSupplier);
 
 	/**
-	 * @see #or(Supplier)
+	 * Returns the current {@link Result} if it is {@link Ok}, and the next one otherwise.
+	 *
+	 * See {@link #or(Supplier)} for more details.
+	 *
+	 * @see #and(Supplier)
+	 * @see #or(Result)
 	 */
 	@Nonnull
 	<F> Result<T, F> or(@Nonnull Result<T, F> next);
 
 	/**
-	 * Returns the current {@link Result} if it is {@link Ok}, and produces the next result (given by
+	 * Returns the current {@link Result} if it is {@link Ok}, and produces the next result (given by the
 	 * argument) otherwise.
 	 * <p>
 	 * This simulates '{@code ||}' in the sense that the result is {@link Ok} if at least one of the inputs
-	 * is {@link Ok}. The supplier is only called if the current object is {@link Err}.
+	 * is {@link Ok}.
 	 * <p>
-	 * This returns the last object that had to be evaluated, like '{@code or}' in Python.
+	 * This returns the last object that had to be evaluated, like '{@code and}' in Python. I.e. if the current
+	 * {@link Result} is {@link Ok}, the result must be {@link Ok}, and the supplier is not called.
+	 *
+	 * @throws NullPointerException if the supplier is called and returns {@code null}.
+	 * @param nextSupplier Method that supplies the next {@link Result}. Only called (once) if current
+	 * 	{@link Result} is {@link Err}.
+	 * @see #and(Supplier)
+	 * @see #or(Result)
 	 */
 	@Nonnull
 	<F> Result<T, F> or(@Nonnull Supplier<Result<T, F>> nextSupplier);
 
+	/**
+	 * Whether this {@link Result} is an {@link Ok} that contains an object equal to the argument.
+	 *
+	 * @param ok The object that will be compared against {@link Ok} using {@link Object#equals(Object)}.
+	 * 	The comparison will only be done if this {@link Result} is {@link Ok}.
+	 * @see #containsErr(E)
+	 * @see #matches(Predicate)
+	 */
 	boolean contains(@Nullable T ok);
 
+	/**
+	 * Whether this {@link Result} is an {@link Err} that contains an object equal to the argument.
+	 *
+	 * @param err The object that will be compared against {@link Err} using {@link Object#equals(Object)}.
+	 * 	The comparison will only be done if this {@link Result} is {@link Err}.
+	 * @see #contains(T)
+	 * @see #errMatches(Predicate)
+	 */
 	boolean containsErr(@Nullable E err);
 
+	/**
+	 * If this {@link Result} is {@link Ok}, the predicate will be tested against its content. If this is an
+	 * {@link Err}, returns {@code false} without invoking the predicate.
+	 *
+	 * @see #contains(T)
+	 * @see #errMatches(Predicate)
+	 */
 	boolean matches(@Nonnull Predicate<T> okPredicate);
 
+	/**
+	 * If this {@link Result} is {@link Err}, the predicate will be tested against its content. If this is an
+	 * {@link Ok}, returns {@code false} without invoking the predicate.
+	 *
+	 * @see #containsErr(E)
+	 * @see #matches(Predicate)
+	 */
 	boolean errMatches(@Nonnull Predicate<E> errPredicate);
 
 	/**
