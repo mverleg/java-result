@@ -87,6 +87,12 @@ public final class Ok<T, E> implements Result<T, E> {
 
 	@Nonnull
 	@Override
+	public T solve(Function<E, T> errToOkConverter) {
+		return value;
+	}
+
+	@Nonnull
+	@Override
 	public T okOr(@Nonnull T alternative) {
 		return value;
 	}

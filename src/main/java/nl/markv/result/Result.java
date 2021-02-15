@@ -84,6 +84,13 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	@Nonnull
 	<G> G branch(@Nonnull Function<T, G> okConverter, Function<E, G> errHandler);
 
+	/**
+	 * If this {@link Result} is {@link Ok}, return the value. If it is not, then map the error to something
+	 * of the same type as {@link Result}, and return that.
+	 */
+	@Nonnull
+	T solve(Function<E, T> errToOkConverter);
+
 	//TODO @mark: test null everywhere
 	@Nonnull
 	T okOr(@Nonnull T alternative);

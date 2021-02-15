@@ -94,6 +94,12 @@ public final class Err<T, E> implements Result<T, E> {
 
 	@Nonnull
 	@Override
+	public T solve(Function<E, T> errToOkConverter) {
+		return errToOkConverter.apply(value);
+	}
+
+	@Nonnull
+	@Override
 	public T okOr(@Nonnull T alternative) {
 		return alternative;
 	}
