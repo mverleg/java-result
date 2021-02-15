@@ -307,6 +307,29 @@ class ErrTest {
 	}
 
 	@Nested
+	class Matches {
+		@Test
+		void ok() {
+			assert !Ok.of(2).errMatches(err -> true);
+			assert !Ok.<Integer, Integer>of(2).errMatches(err -> err == 2);
+			//noinspection ResultOfMethodCallIgnored
+			Ok.of(2).errMatches(TestUtil::failIfCalled);
+		}
+
+		@Test
+		void errTrue() {
+			assert Err.of(2).errMatches(ok -> ok == 2);
+			assert Err.of("HELLO").errMatches("hello"::equalsIgnoreCase);
+		}
+
+		@Test
+		void errFalse() {
+			assert !Err.of(2).errMatches(ok -> ok == 3);
+			assert !Err.of("HELLO").errMatches("hello"::equals);
+		}
+	}
+
+	@Nested
 	class Unified {
 		@Test
 		void get() {
