@@ -101,9 +101,11 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	/**
 	 * If the {@link Result} is {@link Ok}, return its content, otherwise throw the given exception.
 	 *
+	 * @throws NullPointerException if the exception supplier is called and returns {@code null}.
 	 * @see #getOrThrow()
 	 * @see #getErrOrThrow()
 	 */
+	//TODO @mark: test NPE
 	@Nonnull
 	T getOrThrow(@Nonnull Supplier<? extends RuntimeException> exceptionSupplier);
 
@@ -125,15 +127,18 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	/**
 	 * If the {@link Result} is {@link Err}, return its content, otherwise throw the given exception.
 	 *
+	 * @throws NullPointerException if the exception supplier is called and returns {@code null}.
 	 * @see #getOrThrow()
 	 * @see #getErrOrThrow()
 	 */
+	//TODO @mark: test NPE
 	@Nonnull
 	E getErrOrThrow(@Nonnull Supplier<? extends RuntimeException> exceptionSupplier);
 
 	/**
 	 * Map the {@link Ok} value to a new value of a different type. Does nothing on {@link Err}.
 	 *
+	 * @throws NullPointerException if the map is called and returns {@code null}.
 	 * @see #mapErr(Function)
 	 * @see #branch(Function, Function)
 	 * @see Stream#map(Function)
@@ -144,6 +149,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	/**
 	 * Map the {@link Err} value to a new value of a different type. Does nothing on {@link Ok}.
 	 *
+	 * @throws NullPointerException if the map is called and returns {@code null}.
 	 * @see #map(Function)
 	 * @see #branch(Function, Function)
 	 * @see Stream#map(Function)
@@ -156,6 +162,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 *
 	 * If the action is a transformation, {@link #map(Function)} should be preferred, which can take lambdas without side effects.
 	 *
+	 * @throws NullPointerException if the action is called and returns {@code null}.
 	 * @see #map(Function)
 	 * @see #ifErr(Consumer)  
 	 * @see #ifEither(Consumer, Consumer)
@@ -168,6 +175,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 *
 	 * If the action is a transformation, {@link #mapErr(Function)} should be preferred, which can take lambdas without side effects.
 	 *
+	 * @throws NullPointerException if the action is called and returns {@code null}.
 	 * @see #mapErr(Function) 
 	 * @see #ifOk(Consumer)
 	 * @see #ifEither(Consumer, Consumer)
@@ -177,6 +185,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	/**
 	 * Call the action for either {@link Ok} or {@link Err}.
 	 *
+	 * @throws NullPointerException if the action is called and returns {@code null}.
 	 * @see #ifOk(Consumer)
 	 * @see #ifErr(Consumer) 
 	 */
@@ -187,6 +196,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * 
 	 * If the functions return nothing, use {@link #ifEither(Consumer, Consumer)} instead.
 	 *
+	 * @throws NullPointerException if either converter is called and returns {@code null}.
 	 * @see #ifEither(Consumer, Consumer)
 	 * @see #map(Function)
 	 * @see #mapErr(Function)
@@ -202,11 +212,13 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * If the content of {@link Err} is not needed to produce an alternative value, use {@link #okOr(Supplier)} instead.
 	 *
 	 * @param errToOkConverter Function that takes the type of {@link Err} and returns the type of {@link Ok}.
+	 * @throws NullPointerException if the converter is called and returns {@code null}.
 	 * @see #map(Function)
 	 * @see #mapErr(Function)
 	 * @see #branch(Function, Function)
 	 * @see #okOr(Supplier)
 	 */
+	//TODO @mark: test NPE
 	@Nonnull
 	T solve(@Nonnull Function<E, T> errToOkConverter);
 
@@ -229,10 +241,12 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * If this {@link Result} is {@link Ok}, return the value. If it is not, produce an alternative using the given supplier.
 	 *
 	 * @param alternativeSupplier A function that will produce a value to replace {@link Err}. Will only be invoked if {@link Err}, and only once.
+	 * @throws NullPointerException if the alternative supplier is called and returns {@code null}.
 	 * @see #okOr(T)
 	 * @see #solve(Function)
 	 * @see #errOr(T)
 	 */
+	//TODO @mark: test NPE
 	@Nonnull
 	T okOr(@Nonnull Supplier<T> alternativeSupplier);
 
@@ -252,35 +266,55 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * If this {@link Result} is {@link Err}, return the value. If it is not, produce an alternative using the given supplier.
 	 *
 	 * @param alternativeSupplier A function that will produce a value to replace {@link Ok}. Will only be invoked if {@link Ok}, and only once.
+	 * @throws NullPointerException if the alternative supplier is called and returns {@code null}.
 	 * @see #errOr(T)
 	 * @see #okOr(T)
 	 */
+	//TODO @mark: test NPE
 	@Nonnull
 	E errOr(@Nonnull Supplier<E> alternativeSupplier);
 
 	/**
-	 * Dual of {@link #adaptErr()}.
+	 * If this result is {@link Err}, change the generic type for {@link Ok}.
+	 *
+	 * @throws WrongResultVariantException if called when result is {@link Ok}, as the type cannot be changed in that case. Use {@link #map(Function)} instead.
+	 * @see #adaptErr() 
+	 * @see #map(Function) 
 	 */
 	@Nonnull
 	<U> Result<U, E> adaptOk();
 
 	/**
-	 * If this result is {@link Ok}, re-wrap the same value  with a different generic type for {@link Err}.
-	 * This will throw {@link WrongResultVariantException} if called on an {@link Err}, as the type cannot be changed in that case.
+	 * If this result is {@link Ok}, change the generic type for {@link Err}.
+	 *
+	 * @throws WrongResultVariantException if called when result is {@link Err}, as the type cannot be changed in that case. Use {@link #mapErr(Function)} instead.
+	 * @see #adaptOk() 
+	 * @see #mapErr(Function)
 	 */
 	@Nonnull
 	<F> Result<T, F> adaptErr();
 
+	/**
+	 * Drop the {@link Err} value, replacing {@link Err} by {@link Optional#empty()} and replacing
+	 * {@link Ok} by {@link Optional#of(T)}.
+	 */
 	@Nonnull
 	Optional<T> withoutErr();
 
+	/**
+	 * Drop the {@link Ok} value, replacing {@link Err} by {@link Optional#of(T)} and replacing
+	 * {@link Ok} by {@link Optional#empty()}.
+	 */
 	@Nonnull
 	Optional<E> withoutOk();
 
 	/**
-	 * Attempt to run the given operation. Return the non-null result as {@link Ok} on success, or the
-	 * {@link Exception} as {@link Err} on error.
+	 * Attempt to run the given operation. Return the non-null result as {@link Ok} on success, or
+	 * the {@link Exception} as {@link Err} on error.
+	 *
+	 * @throws NullPointerException if the attempted operation returns {@code null}.
 	 */
+	//TODO @mark: test NPE
 	@Nonnull
 	static <U> Result<U, Exception> attempt(@Nonnull Attempt<U> attemptedOperation) {
 		try {
