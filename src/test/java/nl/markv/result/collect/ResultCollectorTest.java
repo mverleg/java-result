@@ -19,7 +19,6 @@ import static nl.markv.result.collect.ResultCollector.toSet;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ResultCollectorTest {
-	//TODO @mark: too many type annotations needed...
 
 	@Nested
 	class Lists {

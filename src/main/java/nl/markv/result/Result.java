@@ -17,24 +17,33 @@ import javax.annotation.Nullable;
 
 import nl.markv.result.collect.ResultCollector;
 
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
-//TODO @mark: Collection<Result<.>> to Result<Collection<.>>
-//TODO @mark: Result<Result<.>> to Result<.>, if possible with generics
 //TODO @mark: make Ok and Err refer to documentation on parent method
 //TODO @mark: @Nonnull everywhere, and requireNonNull for arguments
 public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 
+	/**
+	 * Create a successful {@link Result}.
+	 */
 	@Nonnull
 	static <T, E> Ok<T, E> ok(@Nonnull T value) {
 		return new Ok<>(value);
 	}
 
+	/**
+	 * Create an unsuccessful {@link Result}.
+	 */
 	@Nonnull
 	static <T, E> Err<T, E> err(@Nonnull E value) {
 		return new Err<>(value);
 	}
 
+	/**
+	 * Create a {@link Result} from an {@link Optional}. Non-empty values become {@link Ok}, and empty
+	 * values become {@link Err} of type {@link None}.
+	 */
 	@Nonnull
 	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 	static <T> Result<T, None> from(@Nonnull Optional<T> optional) {
@@ -44,6 +53,10 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 		return Err.empty();
 	}
 
+	/**
+	 * Create a {@link Result} from a nullable reference. Non-null values become {@link Ok}, and null values
+	 * become {@link Err} of type {@link None}.
+	 */
 	@Nonnull
 	static <T> Result<T, None> fromNullable(@Nullable T value) {
 		if (value != null) {
@@ -52,27 +65,69 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 		return Err.empty();
 	}
 
+	/**
+	 * Whether the {@link Result} is {@link Ok}.
+	 */
 	boolean isOk();
 
+	/**
+	 * Whether the {@link Result} is {@link Err}.
+	 */
 	default boolean isErr() {
 		return !isOk();
 	}
 
+	/**
+	 * If the {@link Result} is {@link Ok}, return its content. Otherwise, throw {@link WrongResultVariantException}.
+	 * <p>
+	 * Note that it may be better to get the okay value without chance of exceptions:
+	 * <br/>
+	 * <pre>
+	 * if (result instanceof Ok<List<Integer>, String> ok) {
+	 *     var value = ok.get();
+	 * }
+	 * </pre>
+	 *
+	 * @throws WrongResultVariantException if this object is {@link Err}.
+	 * @see #getErrOrThrow()
+	 * @see #getOrThrow(Supplier)
+	 */
 	@Nonnull
 	default T getOrThrow() {
 		return getOrThrow(() -> new WrongResultVariantException(
 				"Attempted to get Ok from Result, but content is " + toString()));
 	}
 
+	/**
+	 * If the {@link Result} is {@link Ok}, return its content, otherwise throw the given exception.
+	 *
+	 * @see #getOrThrow()
+	 * @see #getErrOrThrow()
+	 */
 	@Nonnull
 	T getOrThrow(@Nonnull Supplier<? extends RuntimeException> exceptionSupplier);
 
+	/**
+	 * If the {@link Result} is {@link Err}, return its content. Otherwise, throw {@link WrongResultVariantException}.
+	 * <p>
+	 * This is the dual of {@link #getOrThrow()}, which describes more details.
+	 *
+	 * @throws WrongResultVariantException if this object is {@link Err}.
+	 * @see #getOrThrow()
+	 * @see #getErrOrThrow(Supplier)
+	 */
 	@Nonnull
 	default E getErrOrThrow() {
 		return getErrOrThrow(() -> new WrongResultVariantException(
 				"Attempted to get Err from Result, but content is " + getUnified().toString()));
 	}
 
+	/**
+	 * If the {@link Result} is {@link Err}, return its content, otherwise throw the given exception.
+	 *
+	 * @see #getOrThrow()
+	 * @see #getErrOrThrow()
+	 */
 	@Nonnull
 	E getErrOrThrow(@Nonnull Supplier<? extends RuntimeException> exceptionSupplier);
 
