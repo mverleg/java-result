@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static java.util.Collections.emptyIterator;
 import static java.util.Objects.requireNonNull;
@@ -90,6 +91,19 @@ public final class Err<T, E> implements Result<T, E> {
 	@Override
 	public Optional<E> withoutOk() {
 		return Optional.of(value);
+	}
+
+	@Override
+	public boolean contains(@Nullable T ok) {
+		return false;
+	}
+
+	@Override
+	public boolean containsErr(@Nullable E err) {
+		if (err == null) {
+			return false;
+		}
+		return value.equals(err);
 	}
 
 	@Nonnull

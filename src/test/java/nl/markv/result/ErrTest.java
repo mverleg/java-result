@@ -145,6 +145,29 @@ class ErrTest {
 	}
 
 	@Nested
+	class Contains {
+		@Test
+		void containOk() {
+			assert !Err.of(2).contains(null);
+			assert !Err.of(2).contains(2);
+		}
+
+		@Test
+		void doesContainErr() {
+			assert Err.of(2).containsErr(2);
+			assert Err.of("hello").containsErr("hello");
+		}
+
+		@SuppressWarnings("ConstantConditions")
+		@Test
+		void doesNotContainErr() {
+			assert !Err.of(2).containsErr(null);
+			assert !Err.of(2).containsErr(3);
+			assert !Err.of("hello").containsErr("bye");
+		}
+	}
+
+	@Nested
 	class Unified {
 		@Test
 		void get() {

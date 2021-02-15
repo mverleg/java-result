@@ -146,6 +146,29 @@ class OkTest {
 	}
 
 	@Nested
+	class Contains {
+		@Test
+	    void doesContainOk() {
+		    assert Ok.of(2).contains(2);
+		    assert Ok.of("hello").contains("hello");
+		}
+
+		@SuppressWarnings("ConstantConditions")
+		@Test
+	    void doesNotContainOk() {
+		    assert !Ok.of(2).contains(null);
+		    assert !Ok.of(2).contains(3);
+		    assert !Ok.of("hello").contains("bye");
+		}
+
+		@Test
+		void containErr() {
+			assert !Ok.of(2).containsErr(null);
+			assert !Ok.of(2).containsErr(2);
+		}
+	}
+
+	@Nested
 	class Unified {
 		@Test
 		void get() {

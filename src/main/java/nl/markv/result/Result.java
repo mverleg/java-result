@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -84,6 +85,10 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 			return Err.of(exception);
 		}
 	}
+
+	boolean contains(@Nullable T ok);
+
+	boolean containsErr(@Nullable E err);
 
 	/**
 	 * Get the content of the result, whether it is inside {@link Ok} or {@link Err}.

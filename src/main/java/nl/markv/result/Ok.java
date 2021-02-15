@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
@@ -90,6 +91,19 @@ public final class Ok<T, E> implements Result<T, E> {
 	@Override
 	public Optional<E> withoutOk() {
 		return Optional.empty();
+	}
+
+	@Override
+	public boolean contains(@Nullable T ok) {
+		if (ok == null) {
+			return false;
+		}
+		return value.equals(ok);
+	}
+
+	@Override
+	public boolean containsErr(@Nullable E err) {
+		return false;
 	}
 
 	@Nonnull
