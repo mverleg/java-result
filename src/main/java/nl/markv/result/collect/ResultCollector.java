@@ -12,6 +12,7 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableSet;
 
 public class ResultCollector {
+	//TODO @mark: javadocs
 
 	@Nonnull
 	static <T, E> ResultListCollector<T, E> toList() {

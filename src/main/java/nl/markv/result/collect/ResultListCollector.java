@@ -39,6 +39,7 @@ public class ResultListCollector<T, E> implements Collector<Result<T, E>, Result
 		}
 		if (newResult instanceof Err<T, E> err) {
 			currentList.toErr(err.get());
+			return;
 		}
 		currentList.getOrThrow().add(newResult.getOrThrow());
 	}
