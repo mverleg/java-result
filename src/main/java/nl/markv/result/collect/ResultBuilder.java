@@ -1,10 +1,14 @@
 package nl.markv.result.collect;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import javax.annotation.Nonnull;
 
 import nl.markv.result.Err;
 import nl.markv.result.Ok;
 import nl.markv.result.Result;
+import nl.markv.result.WrongResultVariantException;
 
 public final class ResultBuilder<T, E> {
 
@@ -16,35 +20,56 @@ public final class ResultBuilder<T, E> {
 	}
 
 	@Nonnull
-	static <T, E> ResultBuilder<T, E> from(@Nonnull Result<T, E> result) {
+	public static <T, E> ResultBuilder<T, E> from(@Nonnull Result<T, E> result) {
 		return new ResultBuilder<>(result);
 	}
 
 	@Nonnull
-	static <T, E> ResultBuilder<T, E> ok(@Nonnull T value) {
+	public static <T, E> ResultBuilder<T, E> ok(@Nonnull T value) {
 		return new ResultBuilder<>(Ok.of(value));
 	}
 
 	@Nonnull
-	static <T, E> ResultBuilder<T, E> err(@Nonnull E value) {
+	public static <T, E> ResultBuilder<T, E> err(@Nonnull E value) {
 		return new ResultBuilder<>(Err.of(value));
 	}
 
 	@Nonnull
-	ResultBuilder<T, E> toOk(@Nonnull T value) {
+	public ResultBuilder<T, E> toOk(@Nonnull T value) {
 		current = Ok.of(value);
 		return this;
 	}
 
 	@Nonnull
-	ResultBuilder<T, E> toErr(@Nonnull E value) {
+	public ResultBuilder<T, E> toErr(@Nonnull E value) {
 		current = Err.of(value);
 		return this;
 	}
 
+	public boolean isOk() {
+		return current.isOk();
+	}
+
+	public boolean isErr() {
+		return current.isErr();
+	}
+
+	public void ifOk(@Nonnull Consumer<T> action) {
+		current.ifOk(action);
+	}
+
+	public void ifErr(@Nonnull Consumer<E> action) {
+		current.ifErr(action);
+	}
+
 	@Nonnull
-	public Result<T, E> current() {
-		return current;
+	public T getOrThrow() {
+		return current.getOrThrow();
+	}
+
+	@Nonnull
+	public E getErrOrThrow() {
+		return current.getErrOrThrow();
 	}
 
 	@Nonnull
