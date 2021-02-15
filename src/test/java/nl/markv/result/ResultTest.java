@@ -1,5 +1,6 @@
 package nl.markv.result;
 
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.Nested;
@@ -165,6 +166,53 @@ class ResultTest {
 			var resultList = transpose(Set.of(Err.of(2), Err.of(4), Err.of(8)));
 			assert resultList.isErr();
 			assert Set.of(2, 4, 8).contains(resultList.getErrOrThrow());
+		}
+	}
+	
+	@Nested
+	class TransposeOptional {
+		@Test
+	    void SomeOk() {
+			var result = transpose(Optional.of(Ok.of(2)));
+			assert result.isOk();
+			assert result.getOrThrow().isPresent();
+			assert result.getOrThrow().get() == 2;
+		}
+
+		@Test
+	    void SomeErr() {
+			var result = transpose(Optional.of(Err.of(2)));
+			assert result.isErr();
+			assert result.getErrOrThrow() == 2;
+		}
+
+		@Test
+	    void None() {
+			var result = transpose(Optional.empty());
+			assert result.isOk();
+			assert result.getOrThrow().isEmpty();
+		}
+
+		@Test
+		void OkSome() {
+			var result = transpose(Ok.of(Optional.of(2)));
+			assert result.isPresent();
+			assert result.get().isOk();
+			assert result.get().getOrThrow() == 2;
+		}
+
+		@Test
+		void OkNone() {
+			var result = transpose(Ok.of(Optional.empty()));
+			assert result.isEmpty();
+		}
+
+		@Test
+		void Err() {
+			var result = transpose(Err.of(2));
+			assert result.isPresent();
+			assert result.get().isErr();
+			assert result.get().getErrOrThrow() == 2;
 		}
 	}
 }
