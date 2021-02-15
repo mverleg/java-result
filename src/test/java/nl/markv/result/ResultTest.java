@@ -17,6 +17,40 @@ import static nl.markv.result.Result.transpose;
 class ResultTest {
 
 	@Nested
+	class FromOptional {
+		@Test
+	    void full() {
+		    var result = Result.from(Optional.of("hello"));
+		    assert result.isOk();
+		    assert "hello".equals(result.getOrThrow());
+		}
+
+		@Test
+	    void empty() {
+		    var result = Result.from(Optional.empty());
+		    assert result.isErr();
+		    assert result.getErrOrThrow() == None.create();
+		}
+	}
+
+	@Nested
+	class FromNullable {
+		@Test
+	    void nonNull() {
+		    var result = Result.fromNullable("hello");
+		    assert result.isOk();
+		    assert "hello".equals(result.getOrThrow());
+		}
+
+		@Test
+	    void isNull() {
+		    var result = Result.fromNullable(null);
+		    assert result.isErr();
+		    assert result.getErrOrThrow() == None.create();
+		}
+	}
+
+	@Nested
 	class Attempting {
 
 		private double fail() throws Exception {

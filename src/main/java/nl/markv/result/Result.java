@@ -35,12 +35,19 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 		return new Err<>(value);
 	}
 
-	//TODO @mark: test
 	@Nonnull
 	@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 	static <T> Result<T, None> from(@Nonnull Optional<T> optional) {
 		if (optional.isPresent()) {
 			return Ok.of(optional.get());
+		}
+		return Err.empty();
+	}
+
+	@Nonnull
+	static <T> Result<T, None> fromNullable(@Nullable T value) {
+		if (value != null) {
+			return Ok.of(value);
 		}
 		return Err.empty();
 	}
