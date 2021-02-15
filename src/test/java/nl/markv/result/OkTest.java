@@ -162,6 +162,71 @@ class OkTest {
 		}
 	}
 
+	//TODO @mark: change Ok.of(.) to just ok(.) everywhere
+	//TODO @mark: use 'var' everywhere to prevent type inference refressions
+
+	@Nested
+	class And {
+		private final Result<Integer, String> result = Ok.of(2);
+
+		@Test
+		void andOk() {
+			var res = result.and(Ok.of("hi"));
+			assert Ok.of("hi").equals(res);
+		}
+
+		@Test
+		void andOkLazy() {
+			var res = result.and(() -> Ok.of("hi"));
+			assert Ok.of("hi").equals(res);
+		}
+
+		@Test
+		void andErr() {
+			var res = result.and(Err.of("err"));
+			assert Err.of("err").equals(res);
+		}
+
+		@Test
+		void andErrLazy() {
+			var res = result.and(() -> Err.of("err"));
+			assert Err.of("err").equals(res);
+		}
+	}
+
+	@Nested
+	class Or {
+		private final Result<Integer, String> result = Ok.of(2);
+
+		@Test
+	    void orOk() {
+			var res = result.or(Ok.of(1));
+			assert Ok.of(2).equals(res);
+		}
+
+		@Test
+		void orOkLazy() {
+			var res = result.or(() -> {
+				throw new AssertionError();
+			});
+			assert Ok.of(2).equals(res);
+		}
+
+		@Test
+		void orErr() {
+			var res = result.or(Err.of("hi"));
+			assert result.getOrThrow() == 2;
+		}
+
+		@Test
+	    void orErrLazy() {
+			var res = result.or(() -> {
+				throw new AssertionError();
+			});
+			assert result.getOrThrow() == 2;
+		}
+	}
+
 	@Nested
 	class Contains {
 		@Test

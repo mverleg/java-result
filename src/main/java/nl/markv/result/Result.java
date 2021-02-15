@@ -10,6 +10,9 @@ import javax.annotation.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
+//TODO @mark: Collection<Result<.>> to Result<Collection<.>>
+//TODO @mark: Result<Result<.>> to Result<.>, if possible with generics
+//TODO @mark: make Ok and Err refer to documentation on parent method
 //TODO @mark: @Nonnull everywhere, and requireNonNull for arguments
 public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 
