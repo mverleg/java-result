@@ -165,6 +165,15 @@ class ErrTest {
 	}
 
 	@Nested
+	class Solve {
+		@Test
+		void solve() {
+			var result = Err.of(2).solve(err -> "hello");
+			assert "hello".equals(result);
+		}
+	}
+
+	@Nested
 	class Alternative {
 		Result<Double, Integer> result = Result.err(1);
 

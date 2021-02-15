@@ -165,6 +165,15 @@ class OkTest {
 	}
 
 	@Nested
+	class Solve {
+		@Test
+	    void solve() {
+			var result = Ok.of(2).solve(TestUtil::failIfCalled);
+			assert result == 2;
+		}
+	}
+
+	@Nested
 	class Alternative {
 		Result<Integer, Double> result = Result.ok(1);
 
