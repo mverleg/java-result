@@ -65,6 +65,30 @@ public final class Err<T, E> implements Result<T, E> {
 
 	@Nonnull
 	@Override
+	public T okOr(@Nonnull T alternative) {
+		return alternative;
+	}
+
+	@Nonnull
+	@Override
+	public T okOr(@Nonnull Supplier<T> alternativeSupplier) {
+		return alternativeSupplier.get();
+	}
+
+	@Nonnull
+	@Override
+	public E errOr(@Nonnull E alternative) {
+		return value;
+	}
+
+	@Nonnull
+	@Override
+	public E errOr(@Nonnull Supplier<E> alternativeSupplier) {
+		return value;
+	}
+
+	@Nonnull
+	@Override
 	public <U> Result<U, E> adaptOk() {
 		// This is implemented using a cast. It feels a bit dirty to cast something that it genuinely of
 		// type Result<T, E> to a different type Result<U, E>, which is not a supertype. But generic types

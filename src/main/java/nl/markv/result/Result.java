@@ -53,6 +53,18 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	@Nonnull
 	<F> Result<T, F> mapErr(@Nonnull Function<E, F> converter);
 
+	@Nonnull
+	T okOr(@Nonnull T alternative);
+
+	@Nonnull
+	T okOr(@Nonnull Supplier<T> alternativeSupplier);
+
+	@Nonnull
+	E errOr(@Nonnull E alternative);
+
+	@Nonnull
+	E errOr(@Nonnull Supplier<E> alternativeSupplier);
+
 	/**
 	 * Dual of {@link #adaptErr()}.
 	 */

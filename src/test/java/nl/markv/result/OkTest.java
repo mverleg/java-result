@@ -112,6 +112,23 @@ class OkTest {
 	}
 
 	@Nested
+	class Alternative {
+		Result<Integer, Double> result = Result.ok(1);
+
+		@Test
+	    void orOk() {
+		    assert result.okOr(2) == 1;
+		    assert result.okOr(() -> 2) == 1;
+		}
+
+		@Test
+	    void orErr() {
+			assert result.errOr(2.0) == 2.0;
+			assert result.errOr(() -> 2.0) == 2.0;
+		}
+	}
+
+	@Nested
 	class Adapt {
 		@Test
 		void changeOkType() {
@@ -153,8 +170,8 @@ class OkTest {
 		    assert Ok.of("hello").contains("hello");
 		}
 
-		@SuppressWarnings("ConstantConditions")
 		@Test
+		@SuppressWarnings("ConstantConditions")
 	    void doesNotContainOk() {
 		    assert !Ok.of(2).contains(null);
 		    assert !Ok.of(2).contains(3);

@@ -65,6 +65,30 @@ public final class Ok<T, E> implements Result<T, E> {
 
 	@Nonnull
 	@Override
+	public T okOr(@Nonnull T alternative) {
+		return value;
+	}
+
+	@Nonnull
+	@Override
+	public T okOr(@Nonnull Supplier<T> alternativeSupplier) {
+		return value;
+	}
+
+	@Nonnull
+	@Override
+	public E errOr(@Nonnull E alternative) {
+		return alternative;
+	}
+
+	@Nonnull
+	@Override
+	public E errOr(@Nonnull Supplier<E> alternativeSupplier) {
+		return alternativeSupplier.get();
+	}
+
+	@Nonnull
+	@Override
 	public <U> Result<U, E> adaptOk() {
 		throw new WrongResultVariantException("Attempted to call 'adaptOk' on a Result containing " + toString() +
 				"; this only succeeds if the Result is Err. Use 'map' to convert the Ok value.");

@@ -111,6 +111,24 @@ class ErrTest {
 	}
 
 	@Nested
+	class Alternative {
+		Result<Double, Integer> result = Result.err(1);
+
+
+		@Test
+		void orOk() {
+			assert result.okOr(2.0) == 2.0;
+			assert result.okOr(() -> 2.0) == 2.0;
+		}
+
+		@Test
+		void orErr() {
+			assert result.errOr(2) == 1;
+			assert result.errOr(() -> 2) == 1;
+		}
+	}
+
+	@Nested
 	class Adapt {
 		@Test
 		void changeOkType() {
