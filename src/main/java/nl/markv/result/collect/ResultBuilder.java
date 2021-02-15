@@ -1,6 +1,7 @@
 package nl.markv.result.collect;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
@@ -60,6 +61,15 @@ public final class ResultBuilder<T, E> {
 
 	public void ifErr(@Nonnull Consumer<E> action) {
 		current.ifErr(action);
+	}
+
+	public void branch(@Nonnull Consumer<T> okAction, Consumer<E> errAction) {
+		current.branch(okAction, errAction);
+	}
+
+	@Nonnull
+	public <G> G branch(@Nonnull Function<T, G> okConverter, Function<E, G> errHandler) {
+		return current.branch(okConverter, errHandler);
 	}
 
 	@Nonnull

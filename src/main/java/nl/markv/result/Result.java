@@ -78,7 +78,13 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 
 	void ifErr(@Nonnull Consumer<E> action);
 
-	//TODO @mark: test null
+	void branch(@Nonnull Consumer<T> okAction, Consumer<E> errAction);
+
+	//TODO @mark: make sure type inference can distinguish these lambdas in most cases, otherwise rename
+	@Nonnull
+	<G> G branch(@Nonnull Function<T, G> okConverter, Function<E, G> errHandler);
+
+	//TODO @mark: test null everywhere
 	@Nonnull
 	T okOr(@Nonnull T alternative);
 

@@ -74,6 +74,17 @@ public final class Ok<T, E> implements Result<T, E> {
 		// Do nothing.
 	}
 
+	@Override
+	public void branch(@Nonnull Consumer<T> okAction, Consumer<E> errAction) {
+		okAction.accept(value);
+	}
+
+	@Nonnull
+	@Override
+	public <G> G branch(@Nonnull Function<T, G> okConverter, Function<E, G> errHandler) {
+		return okConverter.apply(value);
+	}
+
 	@Nonnull
 	@Override
 	public T okOr(@Nonnull T alternative) {
