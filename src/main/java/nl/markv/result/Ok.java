@@ -131,7 +131,6 @@ public final class Ok<T, E> implements Result<T, E> {
 	/**
 	 * {@inheritDoc}
 	 */
-	//TODO @mark: test
 	@Nonnull
 	@Override
 	public <U> Result<U, E> flatMap(@Nonnull Function<T, Result<U, E>> converter) {
@@ -151,7 +150,6 @@ public final class Ok<T, E> implements Result<T, E> {
 	/**
 	 * {@inheritDoc}
 	 */
-	//TODO @mark: test
 	@Nonnull
 	@Override
 	public <F> Result<T, F> flatMapErr(@Nonnull Function<E, Result<T, F>> converter) {

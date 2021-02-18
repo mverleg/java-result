@@ -112,6 +112,34 @@ class OkTest {
 			Result<Integer, String> ok2 = ok1.mapErr(nr -> String.valueOf(2 * nr));
 			assert ok2.getOrThrow() == 2;
 		}
+
+		@Test
+		void okFlatMapOk() {
+			Result<Integer, Integer> ok1 = Ok.of(2);
+			Result<String, Integer> ok2 = ok1.flatMap(nr -> Ok.of(String.valueOf(2 * nr)));
+			assert "4".equals(ok2.getOrThrow());
+		}
+
+		@Test
+		void okFlatMapErr() {
+			Result<Integer, String> ok = Ok.of(2);
+			Result<Integer, String> err = ok.flatMap(nr -> Err.of(String.valueOf(2 * nr)));
+			assert "4".equals(err.getErrOrThrow());
+		}
+
+		@Test
+		void errFlatMapOk() {
+			Result<Integer, Integer> ok1 = Ok.of(2);
+			Result<Integer, String> ok2 = ok1.flatMapErr(nr -> Ok.of(2 * nr));
+			assert ok2.getOrThrow() == 2;
+		}
+
+		@Test
+		void errFlatMapErr() {
+			Result<Integer, Integer> ok1 = Ok.of(2);
+			Result<Integer, String> ok2 = ok1.flatMapErr(nr -> Err.of(String.valueOf(2 * nr)));
+			assert ok2.getOrThrow() == 2;
+		}
 	}
 
 	@Nested
