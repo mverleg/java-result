@@ -218,7 +218,7 @@ public final class Ok<T, E> implements Result<T, E> {
 	@Override
 	public T okOr(@Nonnull Supplier<T> alternativeSupplier) {
 		requireNonNull(alternativeSupplier);
-		return value;
+		return requireNonNull(value);
 	}
 
 	/**
@@ -229,6 +229,16 @@ public final class Ok<T, E> implements Result<T, E> {
 	@Override
 	public T okOrNullable(@Nullable T alternative) {
 		return value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	//TODO @mark: test
+	@Nullable
+	@Override
+	public T okOrNullable(@Nonnull Supplier<T> alternativeSupplier) {
+		return alternativeSupplier.get();
 	}
 
 	/**
@@ -268,6 +278,16 @@ public final class Ok<T, E> implements Result<T, E> {
 	//TODO @mark: test
 	public E errOrNullable(@Nullable E alternative) {
 		return alternative;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	//TODO @mark: test
+	@Nullable
+	@Override
+	public E errOrNullable(@Nonnull Supplier<E> alternativeSupplier) {
+		return null;
 	}
 
 	/**

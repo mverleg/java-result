@@ -245,6 +245,16 @@ public final class Err<T, E> implements Result<T, E> {
 	//TODO @mark: test
 	@Nullable
 	@Override
+	public T okOrNullable(@Nonnull Supplier<T> alternativeSupplier) {
+		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	//TODO @mark: test
+	@Nullable
+	@Override
 	public T okOrNull() {
 		return null;
 	}
@@ -256,7 +266,7 @@ public final class Err<T, E> implements Result<T, E> {
 	@Override
 	public E errOr(@Nonnull E alternative) {
 		requireNonNull(alternative);
-		return value;
+		return requireNonNull(value);
 	}
 
 	/**
@@ -276,6 +286,16 @@ public final class Err<T, E> implements Result<T, E> {
 	@Override
 	public E errOrNullable(@Nullable E alternative) {
 		return value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	//TODO @mark: test
+	@Nullable
+	@Override
+	public E errOrNullable(@Nonnull Supplier<E> alternativeSupplier) {
+		return alternativeSupplier.get();
 	}
 
 	/**

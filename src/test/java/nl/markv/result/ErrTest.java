@@ -209,7 +209,6 @@ class ErrTest {
 	class Alternative {
 		Result<Double, Integer> result = Result.err(1);
 
-
 		@Test
 		void orOk() {
 			assert result.okOr(2.0) == 2.0;

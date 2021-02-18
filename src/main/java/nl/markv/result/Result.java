@@ -346,13 +346,12 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	@Nonnull
 	T okOr(@Nonnull Supplier<T> alternativeSupplier);
 
-	//TODO @mark: javadoc
-	//TODO @mark: test
 	@Nullable
 	T okOrNullable(@Nullable T alternative);
 
-	//TODO @mark: javadoc
-	//TODO @mark: test
+	@Nullable
+	T okOrNullable(@Nonnull Supplier<T> alternativeSupplier);
+
 	@Nullable
 	T okOrNull();
 
@@ -380,13 +379,12 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	@Nonnull
 	E errOr(@Nonnull Supplier<E> alternativeSupplier);
 
-	//TODO @mark: javadoc
-	//TODO @mark: test
 	@Nullable
 	E errOrNullable(@Nullable E alternative);
 
-	//TODO @mark: javadoc
-	//TODO @mark: test
+	@Nullable
+	E errOrNullable(@Nonnull Supplier<E> alternativeSupplier);
+
 	@Nullable
 	E errOrNull();
 
