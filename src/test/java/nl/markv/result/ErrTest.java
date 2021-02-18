@@ -207,6 +207,7 @@ class ErrTest {
 
 	@Nested
 	class Alternative {
+		//TODO @mark: test that suppliers aren't called if not needed
 		Result<Double, Integer> result = Result.err(1);
 
 		@Test

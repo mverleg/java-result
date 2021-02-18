@@ -206,6 +206,7 @@ class OkTest {
 
 	@Nested
 	class Alternative {
+		//TODO @mark: test that suppliers aren't called if not needed
 		Result<Integer, Double> result = Result.ok(1);
 
 		@Test
@@ -218,6 +219,35 @@ class OkTest {
 	    void orErr() {
 			assert result.errOr(2.0) == 2.0;
 			assert result.errOr(() -> 2.0) == 2.0;
+		}
+
+		@Test
+		@SuppressWarnings("ConstantConditions")
+		void okOrNullable() {
+			assert result.okOrNullable(2) == 1;
+			assert result.okOrNullable((Integer)null) == 1;
+			assert result.okOrNullable(() -> 2) == 1;
+			assert result.okOrNullable(() -> null) == 1;
+		}
+
+		@Test
+		@SuppressWarnings("ConstantConditions")
+		void okOrNull() {
+			assert result.okOrNull() == 1;
+		}
+
+		@Test
+		@SuppressWarnings("ConstantConditions")
+		void errOrNullable() {
+			assert result.errOrNullable(2.0) == 2.0;
+			assert result.errOrNullable((Double)null) == null;
+			assert result.errOrNullable(() -> 2.0) == 2.0;
+			assert result.errOrNullable(() -> null) == null;
+		}
+
+		@Test
+		void errOrNull() {
+			assert result.errOrNull() == null;
 		}
 	}
 
