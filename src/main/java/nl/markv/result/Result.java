@@ -66,7 +66,6 @@ import static java.util.Objects.requireNonNull;
  * @param <T> The type that is contained by {@link Ok} if this {@link Result} is successful.
  * @param <E> The type that is contained by {@link Err} if this {@link Result} is unsuccessful.
  */
-//TODO @mark: make Ok and Err refer to documentation on parent method
 //TODO @mark: @Nonnull everywhere, and requireNonNull for arguments
 public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 

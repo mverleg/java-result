@@ -221,6 +221,35 @@ class ErrTest {
 			assert result.errOr(2) == 1;
 			assert result.errOr(() -> 2) == 1;
 		}
+
+		@Test
+		@SuppressWarnings("ConstantConditions")
+		void okOrNullable() {
+			assert result.okOrNullable(2.0) == 2.0;
+			assert result.okOrNullable((Double)null) == null;
+			assert result.okOrNullable(() -> 2.0) == 2.0;
+			assert result.okOrNullable(() -> null) == null;
+		}
+
+		@Test
+		void okOrNull() {
+			assert result.okOrNull() == null;
+		}
+
+		@Test
+		@SuppressWarnings("ConstantConditions")
+		void errOrNullable() {
+			assert result.errOrNullable(2) == 1;
+			assert result.errOrNullable((Integer)null) == 1;
+			assert result.errOrNullable(() -> 2) == 1;
+			assert result.errOrNullable(() -> null) == 1;
+		}
+
+		@Test
+		@SuppressWarnings("ConstantConditions")
+		void errOrNull() {
+			assert result.errOrNull() == 1;
+		}
 	}
 
 	@Nested

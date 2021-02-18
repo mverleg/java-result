@@ -232,7 +232,6 @@ public final class Err<T, E> implements Result<T, E> {
 	/**
 	 * {@inheritDoc}
 	 */
-	//TODO @mark: test
 	@Nullable
 	@Override
 	public T okOrNullable(@Nullable T alternative) {
@@ -242,17 +241,15 @@ public final class Err<T, E> implements Result<T, E> {
 	/**
 	 * {@inheritDoc}
 	 */
-	//TODO @mark: test
 	@Nullable
 	@Override
 	public T okOrNullable(@Nonnull Supplier<T> alternativeSupplier) {
-		return null;
+		return alternativeSupplier.get();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	//TODO @mark: test
 	@Nullable
 	@Override
 	public T okOrNull() {
@@ -281,7 +278,6 @@ public final class Err<T, E> implements Result<T, E> {
 	/**
 	 * {@inheritDoc}
 	 */
-	//TODO @mark: test
 	@Nonnull
 	@Override
 	public E errOrNullable(@Nullable E alternative) {
@@ -291,17 +287,15 @@ public final class Err<T, E> implements Result<T, E> {
 	/**
 	 * {@inheritDoc}
 	 */
-	//TODO @mark: test
-	@Nullable
+	@Nonnull
 	@Override
 	public E errOrNullable(@Nonnull Supplier<E> alternativeSupplier) {
-		return alternativeSupplier.get();
+		return value;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	//TODO @mark: test
 	@Nonnull
 	@Override
 	public E errOrNull() {
