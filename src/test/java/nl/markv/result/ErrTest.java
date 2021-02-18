@@ -112,6 +112,34 @@ class ErrTest {
 			Result<Integer, String> err2 = err1.mapErr(nr -> String.valueOf(2 * nr));
 			assert "4".equals(err2.getErrOrThrow());
 		}
+
+		@Test
+		void okFlatMapOk() {
+			Result<Integer, Integer> err1 = Err.of(2);
+			Result<String, Integer> err2 = err1.flatMap(nr -> Ok.of(String.valueOf(2 * nr)));
+			assert err2.getErrOrThrow() == 2;
+		}
+
+		@Test
+		void okFlatMapErr() {
+			Result<Integer, Integer> err1 = Err.of(2);
+			Result<String, Integer> err2 = err1.flatMap(nr -> Err.of(2 * nr));
+			assert err2.getErrOrThrow() == 2;
+		}
+
+		@Test
+		void errFlatMapOk() {
+			Result<String, Integer> err = Err.of(2);
+			Result<String, Integer> ok = err.flatMapErr(nr -> Ok.of(String.valueOf(2 * nr)));
+			assert "4".equals(ok.getOrThrow());
+		}
+
+		@Test
+		void errFlatMapErr() {
+			Result<Integer, Integer> err1 = Err.of(2);
+			Result<Integer, String> err2 = err1.flatMapErr(nr -> Err.of(String.valueOf(2 * nr)));
+			assert "4".equals(err2.getErrOrThrow());
+		}
 	}
 
 	@Nested
