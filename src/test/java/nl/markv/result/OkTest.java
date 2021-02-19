@@ -258,9 +258,9 @@ class OkTest {
 		@Test
 		@SuppressWarnings("ConstantConditions")
 		void nonNull() {
-			Result<String, String> res = Ok.of("hello");
-			assertThrows(NullPointerException.class, () -> res.solve(null));
-			assertThrows(NullPointerException.class, () -> res.solve(ignored -> null));
+			Result<String, String> input = Ok.of("hello");
+			assertThrows(NullPointerException.class, () -> input.solve(null));
+			assertThrows(NullPointerException.class, () -> input.solve(ignored -> null));
 		}
 	}
 
@@ -310,14 +310,18 @@ class OkTest {
 			assert result.errOrNull() == null;
 		}
 
-
 		@Test
 		@SuppressWarnings({"ConstantConditions"})
 		void nonNull() {
-			Result<String, String> res = Ok.of("hello");
-			assertThrows(NullPointerException.class, () -> res.okOr((String)null));
-			assertThrows(NullPointerException.class, () -> res.okOr((Supplier<String>) null));
-			assertThrows(NullPointerException.class, () -> res.okOr(() -> null));
+			Result<String, String> input = Ok.of("hello");
+			assertThrows(NullPointerException.class, () -> input.okOr((String)null));
+			assertThrows(NullPointerException.class, () -> input.okOr((Supplier<String>) null));
+			assertThrows(NullPointerException.class, () -> input.okOr(() -> null));
+			assertThrows(NullPointerException.class, () -> input.okOrNullable((Supplier<String>) null));
+			assertThrows(NullPointerException.class, () -> input.errOr((String)null));
+			assertThrows(NullPointerException.class, () -> input.errOr((Supplier<String>) null));
+			assertThrows(NullPointerException.class, () -> input.errOr(() -> null));
+			assertThrows(NullPointerException.class, () -> input.errOrNullable((Supplier<String>) null));
 		}
 	}
 
@@ -385,6 +389,14 @@ class OkTest {
 			var res = input.and(() -> Err.of("err"));
 			assert Err.of("err").equals(res);
 		}
+
+		@Test
+		@SuppressWarnings({"ConstantConditions"})
+		void nonNull() {
+			assertThrows(NullPointerException.class, () -> input.and((Result<Integer, String>) null));
+			assertThrows(NullPointerException.class, () -> input.and((Supplier<Result<Integer, String>>) null));
+			assertThrows(NullPointerException.class, () -> input.and((Supplier<Result<Integer, String>>) () -> null));
+		}
 	}
 
 	@Nested
@@ -413,6 +425,14 @@ class OkTest {
 	    void orErrLazy() {
 			var res = input.or(TestUtil::failIfCalled);
 			assert res.getOrThrow() == 2;
+		}
+
+		@Test
+		@SuppressWarnings({"ConstantConditions"})
+		void nonNull() {
+			assertThrows(NullPointerException.class, () -> input.or((Result<Integer, String>) null));
+			assertThrows(NullPointerException.class, () -> input.or((Supplier<Result<Integer, String>>) null));
+			assertThrows(NullPointerException.class, () -> input.or((Supplier<Result<Integer, String>>) () -> null));
 		}
 	}
 
@@ -459,6 +479,14 @@ class OkTest {
 			assert !Err.<Integer, Integer>of(2).matches(err -> err == 2);
 			//noinspection ResultOfMethodCallIgnored
 			Err.of(2).matches(TestUtil::failIfCalled);
+		}
+
+		@Test
+		@SuppressWarnings("ConstantConditions")
+		void nonNull() {
+			Result<String, String> input = Ok.of("hello");
+			assertThrows(NullPointerException.class, () -> input.matches(null));
+			assertThrows(NullPointerException.class, () -> input.errMatches(null));
 		}
 	}
 
