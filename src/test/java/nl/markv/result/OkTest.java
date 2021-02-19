@@ -96,6 +96,16 @@ class OkTest {
 			assert "my error".equals(ex.getMessage());
 			assertThrows(IllegalStateException.class, () -> res.getErrOrThrow(IllegalStateException::new));
 		}
+
+		@Test
+		@SuppressWarnings("ConstantConditions")
+		void nonNull() {
+			Result<String, String> res = Ok.of("hello");
+			assertThrows(NullPointerException.class, () -> res.getOrThrow((String)null));
+			assertThrows(NullPointerException.class, () -> res.getOrThrow(() -> null));
+			assertThrows(NullPointerException.class, () -> res.getErrOrThrow((String)null));
+			assertThrows(NullPointerException.class, () -> res.getErrOrThrow(() -> null));
+		}
 	}
 
 	@Nested
@@ -141,6 +151,20 @@ class OkTest {
 			Result<Integer, String> ok2 = ok1.flatMapErr(nr -> Err.of(String.valueOf(2 * nr)));
 			assert ok2.getOrThrow() == 2;
 		}
+
+		@Test
+		@SuppressWarnings("ConstantConditions")
+		void nonNull() {
+			Result<String, String> res = Ok.of("hello");
+			assertThrows(NullPointerException.class, () -> res.map(null));
+			assertThrows(NullPointerException.class, () -> res.map(ignored -> null));
+			assertThrows(NullPointerException.class, () -> res.mapErr(null));
+			assertThrows(NullPointerException.class, () -> res.mapErr(ignored -> null));
+			assertThrows(NullPointerException.class, () -> res.flatMap(null));
+			assertThrows(NullPointerException.class, () -> res.flatMap(ignored -> null));
+			assertThrows(NullPointerException.class, () -> res.flatMapErr(null));
+			assertThrows(NullPointerException.class, () -> res.flatMapErr(ignored -> null));
+		}
 	}
 
 	@Nested
@@ -159,6 +183,14 @@ class OkTest {
 		void ifErr() {
 			Ok.of(2).ifErr(TestUtil::failIfCalled);
 		}
+
+		@Test
+		@SuppressWarnings("ConstantConditions")
+		void nonNull() {
+			Result<String, String> res = Ok.of("hello");
+			assertThrows(NullPointerException.class, () -> res.ifOk(null));
+			assertThrows(NullPointerException.class, () -> res.ifErr(null));
+		}
 	}
 	
 	@Nested
@@ -171,6 +203,14 @@ class OkTest {
 					TestUtil::failIfCalled
 			);
 			assert toggle.isOn();
+		}
+
+		@Test
+		@SuppressWarnings("ConstantConditions")
+		void nonNull() {
+			Result<String, String> res = Ok.of("hello");
+			assertThrows(NullPointerException.class, () -> res.ifEither(null, ignored -> {}));
+			assertThrows(NullPointerException.class, () -> res.ifEither(ignored -> {}, null));
 		}
 	}
 
@@ -194,6 +234,16 @@ class OkTest {
 			assert result.isErr();
 			assert "wrong!".equals(result.getErrOrThrow());
 		}
+
+		@Test
+		@SuppressWarnings("ConstantConditions")
+		void nonNull() {
+			Result<String, String> res = Ok.of("hello");
+			assertThrows(NullPointerException.class, () -> res.branch(null, ignored -> 1));
+			assertThrows(NullPointerException.class, () -> res.branch(ignored -> null, ignored -> 1));
+			assertThrows(NullPointerException.class, () -> res.branch(ignored -> 1, null));
+			assertThrows(NullPointerException.class, () -> res.branch(ignored -> 1, ignored -> null));
+		}
 	}
 
 	@Nested
@@ -202,6 +252,14 @@ class OkTest {
 	    void solve() {
 			var result = Ok.of(2).solve(TestUtil::failIfCalled);
 			assert result == 2;
+		}
+
+		@Test
+		@SuppressWarnings("ConstantConditions")
+		void nonNull() {
+			Result<String, String> res = Ok.of("hello");
+			assertThrows(NullPointerException.class, () -> res.solve(null));
+			assertThrows(NullPointerException.class, () -> res.solve(ignored -> null));
 		}
 	}
 
