@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+//TODO @mark: test null handling of all methods
 class ErrTest {
 
 	@Nested

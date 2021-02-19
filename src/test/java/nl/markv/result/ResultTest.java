@@ -16,7 +16,6 @@ import static nl.markv.result.Result.flatten;
 import static nl.markv.result.Result.transpose;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-//TODO @mark: test null handling of all methods
 class ResultTest {
 
 	@Nested

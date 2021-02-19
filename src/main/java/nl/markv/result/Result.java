@@ -427,15 +427,16 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 *
 	 * @throws NullPointerException if the attempted operation returns {@code null}.
 	 */
-	//TODO @mark: test NPE
 	@Nonnull
 	static <U> Result<U, Exception> attempt(@Nonnull Attempt<U> attemptedOperation) {
+		requireNonNull(attemptedOperation);
+		U result;
 		try {
-			return Ok.of(requireNonNull(attemptedOperation.attempt(),
-					"Operation for 'attempt' must not return null"));
+			result = attemptedOperation.attempt();
 		} catch (Exception exception) {
 			return Err.of(exception);
 		}
+		return Ok.of(requireNonNull(result, "Operation for 'attempt' must not return null"));
 	}
 
 	/**
@@ -636,6 +637,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	@Nonnull
 	@CheckReturnValue
 	static <U, F> Optional<Result<U, F>> transpose(@Nonnull Result<Optional<U>, F> resultOptional) {
+		requireNonNull(resultOptional);
 		if (resultOptional instanceof Ok<Optional<U>, F> ok) {
 			return ok.get().map(Ok::of);
 		} else if (resultOptional instanceof Err<Optional<U>, F> err) {
