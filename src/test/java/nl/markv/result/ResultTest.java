@@ -1,5 +1,6 @@
 package nl.markv.result;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -13,6 +14,7 @@ import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static nl.markv.result.Result.flatten;
 import static nl.markv.result.Result.transpose;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 //TODO @mark: test null handling of all methods
 class ResultTest {
@@ -24,6 +26,11 @@ class ResultTest {
 		    var result = Result.from(Optional.of("hello"));
 		    assert result.isOk();
 		    assert "hello".equals(result.getOrThrow());
+		}
+
+		@Test
+		void nonNull() {
+			assertThrows(NullPointerException.class, () -> Result.from(null));
 		}
 
 		@Test
@@ -85,6 +92,12 @@ class ResultTest {
 			Result<Double, Exception> err = Result.attempt(this::fail);
 			assert Exception.class.equals(err.getErrOrThrow().getClass());
 			assert "checked".equals(err.getErrOrThrow().getMessage());
+		}
+
+		@Test
+		void nonNull() {
+			assertThrows(NullPointerException.class, () -> Result.attempt(null));
+			assertThrows(NullPointerException.class, () -> Result.attempt(() -> null));
 		}
 	}
 
@@ -151,6 +164,12 @@ class ResultTest {
 		    assert resultList.isErr();
 		    assert resultList.getErrOrThrow() == 2;
 		}
+
+		@Test
+		@SuppressWarnings({"unchecked", "ResultOfMethodCallIgnored", "rawtypes", "ConstantConditions"})
+		void nonNull() {
+			assertThrows(NullPointerException.class, () -> Result.transpose((List)null));
+		}
 	}
 
 	@Nested
@@ -203,6 +222,12 @@ class ResultTest {
 			assert resultSet.isErr();
 			assert Set.of(2, 4, 8).contains(resultSet.getErrOrThrow());
 		}
+
+		@Test
+		@SuppressWarnings({"unchecked", "ResultOfMethodCallIgnored", "rawtypes", "ConstantConditions"})
+		void nonNull() {
+			assertThrows(NullPointerException.class, () -> Result.transpose((Set)null));
+		}
 	}
 	
 	@Nested
@@ -250,8 +275,15 @@ class ResultTest {
 			assert result.get().isErr();
 			assert result.get().getErrOrThrow() == 2;
 		}
+
+		@Test
+		@SuppressWarnings({"unchecked", "ResultOfMethodCallIgnored", "rawtypes", "ConstantConditions", "OptionalAssignedToNull"})
+		void nonNull() {
+			assertThrows(NullPointerException.class, () -> Result.transpose((Optional)null));
+			assertThrows(NullPointerException.class, () -> Result.transpose((Result)null));
+		}
 	}
-	
+
 	@Nested
 	class Flatten {
 		@Test
@@ -273,6 +305,12 @@ class ResultTest {
 			var result = flatten(Err.of(2));
 			assert result.isErr();
 			assert result.getErrOrThrow() == 2;
+		}
+
+		@Test
+		@SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
+		void nonNull() {
+			assertThrows(NullPointerException.class, () -> Result.flatten(null));
 		}
 	}
 }
