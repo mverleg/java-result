@@ -3,7 +3,6 @@ package nl.markv.result;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -289,58 +288,58 @@ class ErrTest {
 
 	@Nested
 	class And {
-		private final Result<String, Integer> result = Err.of(2);
+		private final Result<String, Integer> input = Err.of(2);
 
 		@Test
 		void andOk() {
-			var res = result.and(Ok.of(1));
-			assert result.getErrOrThrow() == 2;
+			var res = input.and(Ok.of(1));
+			assert input.getErrOrThrow() == 2;
 		}
 
 		@Test
 		void andOkLazy() {
-			var res = result.and(TestUtil::failIfCalled);
-			assert result.getErrOrThrow() == 2;
+			var res = input.and(TestUtil::failIfCalled);
+			assert input.getErrOrThrow() == 2;
 		}
 
 		@Test
 		void andErr() {
-			var res = result.and(Err.of(1));
-			assert result.getErrOrThrow() == 2;
+			var res = input.and(Err.of(1));
+			assert res.getErrOrThrow() == 2;
 		}
 
 		@Test
 		void andErrLazy() {
-			var res = result.and(TestUtil::failIfCalled);
-			assert result.getErrOrThrow() == 2;
+			var res = input.and(TestUtil::failIfCalled);
+			assert res.getErrOrThrow() == 2;
 		}
 	}
 
 	@Nested
 	class Or {
-		private final Result<String, Integer> result = Err.of(2);
+		private final Result<String, Integer> input = Err.of(2);
 
 		@Test
 		void orOk() {
-			var res = result.or(Ok.of("hi"));
+			var res = input.or(Ok.of("hi"));
 			assert Ok.of("hi").equals(res);
 		}
 
 		@Test
 		void orOkLazy() {
-			var res = result.or(() -> Ok.of("hi"));
+			var res = input.or(() -> Ok.of("hi"));
 			assert Ok.of("hi").equals(res);
 		}
 
 		@Test
 		void orErr() {
-			var res = result.or(Err.of("err"));
+			var res = input.or(Err.of("err"));
 			assert Err.of("err").equals(res);
 		}
 
 		@Test
 		void orErrLazy() {
-			var res = result.or(() -> Err.of("err"));
+			var res = input.or(() -> Err.of("err"));
 			assert Err.of("err").equals(res);
 		}
 	}

@@ -3,6 +3,7 @@ package nl.markv.result;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -308,6 +309,16 @@ class OkTest {
 		void errOrNull() {
 			assert result.errOrNull() == null;
 		}
+
+
+		@Test
+		@SuppressWarnings({"ConstantConditions"})
+		void nonNull() {
+			Result<String, String> res = Ok.of("hello");
+			assertThrows(NullPointerException.class, () -> res.okOr((String)null));
+			assertThrows(NullPointerException.class, () -> res.okOr((Supplier<String>) null));
+			assertThrows(NullPointerException.class, () -> res.okOr(() -> null));
+		}
 	}
 
 	@Nested
@@ -349,59 +360,59 @@ class OkTest {
 
 	@Nested
 	class And {
-		private final Result<Integer, String> result = Ok.of(2);
+		private final Result<Integer, String> input = Ok.of(2);
 
 		@Test
 		void andOk() {
-			var res = result.and(Ok.of("hi"));
+			var res = input.and(Ok.of("hi"));
 			assert Ok.of("hi").equals(res);
 		}
 
 		@Test
 		void andOkLazy() {
-			var res = result.and(() -> Ok.of("hi"));
+			var res = input.and(() -> Ok.of("hi"));
 			assert Ok.of("hi").equals(res);
 		}
 
 		@Test
 		void andErr() {
-			var res = result.and(Err.of("err"));
+			var res = input.and(Err.of("err"));
 			assert Err.of("err").equals(res);
 		}
 
 		@Test
 		void andErrLazy() {
-			var res = result.and(() -> Err.of("err"));
+			var res = input.and(() -> Err.of("err"));
 			assert Err.of("err").equals(res);
 		}
 	}
 
 	@Nested
 	class Or {
-		private final Result<Integer, String> result = Ok.of(2);
+		private final Result<Integer, String> input = Ok.of(2);
 
 		@Test
 	    void orOk() {
-			var res = result.or(Ok.of(1));
+			var res = input.or(Ok.of(1));
 			assert Ok.of(2).equals(res);
 		}
 
 		@Test
 		void orOkLazy() {
-			var res = result.or(TestUtil::failIfCalled);
+			var res = input.or(TestUtil::failIfCalled);
 			assert Ok.of(2).equals(res);
 		}
 
 		@Test
 		void orErr() {
-			var res = result.or(Err.of("hi"));
-			assert result.getOrThrow() == 2;
+			var res = input.or(Err.of("hi"));
+			assert res.getOrThrow() == 2;
 		}
 
 		@Test
 	    void orErrLazy() {
-			var res = result.or(TestUtil::failIfCalled);
-			assert result.getOrThrow() == 2;
+			var res = input.or(TestUtil::failIfCalled);
+			assert res.getOrThrow() == 2;
 		}
 	}
 

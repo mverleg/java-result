@@ -28,6 +28,7 @@ class ResultTest {
 		}
 
 		@Test
+		@SuppressWarnings({"OptionalAssignedToNull", "ConstantConditions"})
 		void nonNull() {
 			assertThrows(NullPointerException.class, () -> Result.from(null));
 		}
@@ -94,6 +95,7 @@ class ResultTest {
 		}
 
 		@Test
+		@SuppressWarnings("ConstantConditions")
 		void nonNull() {
 			assertThrows(NullPointerException.class, () -> Result.attempt(null));
 			assertThrows(NullPointerException.class, () -> Result.attempt(() -> null));
@@ -165,9 +167,9 @@ class ResultTest {
 		}
 
 		@Test
-		@SuppressWarnings({"unchecked", "ResultOfMethodCallIgnored", "rawtypes", "ConstantConditions"})
+		@SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
 		void nonNull() {
-			assertThrows(NullPointerException.class, () -> Result.transpose((List)null));
+			assertThrows(NullPointerException.class, () -> Result.transpose((List<Result<Integer, Integer>>) null));
 		}
 	}
 
@@ -223,9 +225,9 @@ class ResultTest {
 		}
 
 		@Test
-		@SuppressWarnings({"unchecked", "ResultOfMethodCallIgnored", "rawtypes", "ConstantConditions"})
+		@SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions"})
 		void nonNull() {
-			assertThrows(NullPointerException.class, () -> Result.transpose((Set)null));
+			assertThrows(NullPointerException.class, () -> Result.transpose((Set<Result<Integer, Integer>>) null));
 		}
 	}
 	
@@ -276,10 +278,10 @@ class ResultTest {
 		}
 
 		@Test
-		@SuppressWarnings({"unchecked", "ResultOfMethodCallIgnored", "rawtypes", "ConstantConditions", "OptionalAssignedToNull"})
+		@SuppressWarnings({"ResultOfMethodCallIgnored", "ConstantConditions", "OptionalAssignedToNull"})
 		void nonNull() {
-			assertThrows(NullPointerException.class, () -> Result.transpose((Optional)null));
-			assertThrows(NullPointerException.class, () -> Result.transpose((Result)null));
+			assertThrows(NullPointerException.class, () -> Result.transpose((Optional<Result<Integer, Integer>>) null));
+			assertThrows(NullPointerException.class, () -> Result.transpose((Result<Optional<Integer>, Integer>) null));
 		}
 	}
 
