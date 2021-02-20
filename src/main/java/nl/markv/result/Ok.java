@@ -153,6 +153,7 @@ public final class Ok<T, E> implements Result<T, E> {
 	@Nonnull
 	@Override
 	public <F> Result<T, F> flatMapErr(@Nonnull Function<E, Result<T, F>> converter) {
+		requireNonNull(converter);
 		return adaptErr();
 	}
 
@@ -218,7 +219,7 @@ public final class Ok<T, E> implements Result<T, E> {
 	@Override
 	public T okOr(@Nonnull Supplier<T> alternativeSupplier) {
 		requireNonNull(alternativeSupplier);
-		return requireNonNull(value);
+		return value;
 	}
 
 	/**
@@ -236,6 +237,7 @@ public final class Ok<T, E> implements Result<T, E> {
 	@Nonnull
 	@Override
 	public T okOrNullable(@Nonnull Supplier<T> alternativeSupplier) {
+		requireNonNull(alternativeSupplier);
 		return value;
 	}
 

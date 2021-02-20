@@ -263,7 +263,7 @@ public final class Err<T, E> implements Result<T, E> {
 	@Override
 	public E errOr(@Nonnull E alternative) {
 		requireNonNull(alternative);
-		return requireNonNull(value);
+		return value;
 	}
 
 	/**

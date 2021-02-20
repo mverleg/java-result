@@ -102,8 +102,6 @@ class OkTest {
 		@SuppressWarnings("ConstantConditions")
 		void nonNull() {
 			Result<String, String> res = Ok.of("hello");
-			assertThrows(NullPointerException.class, () -> res.getOrThrow((String)null));
-			assertThrows(NullPointerException.class, () -> res.getOrThrow(() -> null));
 			assertThrows(NullPointerException.class, () -> res.getErrOrThrow((String)null));
 			assertThrows(NullPointerException.class, () -> res.getErrOrThrow(() -> null));
 		}
@@ -160,11 +158,9 @@ class OkTest {
 			assertThrows(NullPointerException.class, () -> res.map(null));
 			assertThrows(NullPointerException.class, () -> res.map(ignored -> null));
 			assertThrows(NullPointerException.class, () -> res.mapErr(null));
-			assertThrows(NullPointerException.class, () -> res.mapErr(ignored -> null));
 			assertThrows(NullPointerException.class, () -> res.flatMap(null));
 			assertThrows(NullPointerException.class, () -> res.flatMap(ignored -> null));
 			assertThrows(NullPointerException.class, () -> res.flatMapErr(null));
-			assertThrows(NullPointerException.class, () -> res.flatMapErr(ignored -> null));
 		}
 	}
 
@@ -243,7 +239,6 @@ class OkTest {
 			assertThrows(NullPointerException.class, () -> res.branch(null, ignored -> 1));
 			assertThrows(NullPointerException.class, () -> res.branch(ignored -> null, ignored -> 1));
 			assertThrows(NullPointerException.class, () -> res.branch(ignored -> 1, null));
-			assertThrows(NullPointerException.class, () -> res.branch(ignored -> 1, ignored -> null));
 		}
 	}
 
@@ -260,7 +255,6 @@ class OkTest {
 		void nonNull() {
 			Result<String, String> input = Ok.of("hello");
 			assertThrows(NullPointerException.class, () -> input.solve(null));
-			assertThrows(NullPointerException.class, () -> input.solve(ignored -> null));
 		}
 	}
 
@@ -316,7 +310,6 @@ class OkTest {
 			Result<String, String> input = Ok.of("hello");
 			assertThrows(NullPointerException.class, () -> input.okOr((String)null));
 			assertThrows(NullPointerException.class, () -> input.okOr((Supplier<String>) null));
-			assertThrows(NullPointerException.class, () -> input.okOr(() -> null));
 			assertThrows(NullPointerException.class, () -> input.okOrNullable((Supplier<String>) null));
 			assertThrows(NullPointerException.class, () -> input.errOr((String)null));
 			assertThrows(NullPointerException.class, () -> input.errOr((Supplier<String>) null));
@@ -425,14 +418,6 @@ class OkTest {
 	    void orErrLazy() {
 			var res = input.or(TestUtil::failIfCalled);
 			assert res.getOrThrow() == 2;
-		}
-
-		@Test
-		@SuppressWarnings({"ConstantConditions"})
-		void nonNull() {
-			assertThrows(NullPointerException.class, () -> input.or((Result<Integer, String>) null));
-			assertThrows(NullPointerException.class, () -> input.or((Supplier<Result<Integer, String>>) null));
-			assertThrows(NullPointerException.class, () -> input.or((Supplier<Result<Integer, String>>) () -> null));
 		}
 	}
 

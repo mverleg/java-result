@@ -348,6 +348,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	@Nullable
 	T okOrNullable(@Nullable T alternative);
 
+	//TODO @mark: change name because passing 'null' needs type annotation?
 	@Nullable
 	T okOrNullable(@Nonnull Supplier<T> alternativeSupplier);
 
@@ -381,6 +382,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	@Nullable
 	E errOrNullable(@Nullable E alternative);
 
+	//TODO @mark: change name because passing 'null' needs type annotation?
 	@Nullable
 	E errOrNullable(@Nonnull Supplier<E> alternativeSupplier);
 
