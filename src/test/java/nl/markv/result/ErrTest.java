@@ -409,6 +409,14 @@ class ErrTest {
 			var res = input.or(() -> Err.of("err"));
 			assert Err.of("err").equals(res);
 		}
+
+		@Test
+		@SuppressWarnings({"ConstantConditions"})
+		void nonNull() {
+			assertThrows(NullPointerException.class, () -> input.or((Result<String, String>) null));
+			assertThrows(NullPointerException.class, () -> input.or((Supplier<Result<String, String>>) null));
+			assertThrows(NullPointerException.class, () -> input.or((Supplier<Result<String, String>>) () -> null));
+		}
 	}
 
 	@Nested
@@ -454,6 +462,14 @@ class ErrTest {
 		void errFalse() {
 			assert !Err.of(2).errMatches(ok -> ok == 3);
 			assert !Err.of("HELLO").errMatches("hello"::equals);
+		}
+
+		@Test
+		@SuppressWarnings("ConstantConditions")
+		void nonNull() {
+			Result<String, String> input = Err.of("hello");
+			assertThrows(NullPointerException.class, () -> input.matches(null));
+			assertThrows(NullPointerException.class, () -> input.errMatches(null));
 		}
 	}
 
