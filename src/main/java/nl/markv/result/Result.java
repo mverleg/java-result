@@ -297,7 +297,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 */
 	//TODO @mark: Kotlin calls this `fold`, consider renaming
 	@Nonnull
-	<R> R branch(@Nonnull Function<T, R> okConverter, @Nonnull Function<E, R> errHandler);
+	<R> R branch(@Nonnull Function<T, R> okConverter, @Nonnull Function<E, R> errConverter);
 
 	/**
 	 * If this {@link Result} is {@link Ok}, return the value. If it is not, then map the error to something
@@ -375,7 +375,6 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * @see #errOr(E)
 	 * @see #okOr(T)
 	 */
-	//TODO @mark: test NPE
 	@Nonnull
 	E errOr(@Nonnull Supplier<E> alternativeSupplier);
 

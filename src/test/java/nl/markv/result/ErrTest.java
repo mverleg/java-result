@@ -3,6 +3,7 @@ package nl.markv.result;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -95,6 +96,15 @@ class ErrTest {
 			assert "hello".equals(res.getErrOrThrow("my error"));
 			assert "hello".equals(res.getErrOrThrow(IllegalStateException::new));
 		}
+
+		@Test
+		@SuppressWarnings("ConstantConditions")
+		void nonNull() {
+			//TODO @mark: Ok -> Err
+			Result<String, String> res = Err.of("hello");
+			assertThrows(NullPointerException.class, () -> res.getOrThrow((String)null));
+			assertThrows(NullPointerException.class, () -> res.getOrThrow(() -> null));
+		}
 	}
 
 	@Nested
@@ -140,6 +150,18 @@ class ErrTest {
 			Result<Integer, String> err2 = err1.flatMapErr(nr -> Err.of(String.valueOf(2 * nr)));
 			assert "4".equals(err2.getErrOrThrow());
 		}
+
+		@Test
+		@SuppressWarnings("ConstantConditions")
+		void nonNull() {
+			Result<String, String> res = Err.of("hello");
+			assertThrows(NullPointerException.class, () -> res.map(null));
+			assertThrows(NullPointerException.class, () -> res.mapErr(null));
+			assertThrows(NullPointerException.class, () -> res.mapErr(ignored -> null));
+			assertThrows(NullPointerException.class, () -> res.flatMap(null));
+			assertThrows(NullPointerException.class, () -> res.flatMapErr(null));
+			assertThrows(NullPointerException.class, () -> res.flatMapErr(ignored -> null));
+		}
 	}
 
 	@Nested
@@ -158,6 +180,14 @@ class ErrTest {
 			});
 			assert toggle.isOn();
 		}
+
+		@Test
+		@SuppressWarnings("ConstantConditions")
+		void nonNull() {
+			Result<String, String> res = Err.of("hello");
+			assertThrows(NullPointerException.class, () -> res.ifOk(null));
+			assertThrows(NullPointerException.class, () -> res.ifErr(null));
+		}
 	}
 
 	@Nested
@@ -170,6 +200,14 @@ class ErrTest {
 					err -> toggle.turnOn()
 			);
 			assert toggle.isOn();
+		}
+
+		@Test
+		@SuppressWarnings("ConstantConditions")
+		void nonNull() {
+			Result<String, String> res = Err.of("hello");
+			assertThrows(NullPointerException.class, () -> res.ifEither(null, ignored -> {}));
+			assertThrows(NullPointerException.class, () -> res.ifEither(ignored -> {}, null));
 		}
 	}
 
@@ -194,6 +232,15 @@ class ErrTest {
 			assert result.isOk();
 			assert "ok!".equals(result.getOrThrow());
 		}
+
+		@Test
+		@SuppressWarnings("ConstantConditions")
+		void nonNull() {
+			Result<String, String> res = Err.of("hello");
+			assertThrows(NullPointerException.class, () -> res.branch(null, ignored -> 1));
+			assertThrows(NullPointerException.class, () -> res.branch(ignored -> 1, null));
+			assertThrows(NullPointerException.class, () -> res.branch(ignored -> 1, ignored -> null));
+		}
 	}
 
 	@Nested
@@ -202,6 +249,13 @@ class ErrTest {
 		void solve() {
 			var result = Err.of(2).solve(err -> "hello");
 			assert "hello".equals(result);
+		}
+
+		@Test
+		@SuppressWarnings("ConstantConditions")
+		void nonNull() {
+			Result<String, String> input = Ok.of("hello");
+			assertThrows(NullPointerException.class, () -> input.solve(null));
 		}
 	}
 
@@ -250,6 +304,19 @@ class ErrTest {
 		void errOrNull() {
 			assert result.errOrNull() == 1;
 		}
+
+		@Test
+		@SuppressWarnings({"ConstantConditions"})
+		void nonNull() {
+			Result<String, String> input = Err.of("hello");
+			assertThrows(NullPointerException.class, () -> input.okOr((String)null));
+			assertThrows(NullPointerException.class, () -> input.okOr((Supplier<String>) null));
+			assertThrows(NullPointerException.class, () -> input.okOr(() -> null));
+			assertThrows(NullPointerException.class, () -> input.okOrNullable((Supplier<String>) null));
+			assertThrows(NullPointerException.class, () -> input.errOr((String)null));
+			assertThrows(NullPointerException.class, () -> input.errOr((Supplier<String>) null));
+			assertThrows(NullPointerException.class, () -> input.errOrNullable((Supplier<String>) null));
+		}
 	}
 
 	@Nested
@@ -293,13 +360,13 @@ class ErrTest {
 		@Test
 		void andOk() {
 			var res = input.and(Ok.of(1));
-			assert input.getErrOrThrow() == 2;
+			assert res.getErrOrThrow() == 2;
 		}
 
 		@Test
 		void andOkLazy() {
 			var res = input.and(TestUtil::failIfCalled);
-			assert input.getErrOrThrow() == 2;
+			assert res.getErrOrThrow() == 2;
 		}
 
 		@Test

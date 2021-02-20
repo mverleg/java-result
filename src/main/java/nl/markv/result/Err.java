@@ -147,6 +147,7 @@ public final class Err<T, E> implements Result<T, E> {
 	@Nonnull
 	@Override
 	public <U> Result<U, E> flatMap(@Nonnull Function<T, Result<U, E>> converter) {
+		requireNonNull(converter);
 		return adaptOk();
 	}
 
@@ -189,6 +190,7 @@ public final class Err<T, E> implements Result<T, E> {
 	 */
 	@Override
 	public void ifEither(@Nonnull Consumer<T> okAction, @Nonnull Consumer<E> errAction) {
+		requireNonNull(okAction);
 		errAction.accept(value);
 	}
 
@@ -197,8 +199,9 @@ public final class Err<T, E> implements Result<T, E> {
 	 */
 	@Nonnull
 	@Override
-	public <R> R branch(@Nonnull Function<T, R> okConverter, @Nonnull Function<E, R> errHandler) {
-		return requireNonNull(errHandler.apply(value));
+	public <R> R branch(@Nonnull Function<T, R> okConverter, @Nonnull Function<E, R> errConverter) {
+		requireNonNull(okConverter);
+		return requireNonNull(errConverter.apply(value));
 	}
 
 	/**
@@ -272,6 +275,7 @@ public final class Err<T, E> implements Result<T, E> {
 	@Nonnull
 	@Override
 	public E errOr(@Nonnull Supplier<E> alternativeSupplier) {
+		requireNonNull(alternativeSupplier);
 		return value;
 	}
 
@@ -290,6 +294,7 @@ public final class Err<T, E> implements Result<T, E> {
 	@Nonnull
 	@Override
 	public E errOrNullable(@Nonnull Supplier<E> alternativeSupplier) {
+		requireNonNull(alternativeSupplier);
 		return value;
 	}
 

@@ -187,8 +187,8 @@ public final class Ok<T, E> implements Result<T, E> {
 	 */
 	@Nonnull
 	@Override
-	public <R> R branch(@Nonnull Function<T, R> okConverter, @Nonnull Function<E, R> errHandler) {
-		requireNonNull(errHandler);
+	public <R> R branch(@Nonnull Function<T, R> okConverter, @Nonnull Function<E, R> errConverter) {
+		requireNonNull(errConverter);
 		return requireNonNull(okConverter.apply(value));
 	}
 
