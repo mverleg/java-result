@@ -21,7 +21,7 @@ public class ResultCollector {
 
 	/**
 	 * Collector to collect a stream of {@link Result}s to a list. If any of the items is unsuccessful,
-	 * the collection is stopped (if serial) and the error is returned. Otherwise all the stream's {@link Ok}
+	 * the collection is stopped (if serial) and the error is returned. Otherwise, all the stream's {@link Ok}
 	 * items are collected to an unmodifiable list.
 	 */
 	@Nonnull

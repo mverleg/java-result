@@ -1,5 +1,6 @@
 package nl.markv.result;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class TestUtil {
@@ -25,6 +26,12 @@ public class TestUtil {
 		return null;
 	}
 
+	@Nullable
+	public static <T, R> R nullFunction(@SuppressWarnings("unused") T ignored) {
+		return null;
+	}
+
+	@Nonnull
 	public static <T, R> R failIfCalled(@SuppressWarnings("unused") T ignored) {
 		throw new AssertionError();
 	}

@@ -21,6 +21,7 @@ final class ResultBuilder<T, E> {
 	}
 
 	@Nonnull
+	@SuppressWarnings("UnusedReturnValue")
 	public ResultBuilder<T, E> toErr(@Nonnull E value) {
 		current = Err.of(value);
 		return this;

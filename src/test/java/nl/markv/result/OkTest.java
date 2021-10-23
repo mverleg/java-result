@@ -67,6 +67,7 @@ class OkTest {
 		}
 
 		@Test
+		@SuppressWarnings("ConstantConditions")
 		void nested() {
 			Result<Result<Integer, String>, String> res = ok(ok(1));
 			assert res.isOk();
@@ -178,10 +179,10 @@ class OkTest {
 		void nonNull() {
 			var res = ok("hello");
 			assertThrows(NullPointerException.class, () -> res.map(null));
-			assertThrows(NullPointerException.class, () -> res.map(ignored -> null));
+			assertThrows(NullPointerException.class, () -> res.map(TestUtil::nullFunction));
 			assertThrows(NullPointerException.class, () -> res.mapErr(null));
 			assertThrows(NullPointerException.class, () -> res.flatMap(null));
-			assertThrows(NullPointerException.class, () -> res.flatMap(ignored -> null));
+			assertThrows(NullPointerException.class, () -> res.flatMap(TestUtil::nullFunction));
 			assertThrows(NullPointerException.class, () -> res.flatMapErr(null));
 		}
 	}
@@ -259,7 +260,7 @@ class OkTest {
 		void nonNull() {
 			var res = ok("hello");
 			assertThrows(NullPointerException.class, () -> res.branch(null, ignored -> 1));
-			assertThrows(NullPointerException.class, () -> res.branch(ignored -> null, ignored -> 1));
+			assertThrows(NullPointerException.class, () -> res.branch(TestUtil::nullFunction, ignored -> 1));
 			assertThrows(NullPointerException.class, () -> res.branch(ignored -> 1, null));
 		}
 	}
@@ -326,7 +327,7 @@ class OkTest {
 		}
 
 		@Test
-		@SuppressWarnings({"ConstantConditions"})
+		@SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})
 		void nonNull() {
 			var input = ok("hello");
 			assertThrows(NullPointerException.class, () -> input.okOr((String)null));
@@ -335,7 +336,7 @@ class OkTest {
 			assertThrows(NullPointerException.class, () -> input.errOr((String)null));
 			assertThrows(NullPointerException.class, () -> input.errOr((Supplier<String>) null));
 			assertThrows(NullPointerException.class, () -> input.errOr(TestUtil::nullSupplier));
-			assertThrows(NullPointerException.class, () -> input.errOrNullable((Supplier<Object>) null));
+			assertThrows(NullPointerException.class, () -> input.errOrNullable(null));
 		}
 
 		@Test
@@ -491,7 +492,7 @@ class OkTest {
 		}
 
 		@Test
-		@SuppressWarnings("ConstantConditions")
+		@SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})
 		void nonNull() {
 			var input = ok("hello");
 			assertThrows(NullPointerException.class, () -> input.matches(null));

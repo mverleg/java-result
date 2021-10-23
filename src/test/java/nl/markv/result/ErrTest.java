@@ -180,10 +180,10 @@ class ErrTest {
 			var res = err("hello");
 			assertThrows(NullPointerException.class, () -> res.map(null));
 			assertThrows(NullPointerException.class, () -> res.mapErr(null));
-			assertThrows(NullPointerException.class, () -> res.mapErr(ignored -> null));
+			assertThrows(NullPointerException.class, () -> res.mapErr(TestUtil::nullFunction));
 			assertThrows(NullPointerException.class, () -> res.flatMap(null));
 			assertThrows(NullPointerException.class, () -> res.flatMapErr(null));
-			assertThrows(NullPointerException.class, () -> res.flatMapErr(ignored -> null));
+			assertThrows(NullPointerException.class, () -> res.flatMapErr(TestUtil::nullFunction));
 		}
 	}
 
@@ -262,7 +262,7 @@ class ErrTest {
 			var res = err("hello");
 			assertThrows(NullPointerException.class, () -> res.branch(null, ignored -> 1));
 			assertThrows(NullPointerException.class, () -> res.branch(ignored -> 1, null));
-			assertThrows(NullPointerException.class, () -> res.branch(ignored -> 1, ignored -> null));
+			assertThrows(NullPointerException.class, () -> res.branch(ignored -> 1, TestUtil::nullFunction));
 		}
 	}
 
@@ -275,7 +275,7 @@ class ErrTest {
 		}
 
 		@Test
-		@SuppressWarnings("ConstantConditions")
+		@SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})
 		void nonNull() {
 			var input = ok("hello");
 			assertThrows(NullPointerException.class, () -> input.solve(null));
@@ -328,13 +328,13 @@ class ErrTest {
 		}
 
 		@Test
-		@SuppressWarnings({"ConstantConditions"})
+		@SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})
 		void nonNull() {
 			var input = err("hello");
 			assertThrows(NullPointerException.class, () -> input.okOr((String)null));
 			assertThrows(NullPointerException.class, () -> input.okOr((Supplier<String>) null));
 			assertThrows(NullPointerException.class, () -> input.okOr(TestUtil::nullSupplier));
-			assertThrows(NullPointerException.class, () -> input.okOrNullable((Supplier<Object>) null));
+			assertThrows(NullPointerException.class, () -> input.okOrNullable(null));
 			assertThrows(NullPointerException.class, () -> input.errOr((String)null));
 			assertThrows(NullPointerException.class, () -> input.errOr((Supplier<String>) null));
 			assertThrows(NullPointerException.class, () -> input.errOrNullable((Supplier<String>) null));
@@ -493,7 +493,7 @@ class ErrTest {
 		}
 
 		@Test
-		@SuppressWarnings("ConstantConditions")
+		@SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})
 		void nonNull() {
 			var input = err("hello");
 			assertThrows(NullPointerException.class, () -> input.matches(null));

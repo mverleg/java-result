@@ -87,6 +87,7 @@ public final class Ok<T, E> implements Result<T, E> {
 	 * 	It is not deprecated to call this on {@link Result}, but on {@link Ok} use {@link #get()}.
 	 */
 	@Deprecated
+	@SuppressWarnings("DeprecatedIsStillUsed")
 	@Nonnull
 	@Override
 	public E getErrOrThrow() {
@@ -100,6 +101,7 @@ public final class Ok<T, E> implements Result<T, E> {
 	 * 	It is not deprecated to call this on {@link Result}, but on {@link Ok} use {@link #get()}.
 	 */
 	@Deprecated
+	@SuppressWarnings("DeprecatedIsStillUsed")
 	@Nonnull
 	@Override
 	public E getErrOrThrow(@Nonnull String exceptionMessage) {
@@ -113,6 +115,7 @@ public final class Ok<T, E> implements Result<T, E> {
 	 * 	It is not deprecated to call this on {@link Result}, but on {@link Ok} use {@link #get()}.
 	 */
 	@Deprecated
+	@SuppressWarnings("DeprecatedIsStillUsed")
 	@Nonnull
 	@Override
 	public E getErrOrThrow(@Nonnull Supplier<RuntimeException> exceptionSupplier) {
@@ -302,7 +305,7 @@ public final class Ok<T, E> implements Result<T, E> {
 	@Nonnull
 	@Override
 	public <U> Result<U, E> adaptOk() {
-		throw new WrongResultVariantException("Attempted to call 'adaptOk' on a Result containing " + toString() +
+		throw new WrongResultVariantException("Attempted to call 'adaptOk' on a Result containing " + this +
 				"; this only succeeds if the Result is Err. Use 'map' to convert the Ok value.");
 	}
 

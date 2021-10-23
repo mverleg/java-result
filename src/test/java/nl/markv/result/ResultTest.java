@@ -74,6 +74,7 @@ class ResultTest {
 		}
 
 		@Test
+		@SuppressWarnings("ConstantConditions")
 		void successException() {
 			var ok = Result.attempt(() -> new IllegalStateException("returned exception"));
 			assert ok.getOrThrow() instanceof IllegalStateException;
@@ -97,7 +98,7 @@ class ResultTest {
 		}
 
 		@Test
-		@SuppressWarnings("ConstantConditions")
+		@SuppressWarnings({"ConstantConditions", "NullableProblems"})
 		void nonNull() {
 			assertThrows(NullPointerException.class, () -> Result.attempt(null));
 			assertThrows(NullPointerException.class, () -> Result.attempt(TestUtil::nullSupplier));
