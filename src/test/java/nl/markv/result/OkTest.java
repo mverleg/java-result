@@ -313,6 +313,12 @@ class OkTest {
 			assertThrows(NullPointerException.class, () -> input.errOr(() -> null));
 			assertThrows(NullPointerException.class, () -> input.errOrNullable((Supplier<String>) null));
 		}
+
+		@Test
+		void isLazy() {
+			result.okOr(TestUtil::failIfCalled);
+			result.okOrNullable(TestUtil::failIfCalled);
+		}
 	}
 
 	@Nested

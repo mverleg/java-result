@@ -258,7 +258,6 @@ class ErrTest {
 
 	@Nested
 	class Alternative {
-		//TODO @mark: test that suppliers aren't called if not needed
 		Result<Double, Integer> result = Result.err(1);
 
 		@Test
@@ -313,6 +312,12 @@ class ErrTest {
 			assertThrows(NullPointerException.class, () -> input.errOr((String)null));
 			assertThrows(NullPointerException.class, () -> input.errOr((Supplier<String>) null));
 			assertThrows(NullPointerException.class, () -> input.errOrNullable((Supplier<String>) null));
+		}
+
+		@Test
+		void isLazy() {
+			result.errOr(TestUtil::failIfCalled);
+			result.errOrNullable(TestUtil::failIfCalled);
 		}
 	}
 
