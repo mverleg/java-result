@@ -1,6 +1,7 @@
 package nl.markv.result;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
@@ -566,16 +567,9 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 */
 	@Nonnull
 	@CheckReturnValue
-	static <U, F> Result<List<U>, F> transpose(@Nonnull List<Result<U, F>> resultList) {
-		final List<U> okList = new ArrayList<>(resultList.size());
-		for (Result<U, F> item : resultList) {
-			if (item instanceof Ok<U, F> ok) {
-				okList.add(ok.get());
-			} else {
-				return item.adaptOk();
-			}
-		}
-		return Ok.of(okList);
+	static <U, F> Result<List<U>, F> transpose(@Nonnull List<Result<U, F>> inputList) {
+		final List<U> okList = new ArrayList<>(inputList.size());
+		return fillTransposeCollection(inputList, okList);
 	}
 
 	/**
@@ -586,16 +580,22 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 */
 	@Nonnull
 	@CheckReturnValue
-	static <U, F> Result<Set<U>, F> transpose(@Nonnull Set<Result<U, F>> resultSet) {
-		final Set<U> okSet = new LinkedHashSet<>((int)(resultSet.size() / 0.7 + 1), 0.7f);
-		for (Result<U, F> item : resultSet) {
+	static <U, F> Result<Set<U>, F> transpose(@Nonnull Set<Result<U, F>> inputSet) {
+		final Set<U> okSet = new LinkedHashSet<>((int)(inputSet.size() *1.5 + 1), 0.7f);
+		return fillTransposeCollection(inputSet, okSet);
+	}
+
+	@Nonnull
+	@CheckReturnValue
+	private static <U, F, UL extends Collection<U>> Result<UL, F> fillTransposeCollection(Collection<Result<U, F>> inputCollection, UL okCollection) {
+		for (Result<U, F> item : inputCollection) {
 			if (item instanceof Ok<U, F> ok) {
-				okSet.add(ok.get());
+				okCollection.add(ok.get());
 			} else {
 				return item.adaptOk();
 			}
 		}
-		return Ok.of(okSet);
+		return Ok.of(okCollection);
 	}
 
 	/**

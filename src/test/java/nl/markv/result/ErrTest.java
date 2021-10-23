@@ -20,23 +20,24 @@ class ErrTest {
 
 		static class Sub extends Super {}
 
-		Err<Integer, Integer> bareErr = err(1);
-		Result<Integer, Integer> resultErr = bareErr;
-		Err<Integer, Integer> newBareErr = (Err<Integer, Integer>) resultErr;
+		final Err<Integer, Integer> bareErr = err(1);
+		final Result<Integer, Integer> resultErr = bareErr;
+		final Err<Integer, Integer> newBareErr = (Err<Integer, Integer>) resultErr;
 
-		List<Err<Integer, ?>> listOfErr = List.of(err(1));
-		List<? extends Result<Integer, ?>> listOfResultErr = listOfErr;
-		int listErrValue = listOfResultErr.get(0).getOrThrow();
+		final List<Err<?, Integer>> listOfErr = List.of(err(1));
+		final List<? extends Result<?, Integer>> listOfResultErr = listOfErr;
+		final int listErrValue = listOfResultErr.get(0).getErrOrThrow();
 
-		Result<Sub, ?> subErr = err(new Sub());
-		Result<? extends Super, ?> superErr = subErr;
-		Super value = superErr.getOrThrow();
+		final Result<?, Sub> subErr = err(new Sub());
+		final Result<?, ? extends Super> superErr = subErr;
+		@SuppressWarnings("unused")
+		final Super value = superErr.getErrOrThrow();
 	}
 
 	@Test
 	void types() {
-		var types = new OkTest.Types();  // Force load static nested class.
-		assert 1 == types.newBareErr.getOrThrow();
+		var types = new Types();  // Force load static nested class.
+		assert 1 == types.newBareErr.getErrOrThrow();
 		assert 1 == types.listErrValue;
 	}
 
@@ -47,7 +48,6 @@ class ErrTest {
 			var res = Err.of("hello");
 			assert !res.isOk();
 			assert res.isErr();
-			//noinspection ConstantConditions
 			if (res instanceof Err<?, String> err) {
 				assert "hello".equals(err.get());
 			} else {
@@ -59,7 +59,6 @@ class ErrTest {
 		void number() {
 			var res = err(1);
 			assert res.isErr();
-			//noinspection ConstantConditions
 			if (res instanceof Err<?, Integer> err) {
 				assert 1 == err.get();
 			} else {
@@ -126,8 +125,8 @@ class ErrTest {
 		@SuppressWarnings({"ConstantConditions", "deprecation"})
 		void nonNull() {
 			var res = err("hello");
-			assertThrows(NullPointerException.class, () -> res.getOrThrow((String)null));
-			assertThrows(NullPointerException.class, () -> res.getOrThrow(() -> null));
+			assertThrows(NullPointerException.class, () -> res.getOrThrow((String) null));
+			assertThrows(NullPointerException.class, () -> res.getOrThrow(TestUtil::nullSupplier));
 		}
 	}
 
@@ -285,7 +284,7 @@ class ErrTest {
 
 	@Nested
 	class Alternative {
-		Result<Double, Integer> result = err(1);
+		final Result<Double, Integer> result = err(1);
 
 		@Test
 		void orOk() {
@@ -305,7 +304,7 @@ class ErrTest {
 			assert result.okOrNullable(2.0) == 2.0;
 			assert result.okOrNullable((Double)null) == null;
 			assert result.okOrNullable(() -> 2.0) == 2.0;
-			assert result.okOrNullable(() -> null) == null;
+			assert result.okOrNullable(TestUtil::nullSupplier) == null;
 		}
 
 		@Test
@@ -319,7 +318,7 @@ class ErrTest {
 			assert result.errOrNullable(2) == 1;
 			assert result.errOrNullable((Integer)null) == 1;
 			assert result.errOrNullable(() -> 2) == 1;
-			assert result.errOrNullable(() -> null) == 1;
+			assert result.errOrNullable(TestUtil::nullSupplier) == 1;
 		}
 
 		@Test
@@ -334,7 +333,7 @@ class ErrTest {
 			var input = err("hello");
 			assertThrows(NullPointerException.class, () -> input.okOr((String)null));
 			assertThrows(NullPointerException.class, () -> input.okOr((Supplier<String>) null));
-			assertThrows(NullPointerException.class, () -> input.okOr(() -> null));
+			assertThrows(NullPointerException.class, () -> input.okOr(TestUtil::nullSupplier));
 			assertThrows(NullPointerException.class, () -> input.okOrNullable((Supplier<Object>) null));
 			assertThrows(NullPointerException.class, () -> input.errOr((String)null));
 			assertThrows(NullPointerException.class, () -> input.errOr((Supplier<String>) null));
@@ -444,7 +443,7 @@ class ErrTest {
 		void nonNull() {
 			assertThrows(NullPointerException.class, () -> input.or((Result<String, String>) null));
 			assertThrows(NullPointerException.class, () -> input.or((Supplier<Result<String, String>>) null));
-			assertThrows(NullPointerException.class, () -> input.or((Supplier<Result<String, String>>) () -> null));
+			assertThrows(NullPointerException.class, () -> input.or((Supplier<Result<String, String>>) TestUtil::nullSupplier));
 		}
 	}
 

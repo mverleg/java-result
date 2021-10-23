@@ -1,5 +1,7 @@
 package nl.markv.result;
 
+import javax.annotation.Nullable;
+
 public class TestUtil {
 
 	public static final class Toggle {
@@ -18,7 +20,12 @@ public class TestUtil {
 		throw new AssertionError();
 	}
 
-	public static <T, R> R failIfCalled(T ignored) {
+	@Nullable
+	public static <R> R nullSupplier() {
+		return null;
+	}
+
+	public static <T, R> R failIfCalled(@SuppressWarnings("unused") T ignored) {
 		throw new AssertionError();
 	}
 }

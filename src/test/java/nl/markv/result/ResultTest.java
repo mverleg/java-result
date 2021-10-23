@@ -100,7 +100,7 @@ class ResultTest {
 		@SuppressWarnings("ConstantConditions")
 		void nonNull() {
 			assertThrows(NullPointerException.class, () -> Result.attempt(null));
-			assertThrows(NullPointerException.class, () -> Result.attempt(() -> null));
+			assertThrows(NullPointerException.class, () -> Result.attempt(TestUtil::nullSupplier));
 		}
 	}
 
