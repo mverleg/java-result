@@ -201,7 +201,7 @@ public final class Ok<T, E> implements Result<T, E> {
 	 */
 	@Nonnull
 	@Override
-	public T solve(@Nonnull Function<E, T> errToOkConverter) {
+	public T recover(@Nonnull Function<E, T> errToOkConverter) {
 		requireNonNull(errToOkConverter);
 		return value;
 	}

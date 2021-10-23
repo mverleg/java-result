@@ -267,10 +267,10 @@ class OkTest {
 	}
 
 	@Nested
-	class Solve {
+	class Recover {
 		@Test
-	    void solve() {
-			var result = ok(2).solve(TestUtil::failIfCalled);
+	    void recovery() {
+			var result = ok(2).recover(TestUtil::failIfCalled);
 			assert 2 == result;
 		}
 
@@ -278,7 +278,7 @@ class OkTest {
 		@SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})
 		void nonNull() {
 			var input = ok("hello");
-			assertThrows(NullPointerException.class, () -> input.solve(null));
+			assertThrows(NullPointerException.class, () -> input.recover(null));
 		}
 	}
 

@@ -209,7 +209,7 @@ public final class Err<T, E> implements Result<T, E> {
 	 */
 	@Nonnull
 	@Override
-	public T solve(@Nonnull Function<E, T> errToOkConverter) {
+	public T recover(@Nonnull Function<E, T> errToOkConverter) {
 		return requireNonNull(errToOkConverter.apply(value));
 	}
 

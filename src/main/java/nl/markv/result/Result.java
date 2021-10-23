@@ -58,7 +58,7 @@ import static java.util.Objects.requireNonNull;
  *	<p>
  * {@link Result} has many useful methods: doing things conditionally ({@link #ifOk(Consumer)},
  * {@link #contains(T)}, {@link #matches(Predicate)}), converting types into others
- * ({@link #map(Function)}, {@link #okOr(Supplier)}, {@link #solve(Function)}, {@link #adaptErr()}),
+ * ({@link #map(Function)}, {@link #okOr(Supplier)}, {@link #recover(Function)}, {@link #adaptErr()}),
  * or combining multiple optionals ({@link #and(Supplier)}, {@link #or(Result)}, {@link ResultCollector}).
  * Creation is easy ({@link #ok(T)}, {@link #err(E)}, {@link #attempt(Attempt)},
  * {@link #from(Optional)}) and it integrates with {@link Stream}, {@link Iterable<T>} and collections
@@ -286,14 +286,15 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * Call on of the functions, depending on {@link Ok} or {@link Err}. Both should return the same type.
 	 * <p>
 	 * If the functions return nothing, use {@link #ifEither(Consumer, Consumer)} instead.
+	 * <p>
+	 * Also called: fold
 	 *
 	 * @throws NullPointerException if either converter is called and returns {@code null}.
 	 * @see #ifEither(Consumer, Consumer)
 	 * @see #map(Function)
 	 * @see #mapErr(Function)
-	 * @see #solve(Function)
+	 * @see #recover(Function)
 	 */
-	//TODO @mark: Kotlin calls this `fold`, consider renaming
 	@Nonnull
 	<R> R branch(@Nonnull Function<T, R> okConverter, @Nonnull Function<E, R> errConverter);
 
@@ -302,6 +303,8 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * of the same type as {@link Result}, and return that.
 	 * <p>
 	 * If the content of {@link Err} is not needed to produce an alternative value, use {@link #okOr(Supplier)} instead.
+	 * <p>
+	 * Also called: recover
 	 *
 	 * @param errToOkConverter Function that takes the type of {@link Err} and returns the type of {@link Ok}.
 	 * @throws NullPointerException if the converter is called and returns {@code null}.
@@ -310,9 +313,8 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * @see #branch(Function, Function)
 	 * @see #okOr(Supplier)
 	 */
-	//TODO @mark: Kotlin calls this `recover`, consider renaming
 	@Nonnull
-	T solve(@Nonnull Function<E, T> errToOkConverter);
+	T recover(@Nonnull Function<E, T> errToOkConverter);
 
 	/**
 	 * Like {@link #okOrNullable(T)}, but does not allow null input or output.
@@ -331,11 +333,11 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	/**
 	 * If this {@link Result} is {@link Ok}, return the value. If it is not, return the given alternative.
 	 * <p>
-	 * If the result is heavy to compute, use {@link #okOr(Supplier)} or {@link #solve(Function)} instead.
+	 * If the result is heavy to compute, use {@link #okOr(Supplier)} or {@link #recover(Function)} instead.
 	 *
 	 * @param alternative The value that will replace {@link Err}.
 	 * @see #okOr(Supplier)
-	 * @see #solve(Function)
+	 * @see #recover(Function)
 	 * @see #errOr(E)
 	 */
 	@Nullable
@@ -346,7 +348,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 *
 	 * @param alternativeSupplier A function that will produce a value to replace {@link Err}. Will only be invoked if {@link Err}, and only once.
 	 * @see #okOr(T)
-	 * @see #solve(Function)
+	 * @see #recover(Function)
 	 * @see #errOr(E)
 	 */
 	@Nullable
@@ -388,7 +390,6 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * @see #errOr(E)
 	 * @see #okOr(T)
 	 */
-	//TODO @mark: change name because passing 'null' needs type annotation?
 	@Nullable
 	E errOrNullable(@Nonnull Supplier<E> alternativeSupplier);
 
