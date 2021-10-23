@@ -341,7 +341,7 @@ class ErrTest {
 
 	@Nested
 	class Without {
-		private final Result<String, Integer> result = err(2);
+		final Result<String, Integer> result = err(2);
 
 		@Test
 		void withoutErr() {
@@ -359,7 +359,7 @@ class ErrTest {
 
 	@Nested
 	class And {
-		private final Result<String, Integer> input = err(2);
+		final Result<String, Integer> input = err(2);
 
 		@Test
 		void andOk() {
@@ -388,7 +388,7 @@ class ErrTest {
 
 	@Nested
 	class Or {
-		private final Result<String, Integer> input = err(2);
+		final Result<String, Integer> input = err(2);
 
 		@Test
 		void orOk() {
@@ -489,7 +489,7 @@ class ErrTest {
 
 	@Nested
 	class Sequence {
-		private final Result<String, Integer> result = err(2);
+		final Result<String, Integer> result = err(2);
 
 		@Test
 		void iterator() {

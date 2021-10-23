@@ -63,7 +63,7 @@ class ResultTest {
 	@Nested
 	class Attempting {
 
-		private double fail() throws Exception {
+		double fail() throws Exception {
 			throw new Exception("checked");
 		}
 

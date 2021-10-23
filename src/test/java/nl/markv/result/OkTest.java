@@ -14,7 +14,6 @@ import static nl.markv.result.Result.ok;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class OkTest {
-	//TODO @mark: test subtypes (i.e. Ok<Integer, ?> <- Ok<Number, ?>
 
 	@Nested
 	class Create {
@@ -338,7 +337,7 @@ class OkTest {
 
 	@Nested
 	class Without {
-		private final Result<Integer, String> result = ok(2);
+		final Result<Integer, String> result = ok(2);
 
 		@Test
 		void withoutOk() {
@@ -356,7 +355,7 @@ class OkTest {
 
 	@Nested
 	class And {
-		private final Result<Integer, String> input = ok(2);
+		final Result<Integer, String> input = ok(2);
 
 		@Test
 		void andOk() {
@@ -393,7 +392,7 @@ class OkTest {
 
 	@Nested
 	class Or {
-		private final Result<Integer, String> input = ok(2);
+		final Result<Integer, String> input = ok(2);
 
 		@Test
 	    void orOk() {
@@ -486,7 +485,7 @@ class OkTest {
 
 	@Nested
 	class Sequence {
-		private final Result<Integer, String> result = ok(2);
+		final Result<Integer, String> result = ok(2);
 
 		@Test
 		void iterator() {
