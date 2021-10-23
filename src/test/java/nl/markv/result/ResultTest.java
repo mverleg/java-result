@@ -12,7 +12,9 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
+import static nl.markv.result.Result.err;
 import static nl.markv.result.Result.flatten;
+import static nl.markv.result.Result.ok;
 import static nl.markv.result.Result.transpose;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -113,7 +115,7 @@ class ResultTest {
 
 		@Test
 	    void singleOk() {
-		    var resultList = transpose(singletonList(Ok.of(2)));
+		    var resultList = transpose(singletonList(ok(2)));
 		    assert resultList.isOk();
 			var list = resultList.getOrThrow();
 		    assert list.size() == 1;
@@ -122,14 +124,14 @@ class ResultTest {
 
 		@Test
 	    void singleErr() {
-		    var resultList = transpose(singletonList(Err.of(2)));
+		    var resultList = transpose(singletonList(err(2)));
 		    assert resultList.isErr();
 		    assert resultList.getErrOrThrow() == 2;
 		}
 
 		@Test
 	    void multipleOk() {
-		    var resultList = transpose(asList(Ok.of(2), Ok.of(4), Ok.of(8)));
+		    var resultList = transpose(asList(ok(2), ok(4), ok(8)));
 		    assert resultList.isOk();
 			var list = resultList.getOrThrow();
 		    assert list.size() == 3;
@@ -140,28 +142,28 @@ class ResultTest {
 
 		@Test
 	    void errAtStart() {
-			var resultList = transpose(asList(Err.of(2), Ok.of(4), Ok.of(8)));
+			var resultList = transpose(asList(err(2), ok(4), ok(8)));
 		    assert resultList.isErr();
 		    assert resultList.getErrOrThrow() == 2;
 		}
 
 		@Test
 	    void errInMiddle() {
-			var resultList = transpose(asList(Ok.of(2), Err.of(4), Ok.of(8)));
+			var resultList = transpose(asList(ok(2), err(4), ok(8)));
 		    assert resultList.isErr();
 		    assert resultList.getErrOrThrow() == 4;
 		}
 
 		@Test
 	    void errAtEnd() {
-			var resultList = transpose(asList(Ok.of(2), Ok.of(4), Err.of(8)));
+			var resultList = transpose(asList(ok(2), ok(4), err(8)));
 		    assert resultList.isErr();
 		    assert resultList.getErrOrThrow() == 8;
 		}
 
 		@Test
 	    void multipleErrors() {
-			var resultList = transpose(asList(Err.of(2), Err.of(4), Err.of(8)));
+			var resultList = transpose(asList(err(2), err(4), err(8)));
 		    assert resultList.isErr();
 		    assert resultList.getErrOrThrow() == 2;
 		}
@@ -184,7 +186,7 @@ class ResultTest {
 
 		@Test
 		void singleOk() {
-			var resultSet = transpose(singleton(Ok.of(2)));
+			var resultSet = transpose(singleton(ok(2)));
 			assert resultSet.isOk();
 			var set = resultSet.getOrThrow();
 			assert set.size() == 1;
@@ -193,14 +195,14 @@ class ResultTest {
 
 		@Test
 		void singleErr() {
-			var resultSet = transpose(singleton(Err.of(2)));
+			var resultSet = transpose(singleton(err(2)));
 			assert resultSet.isErr();
 			assert resultSet.getErrOrThrow() == 2;
 		}
 
 		@Test
 		void multipleOk() {
-			var resultSet = transpose(Set.of(Ok.of(2), Ok.of(4), Ok.of(8)));
+			var resultSet = transpose(Set.of(ok(2), ok(4), ok(8)));
 			assert resultSet.isOk();
 			var set = resultSet.getOrThrow();
 			assert set.size() == 3;
@@ -211,7 +213,7 @@ class ResultTest {
 
 		@Test
 		void containsErr() {
-			var resultSet = transpose(Set.of(Ok.of(2), Err.of(4), Ok.of(8)));
+			var resultSet = transpose(Set.of(ok(2), err(4), ok(8)));
 			assert resultSet.isErr();
 			assert resultSet.getErrOrThrow() == 4;
 		}
@@ -219,7 +221,7 @@ class ResultTest {
 		@Test
 		void multipleErrs() {
 			// Cannot know which error will be returned in this case
-			var resultSet = transpose(Set.of(Err.of(2), Err.of(4), Err.of(8)));
+			var resultSet = transpose(Set.of(err(2), err(4), err(8)));
 			assert resultSet.isErr();
 			assert Set.of(2, 4, 8).contains(resultSet.getErrOrThrow());
 		}
@@ -235,7 +237,7 @@ class ResultTest {
 	class TransposeOptional {
 		@Test
 	    void SomeOk() {
-			var result = transpose(Optional.of(Ok.of(2)));
+			var result = transpose(Optional.of(ok(2)));
 			assert result.isOk();
 			assert result.getOrThrow().isPresent();
 			assert result.getOrThrow().get() == 2;
@@ -243,7 +245,7 @@ class ResultTest {
 
 		@Test
 	    void SomeErr() {
-			var result = transpose(Optional.of(Err.of(2)));
+			var result = transpose(Optional.of(err(2)));
 			assert result.isErr();
 			assert result.getErrOrThrow() == 2;
 		}
@@ -257,7 +259,7 @@ class ResultTest {
 
 		@Test
 		void OkSome() {
-			var result = transpose(Ok.of(Optional.of(2)));
+			var result = transpose(ok(Optional.of(2)));
 			assert result.isPresent();
 			assert result.get().isOk();
 			assert result.get().getOrThrow() == 2;
@@ -265,13 +267,13 @@ class ResultTest {
 
 		@Test
 		void OkNone() {
-			var result = transpose(Ok.of(Optional.empty()));
+			var result = transpose(ok(Optional.empty()));
 			assert result.isEmpty();
 		}
 
 		@Test
 		void Err() {
-			var result = transpose(Err.of(2));
+			var result = transpose(err(2));
 			assert result.isPresent();
 			assert result.get().isErr();
 			assert result.get().getErrOrThrow() == 2;
@@ -289,21 +291,21 @@ class ResultTest {
 	class Flatten {
 		@Test
 	    void OkOk() {
-			var result = flatten(Ok.of(Ok.of(2)));
+			var result = flatten(ok(ok(2)));
 		    assert result.isOk();
 		    assert result.getOrThrow() == 2;
 		}
 
 		@Test
 	    void OkErr() {
-			var result = flatten(Ok.of(Err.of(2)));
+			var result = flatten(ok(err(2)));
 		    assert result.isErr();
 		    assert result.getErrOrThrow() == 2;
 		}
 
 		@Test
 		void Err() {
-			var result = flatten(Err.of(2));
+			var result = flatten(err(2));
 			assert result.isErr();
 			assert result.getErrOrThrow() == 2;
 		}
