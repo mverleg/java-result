@@ -75,9 +75,16 @@ class ErrTest {
 		}
 	}
 
-
 	@Nested
 	class GetOrThrow {
+		@Test
+		void getErr() {
+			Result<String, String> res = Err.of("hello");
+			assert "hello".equals(res.getErrOrThrow());
+			assert "hello".equals(res.getErrOrThrow("my error"));
+			assert "hello".equals(res.getErrOrThrow(IllegalStateException::new));
+		}
+
 		@Test
 		void getOk() {
 			Result<String, String> res = Err.of("hello");
@@ -85,14 +92,6 @@ class ErrTest {
 			var ex = assertThrows(WrongResultVariantException.class, () -> res.getOrThrow("my error"));
 			assert "my error".equals(ex.getMessage());
 			assertThrows(IllegalStateException.class, () -> res.getOrThrow(IllegalStateException::new));
-		}
-
-		@Test
-		void getErr() {
-			Result<String, String> res = Err.of("hello");
-			assert "hello".equals(res.getErrOrThrow());
-			assert "hello".equals(res.getErrOrThrow("my error"));
-			assert "hello".equals(res.getErrOrThrow(IllegalStateException::new));
 		}
 
 		@Test
@@ -164,11 +163,6 @@ class ErrTest {
 	@Nested
 	class IfOkErr {
 		@Test
-		void ifOk() {
-			Err.of(2).ifOk(TestUtil::failIfCalled);
-		}
-
-		@Test
 		void ifErr() {
 			var toggle = new TestUtil.Toggle();
 			Err.of(2).ifErr(value -> {
@@ -176,6 +170,11 @@ class ErrTest {
 				toggle.turnOn();
 			});
 			assert toggle.isOn();
+		}
+
+		@Test
+		void ifOk() {
+			Err.of(2).ifOk(TestUtil::failIfCalled);
 		}
 
 		@Test
@@ -324,16 +323,16 @@ class ErrTest {
 	@Nested
 	class Adapt {
 		@Test
+		void changeErrType() {
+			Result<Integer, Integer> err = Err.of(1);
+			assertThrows(WrongResultVariantException.class, err::adaptErr);
+		}
+
+		@Test
 		void changeOkType() {
 			Result<String, Integer> err1 = Err.of(1);
 			Result<Integer, Integer> err2 = err1.adaptOk();
 			assert err2.getErrOrThrow() == 1;
-		}
-
-		@Test
-		void changeErrType() {
-			Result<Integer, Integer> err = Err.of(1);
-			assertThrows(WrongResultVariantException.class, err::adaptErr);
 		}
 	}
 
@@ -342,16 +341,16 @@ class ErrTest {
 		private final Result<String, Integer> result = Err.of(2);
 
 		@Test
+		void withoutErr() {
+			Optional<String> option = result.withoutErr();
+			assert option.isEmpty();
+		}
+
+		@Test
 	    void withoutOk() {
 			Optional<Integer> option = result.withoutOk();
 			assert option.isPresent();
 			assert option.get() == 2;
-		}
-
-		@Test
-		void withoutErr() {
-			Optional<String> option = result.withoutErr();
-			assert option.isEmpty();
 		}
 	}
 
@@ -447,14 +446,6 @@ class ErrTest {
 	@Nested
 	class Matches {
 		@Test
-		void ok() {
-			assert !Ok.of(2).errMatches(err -> true);
-			assert !Ok.<Integer, Integer>of(2).errMatches(err -> err == 2);
-			//noinspection ResultOfMethodCallIgnored
-			Ok.of(2).errMatches(TestUtil::failIfCalled);
-		}
-
-		@Test
 		void errTrue() {
 			assert Err.of(2).errMatches(ok -> ok == 2);
 			assert Err.of("HELLO").errMatches("hello"::equalsIgnoreCase);
@@ -464,6 +455,14 @@ class ErrTest {
 		void errFalse() {
 			assert !Err.of(2).errMatches(ok -> ok == 3);
 			assert !Err.of("HELLO").errMatches("hello"::equals);
+		}
+
+		@Test
+		void ok() {
+			assert !Ok.of(2).errMatches(err -> true);
+			assert !Ok.<Integer, Integer>of(2).errMatches(err -> err == 2);
+			//noinspection ResultOfMethodCallIgnored
+			Ok.of(2).errMatches(TestUtil::failIfCalled);
 		}
 
 		@Test

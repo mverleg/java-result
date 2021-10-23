@@ -244,7 +244,7 @@ class OkTest {
 		@Test
 	    void solve() {
 			var result = Ok.of(2).solve(TestUtil::failIfCalled);
-			assert result == 2;
+			assert 2 == result;
 		}
 
 		@Test
@@ -257,7 +257,6 @@ class OkTest {
 
 	@Nested
 	class Alternative {
-		//TODO @mark: test that suppliers aren't called if not needed
 		Result<Integer, Double> result = Result.ok(1);
 
 		@Test
