@@ -126,6 +126,7 @@ class OkTest {
 		void nonNull() {
 			var res = ok("hello");
 			assertThrows(NullPointerException.class, () -> res.getErrOrThrow((String)null));
+			assertThrows(NullPointerException.class, () -> res.getErrOrThrow((Supplier<RuntimeException>) null));
 			assertThrows(NullPointerException.class, () -> res.getErrOrThrow(TestUtil::nullSupplier));
 		}
 	}

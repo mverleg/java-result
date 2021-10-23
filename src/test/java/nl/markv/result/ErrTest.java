@@ -126,6 +126,7 @@ class ErrTest {
 		void nonNull() {
 			var res = err("hello");
 			assertThrows(NullPointerException.class, () -> res.getOrThrow((String) null));
+			assertThrows(NullPointerException.class, () -> res.getOrThrow((Supplier<RuntimeException>) null));
 			assertThrows(NullPointerException.class, () -> res.getOrThrow(TestUtil::nullSupplier));
 		}
 	}

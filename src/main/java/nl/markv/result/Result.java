@@ -67,7 +67,6 @@ import static java.util.Objects.requireNonNull;
  * @param <T> The type that is contained by {@link Ok} if this {@link Result} is successful.
  * @param <E> The type that is contained by {@link Err} if this {@link Result} is unsuccessful.
  */
-//TODO @mark: @Nonnull everywhere, and requireNonNull for arguments
 public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 
 	/**
@@ -161,7 +160,6 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * @see #getOrThrow(String)
 	 * @see #getErrOrThrow()
 	 */
-	//TODO @mark: test NPE
 	@Nonnull
 	T getOrThrow(@Nonnull Supplier<RuntimeException> exceptionSupplier);
 
@@ -199,14 +197,13 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * @see #getErrOrThrow()
 	 * @see #getErrOrThrow(String)
 	 */
-	//TODO @mark: test NPE
 	@Nonnull
 	E getErrOrThrow(@Nonnull Supplier<RuntimeException> exceptionSupplier);
 
 	/**
 	 * Map the {@link Ok} value to a new value of a different type. Does nothing on {@link Err}.
 	 *
-	 * @throws NullPointerException if the map is called and returns {@code null}.
+	 * @throws NullPointerException if the converter is called and returns {@code null}.
 	 * @see #mapErr(Function)
 	 * @see #branch(Function, Function)
 	 * @see Stream#map(Function)
@@ -218,19 +215,19 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * Map the {@link Ok} value to a new {@link Result} value, flattening the two results to a single one.
 	 * Does nothing on {@link Err}.
 	 *
+	 * @throws NullPointerException if the converter is called and returns {@code null}.
 	 * @see #map(Function)
 	 * @see #flatMapErr(Function)
 	 * @see #flatten(Result)
 	 * @see Stream#flatMap(Function)
 	 */
-	//TODO @mark: document NPE
 	@Nonnull
 	<U> Result<U, E> flatMap(@Nonnull Function<T, Result<U, E>> converter);
 
 	/**
 	 * Map the {@link Err} value to a new value of a different type. Does nothing on {@link Ok}.
 	 *
-	 * @throws NullPointerException if the map is called and returns {@code null}.
+	 * @throws NullPointerException if the converter is called and returns {@code null}.
 	 * @see #map(Function)
 	 * @see #branch(Function, Function)
 	 * @see Stream#map(Function)
@@ -242,12 +239,12 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * Map the {@link Err} value to a new {@link Result} value, flattening the two results to a single one.
 	 * Does nothing on {@link Ok}.
 	 *
+	 * @throws NullPointerException if the converter is called and returns {@code null}.
 	 * @see #mapErr(Function) 
 	 * @see #flatMap(Function)
 	 * @see #flatten(Result)
 	 * @see Stream#flatMap(Function)
 	 */
-	//TODO @mark: document NPE
 	@Nonnull
 	<F> Result<T, F> flatMapErr(@Nonnull Function<E, Result<T, F>> converter);
 
@@ -314,9 +311,22 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * @see #okOr(Supplier)
 	 */
 	//TODO @mark: Kotlin calls this `recover`, consider renaming
-	//TODO @mark: test NPE
 	@Nonnull
 	T solve(@Nonnull Function<E, T> errToOkConverter);
+
+	/**
+	 * Like {@link #okOrNullable(T)}, but does not allow null input or output.
+	 */
+	@Nonnull
+	T okOr(@Nonnull T alternative);
+
+	/**
+	 * Like {@link #okOrNullable(Supplier)}, but does not allow null input or output.
+	 *
+	 * @throws NullPointerException if the alternative supplier is called and returns {@code null}.
+	 */
+	@Nonnull
+	T okOr(@Nonnull Supplier<T> alternativeSupplier);
 
 	/**
 	 * If this {@link Result} is {@link Ok}, return the value. If it is not, return the given alternative.
@@ -328,28 +338,17 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * @see #solve(Function)
 	 * @see #errOr(E)
 	 */
-	//TODO @mark: accept null
-	//TODO @mark: unit test null everywhere
-	@Nonnull
-	T okOr(@Nonnull T alternative);
+	@Nullable
+	T okOrNullable(@Nullable T alternative);
 
 	/**
 	 * If this {@link Result} is {@link Ok}, return the value. If it is not, produce an alternative using the given supplier.
 	 *
 	 * @param alternativeSupplier A function that will produce a value to replace {@link Err}. Will only be invoked if {@link Err}, and only once.
-	 * @throws NullPointerException if the alternative supplier is called and returns {@code null}.
 	 * @see #okOr(T)
 	 * @see #solve(Function)
 	 * @see #errOr(E)
 	 */
-	//TODO @mark: test NPE
-	@Nonnull
-	T okOr(@Nonnull Supplier<T> alternativeSupplier);
-
-	@Nullable
-	T okOrNullable(@Nullable T alternative);
-
-	//TODO @mark: change name because passing 'null' needs type annotation?
 	@Nullable
 	T okOrNullable(@Nonnull Supplier<T> alternativeSupplier);
 
@@ -357,31 +356,38 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	T okOrNull();
 
 	/**
-	 * If this {@link Result} is {@link Err}, return the value. If it is not, return the given alternative.
-	 * <p>
-	 * If the result is heavy to compute, use {@link #errOr(Supplier)} instead.
-	 *
-	 * @param alternative The value that will replace {@link Ok}.
-	 * @see #errOr(Supplier)
-	 * @see #okOr(T)
+	 * Like {@link #errOrNullable(E)}, but does not allow null input or output.
 	 */
 	@Nonnull
 	E errOr(@Nonnull E alternative);
 
 	/**
-	 * If this {@link Result} is {@link Err}, return the value. If it is not, produce an alternative using the given supplier.
+	 * Like {@link #errOrNullable(Supplier)}, but does not allow null input or output.
 	 *
-	 * @param alternativeSupplier A function that will produce a value to replace {@link Ok}. Will only be invoked if {@link Ok}, and only once.
 	 * @throws NullPointerException if the alternative supplier is called and returns {@code null}.
-	 * @see #errOr(E)
-	 * @see #okOr(T)
 	 */
 	@Nonnull
 	E errOr(@Nonnull Supplier<E> alternativeSupplier);
 
+	/**
+	 * If this {@link Result} is {@link Err}, return the value. If it is not, return the given alternative.
+	 * <p>
+	 * If the result is heavy to compute, use {@link #errOrNullable(Supplier)} instead.
+	 *
+	 * @param alternative The value that will replace {@link Ok}.
+	 * @see #errOr(Supplier)
+	 * @see #okOr(T)
+	 */
 	@Nullable
 	E errOrNullable(@Nullable E alternative);
 
+	/**
+	 * If this {@link Result} is {@link Err}, return the value. If it is not, produce an alternative using the given supplier.
+	 *
+	 * @param alternativeSupplier A function that will produce a value to replace {@link Ok}. Will only be invoked if {@link Ok}, and only once.
+	 * @see #errOr(E)
+	 * @see #okOr(T)
+	 */
 	//TODO @mark: change name because passing 'null' needs type annotation?
 	@Nullable
 	E errOrNullable(@Nonnull Supplier<E> alternativeSupplier);

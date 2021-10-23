@@ -43,6 +43,7 @@ public class ResultListCollector<T, E> implements Collector<Result<T, E>, Result
 		currentList.getOrThrow().add(newResult.getOrThrow());
 	}
 
+	@Nonnull
 	private ResultBuilder<List<T>, E> combinerImpl(@Nonnull ResultBuilder<List<T>, E> oneList, @Nonnull ResultBuilder<List<T>, E> otherList) {
 		if (oneList.isErr()) {
 			return oneList;
@@ -55,26 +56,31 @@ public class ResultListCollector<T, E> implements Collector<Result<T, E>, Result
 	}
 
 	@Override
+	@Nonnull
 	public Supplier<ResultBuilder<List<T>, E>> supplier() {
 		return this::supplierImpl;
 	}
 
 	@Override
+	@Nonnull
 	public BiConsumer<ResultBuilder<List<T>, E>, Result<T, E>> accumulator() {
 		return this::accumulatorImpl;
 	}
 
 	@Override
+	@Nonnull
 	public BinaryOperator<ResultBuilder<List<T>, E>> combiner() {
 		return this::combinerImpl;
 	}
 
 	@Override
+	@Nonnull
 	public Function<ResultBuilder<List<T>, E>, Result<List<T>, E>> finisher() {
 		return finisher;
 	}
 
 	@Override
+	@Nonnull
 	public Set<Characteristics> characteristics() {
 		return emptySet();
 	}
