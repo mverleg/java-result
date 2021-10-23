@@ -621,7 +621,7 @@ public sealed interface  Result<T, E> extends Iterable<T> permits Ok, Err {
 		} else if (result instanceof Err<U, F> err) {
 			return Err.of(err.get());
 		} else {
-			throw new Unreachable();
+			throw new IllegalStateException("UNREACHABLE");
 		}
 	}
 
@@ -644,7 +644,7 @@ public sealed interface  Result<T, E> extends Iterable<T> permits Ok, Err {
 		} else if (resultOptional instanceof Err<Optional<U>, F> err) {
 			return Optional.of(err.adaptOk());
 		} else {
-			throw new Unreachable();
+			throw new IllegalStateException("UNREACHABLE");
 		}
 	}
 

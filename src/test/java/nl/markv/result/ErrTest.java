@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-//TODO @mark: test null handling of all methods
 class ErrTest {
 
 	@Nested
@@ -61,7 +60,6 @@ class ErrTest {
 		void inferType() {
 			var res = Result.err(1.0);
 			assert res.isErr();
-			//noinspection ConstantConditions
 			if (res instanceof Err<?, Double> err) {
 				assert 1.0 == err.get();
 			} else {
@@ -100,7 +98,6 @@ class ErrTest {
 		@Test
 		@SuppressWarnings("ConstantConditions")
 		void nonNull() {
-			//TODO @mark: Ok -> Err
 			Result<String, String> res = Err.of("hello");
 			assertThrows(NullPointerException.class, () -> res.getOrThrow((String)null));
 			assertThrows(NullPointerException.class, () -> res.getOrThrow(() -> null));

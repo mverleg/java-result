@@ -12,7 +12,6 @@ import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class OkTest {
-
 	//TODO @mark: test subtypes (i.e. Ok<Integer, ?> <- Ok<Number, ?>
 
 	@Nested
@@ -62,7 +61,6 @@ class OkTest {
 		void inferType() {
 			var res = Result.ok(1.0);
 			assert res.isOk();
-			//noinspection ConstantConditions
 			if (res instanceof Ok<Double, ?> ok) {
 				assert 1.0 == ok.get();
 			} else {
