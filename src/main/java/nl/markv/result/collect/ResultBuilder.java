@@ -6,12 +6,15 @@ import nl.markv.result.Err;
 import nl.markv.result.Ok;
 import nl.markv.result.Result;
 
+import static java.util.Objects.requireNonNull;
+
 final class ResultBuilder<T, E> {
 
 	@Nonnull
 	private Result<T, E> current;
 
 	private ResultBuilder(@Nonnull Result<T, E> current) {
+		requireNonNull(current);
 		this.current = current;
 	}
 

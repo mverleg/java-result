@@ -86,7 +86,7 @@ public final class Err<T, E> implements Result<T, E> {
 	@Nonnull
 	@Override
 	public T getOrThrow(@Nonnull String exceptionMessage) {
-		return getOrThrow(() -> new WrongResultVariantException(exceptionMessage));
+		throw new WrongResultVariantException(exceptionMessage);
 	}
 
 	/**
@@ -99,7 +99,6 @@ public final class Err<T, E> implements Result<T, E> {
 	@Nonnull
 	@Override
 	public T getOrThrow(@Nonnull Supplier<RuntimeException> exceptionSupplier) {
-		requireNonNull(exceptionSupplier);
 		throw exceptionSupplier.get();
 	}
 
@@ -118,6 +117,7 @@ public final class Err<T, E> implements Result<T, E> {
 	@Nonnull
 	@Override
 	public E getErrOrThrow(@Nonnull String exceptionMessage) {
+		requireNonNull(exceptionMessage);
 		return value;
 	}
 
@@ -355,6 +355,7 @@ public final class Err<T, E> implements Result<T, E> {
 	@Nonnull
 	@Override
 	public <U> Result<U, E> and(@Nonnull Result<U, E> next) {
+		requireNonNull(next);
 		// See note about casting in 'adaptOk'
 		//noinspection unchecked
 		return (Result<U, E>) this;
@@ -366,6 +367,7 @@ public final class Err<T, E> implements Result<T, E> {
 	@Nonnull
 	@Override
 	public <U> Result<U, E> and(@Nonnull Supplier<Result<U, E>> nextSupplier) {
+		requireNonNull(nextSupplier);
 		// See note about casting in 'adaptOk'
 		//noinspection unchecked
 		return (Result<U, E>) this;

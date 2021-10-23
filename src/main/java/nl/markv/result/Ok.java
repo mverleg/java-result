@@ -67,6 +67,7 @@ public final class Ok<T, E> implements Result<T, E> {
 	@Nonnull
 	@Override
 	public T getOrThrow(@Nonnull String exceptionMessage) {
+		requireNonNull(exceptionMessage);
 		return value;
 	}
 
@@ -105,7 +106,7 @@ public final class Ok<T, E> implements Result<T, E> {
 	@Nonnull
 	@Override
 	public E getErrOrThrow(@Nonnull String exceptionMessage) {
-		return getErrOrThrow(() -> new WrongResultVariantException(exceptionMessage));
+		throw new WrongResultVariantException(exceptionMessage);
 	}
 
 	/**
@@ -365,6 +366,7 @@ public final class Ok<T, E> implements Result<T, E> {
 	@Nonnull
 	@Override
 	public <F> Result<T, F> or(@Nonnull Result<T, F> next) {
+		requireNonNull(next);
 		// See note about casting in 'adaptErr'
 		//noinspection unchecked
 		return (Result<T, F>) this;
@@ -376,6 +378,7 @@ public final class Ok<T, E> implements Result<T, E> {
 	@Nonnull
 	@Override
 	public <F> Result<T, F> or(@Nonnull Supplier<Result<T, F>> nextSupplier) {
+		requireNonNull(nextSupplier);
 		// See note about casting in 'adaptErr'
 		//noinspection unchecked
 		return (Result<T, F>) this;

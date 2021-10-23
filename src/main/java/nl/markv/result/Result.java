@@ -587,7 +587,8 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 
 	@Nonnull
 	@CheckReturnValue
-	private static <U, F, UL extends Collection<U>> Result<UL, F> fillTransposeCollection(Collection<Result<U, F>> inputCollection, UL okCollection) {
+	private static <U, F, UL extends Collection<U>> Result<UL, F> fillTransposeCollection(
+			@Nonnull Collection<Result<U, F>> inputCollection, @Nonnull UL okCollection) {
 		for (Result<U, F> item : inputCollection) {
 			if (item instanceof Ok<U, F> ok) {
 				okCollection.add(ok.get());
@@ -657,6 +658,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	@Nonnull
 	@CheckReturnValue
 	static <U, F> Result<U, F> flatten(@Nonnull Result<Result<U, F>, F> result) {
+		requireNonNull(result);
 		if (result instanceof Ok<Result<U, F>, F> ok) {
 			return ok.get();
 		}
