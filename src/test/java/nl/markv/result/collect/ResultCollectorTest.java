@@ -1,5 +1,7 @@
 package nl.markv.result.collect;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -98,14 +100,54 @@ class ResultCollectorTest {
 			assertThrows(RuntimeException.class, () -> resultList.ifOk(list -> list.add(7)));
 		}
 
-		@Test
-		void parallel() {
-			var result = Stream.concat(
-					IntStream.range(0, 1000).<Result<Integer, Integer>>mapToObj(Result::ok),
-					IntStream.range(0, 10).<Result<Integer, Integer>>mapToObj(Result::err));
-			var list = result.parallel().collect(toList());
-			assert list.isErr();
-			assert list.getErrOrThrow() == 0;
+		@Nested
+		class Parallel {
+			@Test
+			void okOk() {
+				var result = Stream.concat(
+						IntStream.range(0, 11).<Result<Integer, Integer>>mapToObj(Result::ok),
+						IntStream.range(11, 21).<Result<Integer, Integer>>mapToObj(Result::ok));
+				var list = result.parallel().collect(toList());
+				assert list.isOk();
+				var expected = new ArrayList<>();
+				for (int i = 0; i <= 20; i++) {
+					expected.add(i);
+				}
+				assert list.getOrThrow().equals(expected);
+			}
+
+			@Test
+			void okErr() {
+				var result = Stream.concat(
+						IntStream.range(11, 1000).<Result<Integer, Integer>>mapToObj(Result::ok),
+						IntStream.range(0, 10).<Result<Integer, Integer>>mapToObj(Result::err));
+				var list = result.parallel().collect(toList());
+				assert list.isErr();
+				assert list.getErrOrThrow() >= 0;
+				assert list.getErrOrThrow() < 10;
+			}
+
+			@Test
+			void errOk() {
+				var result = Stream.concat(
+						IntStream.range(0, 10).<Result<Integer, Integer>>mapToObj(Result::err),
+						IntStream.range(11, 1000).<Result<Integer, Integer>>mapToObj(Result::ok));
+				var list = result.parallel().collect(toList());
+				assert list.isErr();
+				assert list.getErrOrThrow() >= 0;
+				assert list.getErrOrThrow() < 1000;
+			}
+
+			@Test
+			void errErr() {
+				var result = Stream.concat(
+						IntStream.range(0, 11).<Result<Integer, Integer>>mapToObj(Result::err),
+						IntStream.range(11, 21).<Result<Integer, Integer>>mapToObj(Result::err));
+				var list = result.parallel().collect(toList());
+				assert list.isErr();
+				assert list.getErrOrThrow() >= 0;
+				assert list.getErrOrThrow() <= 20;
+			}
 		}
 	}
 
@@ -185,15 +227,54 @@ class ResultCollectorTest {
 			assert iter.next() == 32;
 		}
 
-		@Test
-		void parallel() {
-			var result = Stream.concat(
-					IntStream.range(0, 1000).<Result<Integer, Integer>>mapToObj(Result::ok),
-					IntStream.range(0, 10).<Result<Integer, Integer>>mapToObj(Result::err));
-			var list = result.parallel().collect(toSet());
-			assert list.isErr();
-			assert list.getErrOrThrow() >= 0;
-			assert list.getErrOrThrow() < 10;
+		@Nested
+		class Parallel {
+			@Test
+			void okOk() {
+				var result = Stream.concat(
+						IntStream.range(0, 11).<Result<Integer, Integer>>mapToObj(Result::ok),
+						IntStream.range(11, 21).<Result<Integer, Integer>>mapToObj(Result::ok));
+				var set = result.parallel().collect(toSet());
+				assert set.isOk();
+				var expected = new HashSet<>();
+				for (int i = 0; i <= 20; i++) {
+					expected.add(i);
+				}
+				assert set.getOrThrow().equals(expected);
+			}
+
+			@Test
+			void okErr() {
+				var result = Stream.concat(
+						IntStream.range(11, 1000).<Result<Integer, Integer>>mapToObj(Result::ok),
+						IntStream.range(0, 10).<Result<Integer, Integer>>mapToObj(Result::err));
+				var set = result.parallel().collect(toSet());
+				assert set.isErr();
+				assert set.getErrOrThrow() >= 0;
+				assert set.getErrOrThrow() < 10;
+			}
+
+			@Test
+			void errOk() {
+				var result = Stream.concat(
+						IntStream.range(0, 10).<Result<Integer, Integer>>mapToObj(Result::err),
+						IntStream.range(11, 1000).<Result<Integer, Integer>>mapToObj(Result::ok));
+				var set = result.parallel().collect(toSet());
+				assert set.isErr();
+				assert set.getErrOrThrow() >= 0;
+				assert set.getErrOrThrow() < 1000;
+			}
+
+			@Test
+			void errErr() {
+				var result = Stream.concat(
+						IntStream.range(0, 11).<Result<Integer, Integer>>mapToObj(Result::err),
+						IntStream.range(11, 21).<Result<Integer, Integer>>mapToObj(Result::err));
+				var set = result.parallel().collect(toSet());
+				assert set.isErr();
+				assert set.getErrOrThrow() >= 0;
+				assert set.getErrOrThrow() <= 20;
+			}
 		}
 	}
 }

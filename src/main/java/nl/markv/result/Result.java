@@ -67,7 +67,7 @@ import static java.util.Objects.requireNonNull;
  * @param <E> The type that is contained by {@link Err} if this {@link Result} is unsuccessful.
  */
 //TODO @mark: @Nonnull everywhere, and requireNonNull for arguments
-public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
+public sealed interface  Result<T, E> extends Iterable<T> permits Ok, Err {
 
 	/**
 	 * Create a successful {@link Result}.
@@ -621,7 +621,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 		} else if (result instanceof Err<U, F> err) {
 			return Err.of(err.get());
 		} else {
-			throw new IllegalStateException("unreachable");
+			throw new Unreachable();
 		}
 	}
 
@@ -644,7 +644,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 		} else if (resultOptional instanceof Err<Optional<U>, F> err) {
 			return Optional.of(err.adaptOk());
 		} else {
-			throw new IllegalStateException("unreachable");
+			throw new Unreachable();
 		}
 	}
 
