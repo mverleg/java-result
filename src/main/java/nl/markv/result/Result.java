@@ -67,7 +67,7 @@ import static java.util.Objects.requireNonNull;
  * @param <E> The type that is contained by {@link Err} if this {@link Result} is unsuccessful.
  */
 //TODO @mark: @Nonnull everywhere, and requireNonNull for arguments
-public sealed interface  Result<T, E> extends Iterable<T> permits Ok, Err {
+public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 
 	/**
 	 * Create a successful {@link Result}.

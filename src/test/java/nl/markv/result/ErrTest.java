@@ -15,6 +15,31 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ErrTest {
 
+	static class Types {
+		static class Super {}
+
+		static class Sub extends Super {}
+
+		Err<Integer, Integer> bareErr = err(1);
+		Result<Integer, Integer> resultErr = bareErr;
+		Err<Integer, Integer> newBareErr = (Err<Integer, Integer>) resultErr;
+
+		List<Err<Integer, ?>> listOfErr = List.of(err(1));
+		List<? extends Result<Integer, ?>> listOfResultErr = listOfErr;
+		int listErrValue = listOfResultErr.get(0).getOrThrow();
+
+		Result<Sub, ?> subErr = err(new Sub());
+		Result<? extends Super, ?> superErr = subErr;
+		Super value = superErr.getOrThrow();
+	}
+
+	@Test
+	void types() {
+		var types = new OkTest.Types();  // Force load static nested class.
+		assert 1 == types.newBareErr.getOrThrow();
+		assert 1 == types.listErrValue;
+	}
+
 	@Nested
 	class Create {
 		@Test
