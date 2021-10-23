@@ -20,10 +20,9 @@ class OkTest {
 	class Create {
 		@Test
 		void string() {
-			Result<String, String> res = Ok.of("hello");
+			var res = Ok.of("hello");
 			assert res.isOk();
 			assert !res.isErr();
-			//noinspection ConstantConditions
 			if (res instanceof Ok<String, ?> ok) {
 				assert "hello".equals(ok.get());
 			} else {
@@ -33,9 +32,8 @@ class OkTest {
 
 		@Test
 		void number() {
-			Result<Integer, String> res = ok(1);
+			var res = ok(1);
 			assert res.isOk();
-			//noinspection ConstantConditions
 			if (res instanceof Ok<Integer, ?> ok) {
 				assert 1 == ok.get();
 			} else {
@@ -47,7 +45,6 @@ class OkTest {
 		void nested() {
 			Result<Result<Integer, String>, String> res = ok(ok(1));
 			assert res.isOk();
-			//noinspection ConstantConditions
 			if (res instanceof Ok<Result<Integer, String>, ?> ok1) {
 				if (ok1.get() instanceof Ok<Integer, ?> ok2) {
 					assert 1 == ok2.get();
@@ -82,15 +79,16 @@ class OkTest {
 	class GetOrThrow {
 		@Test
 		void getOk() {
-			Result<String, String> res = ok("hello");
+			var res = ok("hello");
 			assert "hello".equals(res.getOrThrow());
 			assert "hello".equals(res.getOrThrow("my error"));
 			assert "hello".equals(res.getOrThrow(IllegalStateException::new));
 		}
 
+		@SuppressWarnings("deprecation")
 		@Test
 		void getErr() {
-			Result<String, String> res = ok("hello");
+			var res = ok("hello");
 			assertThrows(WrongResultVariantException.class, res::getErrOrThrow);
 			var ex = assertThrows(WrongResultVariantException.class, () -> res.getErrOrThrow("my error"));
 			assert "my error".equals(ex.getMessage());
@@ -98,9 +96,9 @@ class OkTest {
 		}
 
 		@Test
-		@SuppressWarnings("ConstantConditions")
+		@SuppressWarnings({"ConstantConditions", "deprecation"})
 		void nonNull() {
-			Result<String, String> res = ok("hello");
+			var res = ok("hello");
 			assertThrows(NullPointerException.class, () -> res.getErrOrThrow((String)null));
 			assertThrows(NullPointerException.class, () -> res.getErrOrThrow(() -> null));
 		}
@@ -110,50 +108,50 @@ class OkTest {
 	class Mapping {
 		@Test
 		void okMap() {
-			Result<Integer, Integer> ok1 = ok(2);
-			Result<String, Integer> ok2 = ok1.map(nr -> String.valueOf(2 * nr));
+			var ok1 = ok(2);
+			var ok2 = ok1.map(nr -> String.valueOf(2 * nr));
 			assert "4".equals(ok2.getOrThrow());
 		}
 
 		@Test
 		void errMap() {
 			Result<Integer, Integer> ok1 = ok(2);
-			Result<Integer, String> ok2 = ok1.mapErr(nr -> String.valueOf(2 * nr));
+			var ok2 = ok1.mapErr(nr -> String.valueOf(2 * nr));
 			assert ok2.getOrThrow() == 2;
 		}
 
 		@Test
 		void okFlatMapOk() {
-			Result<Integer, Integer> ok1 = ok(2);
-			Result<String, Integer> ok2 = ok1.flatMap(nr -> ok(String.valueOf(2 * nr)));
+			var ok1 = ok(2);
+			var ok2 = ok1.flatMap(nr -> ok(String.valueOf(2 * nr)));
 			assert "4".equals(ok2.getOrThrow());
 		}
 
 		@Test
 		void okFlatMapErr() {
-			Result<Integer, String> ok = ok(2);
-			Result<Integer, String> err = ok.flatMap(nr -> err(String.valueOf(2 * nr)));
+			var ok = ok(2);
+			var err = ok.flatMap(nr -> err(String.valueOf(2 * nr)));
 			assert "4".equals(err.getErrOrThrow());
 		}
 
 		@Test
 		void errFlatMapOk() {
 			Result<Integer, Integer> ok1 = ok(2);
-			Result<Integer, String> ok2 = ok1.flatMapErr(nr -> ok(2 * nr));
+			var ok2 = ok1.flatMapErr(nr -> ok(2 * nr));
 			assert ok2.getOrThrow() == 2;
 		}
 
 		@Test
 		void errFlatMapErr() {
 			Result<Integer, Integer> ok1 = ok(2);
-			Result<Integer, String> ok2 = ok1.flatMapErr(nr -> err(String.valueOf(2 * nr)));
+			var ok2 = ok1.flatMapErr(nr -> err(String.valueOf(2 * nr)));
 			assert ok2.getOrThrow() == 2;
 		}
 
 		@Test
 		@SuppressWarnings("ConstantConditions")
 		void nonNull() {
-			Result<String, String> res = ok("hello");
+			var res = ok("hello");
 			assertThrows(NullPointerException.class, () -> res.map(null));
 			assertThrows(NullPointerException.class, () -> res.map(ignored -> null));
 			assertThrows(NullPointerException.class, () -> res.mapErr(null));
@@ -183,7 +181,7 @@ class OkTest {
 		@Test
 		@SuppressWarnings("ConstantConditions")
 		void nonNull() {
-			Result<String, String> res = ok("hello");
+			var res = ok("hello");
 			assertThrows(NullPointerException.class, () -> res.ifOk(null));
 			assertThrows(NullPointerException.class, () -> res.ifErr(null));
 		}
@@ -204,7 +202,7 @@ class OkTest {
 		@Test
 		@SuppressWarnings("ConstantConditions")
 		void nonNull() {
-			Result<String, String> res = ok("hello");
+			var res = ok("hello");
 			assertThrows(NullPointerException.class, () -> res.ifEither(null, ignored -> {}));
 			assertThrows(NullPointerException.class, () -> res.ifEither(ignored -> {}, null));
 		}
@@ -234,7 +232,7 @@ class OkTest {
 		@Test
 		@SuppressWarnings("ConstantConditions")
 		void nonNull() {
-			Result<String, String> res = ok("hello");
+			var res = ok("hello");
 			assertThrows(NullPointerException.class, () -> res.branch(null, ignored -> 1));
 			assertThrows(NullPointerException.class, () -> res.branch(ignored -> null, ignored -> 1));
 			assertThrows(NullPointerException.class, () -> res.branch(ignored -> 1, null));
@@ -252,7 +250,7 @@ class OkTest {
 		@Test
 		@SuppressWarnings("ConstantConditions")
 		void nonNull() {
-			Result<String, String> input = ok("hello");
+			var input = ok("hello");
 			assertThrows(NullPointerException.class, () -> input.solve(null));
 		}
 	}
@@ -305,14 +303,14 @@ class OkTest {
 		@Test
 		@SuppressWarnings({"ConstantConditions"})
 		void nonNull() {
-			Result<String, String> input = ok("hello");
+			var input = ok("hello");
 			assertThrows(NullPointerException.class, () -> input.okOr((String)null));
 			assertThrows(NullPointerException.class, () -> input.okOr((Supplier<String>) null));
 			assertThrows(NullPointerException.class, () -> input.okOrNullable((Supplier<String>) null));
 			assertThrows(NullPointerException.class, () -> input.errOr((String)null));
 			assertThrows(NullPointerException.class, () -> input.errOr((Supplier<String>) null));
 			assertThrows(NullPointerException.class, () -> input.errOr(() -> null));
-			assertThrows(NullPointerException.class, () -> input.errOrNullable((Supplier<String>) null));
+			assertThrows(NullPointerException.class, () -> input.errOrNullable((Supplier<Object>) null));
 		}
 
 		@Test
@@ -326,14 +324,14 @@ class OkTest {
 	class Adapt {
 		@Test
 		void changeOkType() {
-			Result<Integer, Integer> ok = ok(1);
+			var ok = ok(1);
 			assertThrows(WrongResultVariantException.class, ok::adaptOk);
 		}
 
 		@Test
 		void changeErrType() {
-			Result<Integer, String> ok1 = ok(1);
-			Result<Integer, Integer> ok2 = ok1.adaptErr();
+			var ok1 = ok(1);
+			var ok2 = ok1.adaptErr();
 			assert ok2.getOrThrow() == 1;
 		}
 	}
@@ -355,8 +353,6 @@ class OkTest {
 			assert option.get() == 2;
 		}
 	}
-
-	//TODO @mark: use 'var' everywhere to prevent type inference refressions
 
 	@Nested
 	class And {
@@ -472,7 +468,7 @@ class OkTest {
 		@Test
 		@SuppressWarnings("ConstantConditions")
 		void nonNull() {
-			Result<String, String> input = ok("hello");
+			var input = ok("hello");
 			assertThrows(NullPointerException.class, () -> input.matches(null));
 			assertThrows(NullPointerException.class, () -> input.errMatches(null));
 		}
@@ -483,7 +479,7 @@ class OkTest {
 		@Test
 		void get() {
 			TestData content = new TestData(1);
-			Result<TestData, String> ok = ok(content);
+			var ok = ok(content);
 			assert content == ok.getUnified();
 		}
 	}
@@ -524,7 +520,7 @@ class OkTest {
 		@Test
 		@SuppressWarnings({"EqualsWithItself", "EqualsBetweenInconvertibleTypes", "ConstantConditions"})
 		void testEquals() {
-			Result<String, String> ok = ok("hello");
+			var ok = ok("hello");
 			assert ok.equals(ok);
 			assert ok("hello").equals(ok("hello"));
 			assert !ok("hello").equals(ok("bye"));

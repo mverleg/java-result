@@ -615,7 +615,7 @@ public sealed interface  Result<T, E> extends Iterable<T> permits Ok, Err {
 		if (optionalResult.isEmpty()) {
 			return Ok.of(Optional.empty());
 		}
-		Result<U, F> result = optionalResult.get();
+		var result = optionalResult.get();
 		if (result instanceof Ok<U, F> ok) {
 			return Ok.of(Optional.of(ok.get()));
 		} else if (result instanceof Err<U, F> err) {

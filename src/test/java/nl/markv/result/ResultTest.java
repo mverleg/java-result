@@ -69,20 +69,20 @@ class ResultTest {
 
 		@Test
 		void success() {
-			Result<String, Exception> ok = Result.attempt(() -> "hello");
+			var ok = Result.attempt(() -> "hello");
 			assert "hello".equals(ok.getOrThrow());
 		}
 
 		@Test
 		void successException() {
-			Result<Exception, Exception> ok = Result.attempt(() -> new IllegalStateException("returned exception"));
+			var ok = Result.attempt(() -> new IllegalStateException("returned exception"));
 			assert ok.getOrThrow() instanceof IllegalStateException;
 			assert "returned exception".equals(ok.getOrThrow().getMessage());
 		}
 
 		@Test
 		void uncheckedFailure() {
-			Result<Integer, Exception> err = Result.attempt(() -> {
+			var err = Result.attempt(() -> {
 				throw new IllegalStateException("failed attempt");
 			});
 			assert err.getErrOrThrow() instanceof IllegalStateException;
@@ -91,7 +91,7 @@ class ResultTest {
 
 		@Test
 		void checkedFailure() {
-			Result<Double, Exception> err = Result.attempt(this::fail);
+			var err = Result.attempt(this::fail);
 			assert Exception.class.equals(err.getErrOrThrow().getClass());
 			assert "checked".equals(err.getErrOrThrow().getMessage());
 		}
