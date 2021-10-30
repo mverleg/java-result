@@ -1,3 +1,5 @@
 *
 !src/
 !pom.xml
+!build.gradle
+!settings.gradle
