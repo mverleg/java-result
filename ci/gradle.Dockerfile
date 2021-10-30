@@ -1,5 +1,6 @@
 
-FROM gradle:6.8.3-jdk15
+ARG GRADLE_VERSION
+FROM gradle:${GRADLE_VERSION}
 
 WORKDIR /app
 
