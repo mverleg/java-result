@@ -8,13 +8,13 @@ function logex() {
     "$@"
 }
 
-logex docker build --quiet -f ./ci/mvn_java15.Dockerfile . &
+logex docker build --quiet --build-arg MVN_VERSION=3.8.1-openjdk-15-slim -f ./ci/mvn.Dockerfile . &
 pids+=($!)
-logex docker build --quiet -f ./ci/gradle_java17.Dockerfile . &
+logex docker build --quiet --build-arg MVN_VERSION=3.8.3-openjdk-17-slim -f ./ci/mvn.Dockerfile . &
 pids+=($!)
-logex docker build --quiet -f ./ci/mvn_java17.Dockerfile . &
+logex docker build --quiet --build-arg GRADLE_VERSION=6.8.3-jdk15 -f ./ci/gradle.Dockerfile . &
 pids+=($!)
-logex docker build --quiet -f ./ci/gradle_java15.Dockerfile . &
+logex docker build --quiet --build-arg GRADLE_VERSION=7.2.0-jdk17 -f ./ci/gradle.Dockerfile . &
 pids+=($!)
 
 set +x
