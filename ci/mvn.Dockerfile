@@ -8,7 +8,7 @@ COPY pom.xml /app/
 RUN mvn dependency:go-offline
 
 COPY src /app
-RUN mvn -o package
+RUN mvn package
 
 ENTRYPOINT echo "not a runnable image"
 
