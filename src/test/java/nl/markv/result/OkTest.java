@@ -45,7 +45,7 @@ class OkTest {
 	class Create {
 		@Test
 		void string() {
-			var res = Ok.of("hello");
+			Result<String, Object> res = Ok.of("hello");
 			assert res.isOk();
 			assert !res.isErr();
 			if (res instanceof Ok<String, ?> ok) {
@@ -57,7 +57,7 @@ class OkTest {
 
 		@Test
 		void number() {
-			var res = ok(1);
+			Result<Integer, Object> res = ok(1);
 			assert res.isOk();
 			if (res instanceof Ok<Integer, ?> ok) {
 				assert 1 == ok.get();
@@ -84,7 +84,7 @@ class OkTest {
 
 		@Test
 		void inferType() {
-			var res = ok(1.0);
+			Result<Double, Object> res = ok(1.0);
 			assert res.isOk();
 			if (res instanceof Ok<Double, ?> ok) {
 				assert 1.0 == ok.get();

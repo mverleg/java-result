@@ -45,7 +45,7 @@ class ErrTest {
 	class Create {
 		@Test
 		void string() {
-			var res = Err.of("hello");
+			Result<Object, String> res = Err.of("hello");
 			assert !res.isOk();
 			assert res.isErr();
 			if (res instanceof Err<?, String> err) {
@@ -57,7 +57,7 @@ class ErrTest {
 
 		@Test
 		void number() {
-			var res = err(1);
+			Result<Object, Integer> res = err(1);
 			assert res.isErr();
 			if (res instanceof Err<?, Integer> err) {
 				assert 1 == err.get();
@@ -84,7 +84,7 @@ class ErrTest {
 
 		@Test
 		void inferType() {
-			var res = err(1.0);
+			Result<Object, Double> res = err(1.0);
 			assert res.isErr();
 			if (res instanceof Err<?, Double> err) {
 				assert 1.0 == err.get();
