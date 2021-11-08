@@ -32,6 +32,17 @@ jobs:
           file: ./ci/mvn.Dockerfile
           build-args: MVN_VERSION=3.8.1-openjdk-15-slim
           push: false
+  mvn16:
+    name: Maven & java 16
+    needs: [setup]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          file: ./ci/mvn.Dockerfile
+          build-args: MVN_VERSION=3.8.3-openjdk-16-slim
+          push: false
   mvn17:
     name: Maven & java 17
     needs: [setup]
@@ -53,6 +64,17 @@ jobs:
         with:
           file: ./ci/gradle.Dockerfile
           build-args: GRADLE_VERSION=6.8.3-jdk15
+          push: false
+  gradle16:
+    name: Gradle & java 16
+    needs: [setup]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          file: ./ci/gradle.Dockerfile
+          build-args: GRADLE_VERSION=7.2.0-jdk16
           push: false
   gradle17:
     name: Gradle & java 17
