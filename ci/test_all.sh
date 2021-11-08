@@ -3,18 +3,18 @@
 set -eEu -o pipefail
 pids=()
 
-function logex() {
-    echo "$@"
+function logrun() {
+    echo ">> $@"
     "$@"
 }
 
-logex docker build --quiet --build-arg MVN_VERSION=3.8.1-openjdk-15-slim -f ./ci/mvn.Dockerfile . &
+logrun docker build --quiet --build-arg MVN_VERSION=3.8.1-openjdk-15-slim -f ./ci/mvn.Dockerfile . &
 pids+=($!)
-logex docker build --quiet --build-arg MVN_VERSION=3.8.3-openjdk-17-slim -f ./ci/mvn.Dockerfile . &
+logrun docker build --quiet --build-arg MVN_VERSION=3.8.3-openjdk-17-slim -f ./ci/mvn.Dockerfile . &
 pids+=($!)
-logex docker build --quiet --build-arg GRADLE_VERSION=6.8.3-jdk15 -f ./ci/gradle.Dockerfile . &
+logrun docker build --quiet --build-arg GRADLE_VERSION=6.8.3-jdk15 -f ./ci/gradle.Dockerfile . &
 pids+=($!)
-logex docker build --quiet --build-arg GRADLE_VERSION=7.2.0-jdk17 -f ./ci/gradle.Dockerfile . &
+logrun docker build --quiet --build-arg GRADLE_VERSION=7.2.0-jdk17 -f ./ci/gradle.Dockerfile . &
 pids+=($!)
 
 set +x

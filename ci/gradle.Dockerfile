@@ -7,7 +7,7 @@ WORKDIR /app
 COPY build.gradle.kts settings.gradle.kts /app/
 RUN gradle build
 
-COPY src /app
+COPY src /app/src
 RUN gradle build test
 
 ENTRYPOINT echo "not a runnable image"
