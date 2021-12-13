@@ -21,9 +21,13 @@ if (isEnablePreview) {
     tasks {
         val ENABLE_PREVIEW = "--enable-preview"
 
-        withType<JavaCompile>() {
+        withType<JavaCompile> {
             options.compilerArgs.add(ENABLE_PREVIEW)
-            options.release.set(15)
+            if (JavaVersion.current() == JavaVersion.VERSION_15) {
+                options.release.set(15)
+            } else {
+                options.release.set(16)
+            }
         }
 
         withType<Test>().all {
