@@ -20,6 +20,8 @@ jobs:
         id: bump
         run: |
           python3 ./ci/pom_bump.py
+          git add pom.xml
+          git diff --cached
       - name: Changes?
         id: is_changed
         run: |

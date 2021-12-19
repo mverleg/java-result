@@ -44,6 +44,8 @@ def main():
     with open('pom.xml', 'w') as fh:
         fh.write(new_pom)
 
+    print(f'pom updated to {next_version}')
+
 
 if __name__ == '__main__':
     main()
