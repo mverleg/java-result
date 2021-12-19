@@ -25,7 +25,7 @@ jobs:
       - name: Changes?
         id: is_changed
         run: |
-          if ! git diff --exit-code Cargo.* ci/*.Dockerfile
+          if ! git diff --exit-code pom.xml
           then
               echo "CHANGED!"
               echo "::set-output name=IS_CHANGED::1"
