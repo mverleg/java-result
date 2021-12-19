@@ -12,6 +12,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.USER_TOKEN }}
       - name: Update pom
         run: |
           python3 ./ci/pom_bump.py
