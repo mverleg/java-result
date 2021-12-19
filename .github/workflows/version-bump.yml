@@ -36,7 +36,6 @@ jobs:
 #          app_id: ${{ secrets.PR_BOT_APP_ID }}
 #          private_key: ${{ secrets.PR_BOT_PRIV_KEY }}
       - name: Commit bump
-        uses: actions/checkout@v2
         if: ${{ steps.is_changed.outputs.IS_CHANGED == '1' }}
         run: |
           git config --global user.name 'VersionBumper'
