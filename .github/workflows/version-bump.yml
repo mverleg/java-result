@@ -1,0 +1,51 @@
+
+name: 'Bump version'
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  checks:
+    name: Bump main pom version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Update pom
+        run: |
+          python3 ./ci/pom_bump.py
+      - name: Changes?
+        id: is_changed
+        run: |
+          if ! git diff --exit-code Cargo.* ci/*.Dockerfile
+          then
+              echo "CHANGED!"
+              echo "::set-output name=IS_CHANGED::1"
+          else
+              echo "not changed"
+          fi
+#      - uses: tibdex/github-app-token@v1
+#        id: generate_token
+#        with:
+#          app_id: ${{ secrets.PR_BOT_APP_ID }}
+#          private_key: ${{ secrets.PR_BOT_PRIV_KEY }}
+      - name: Commit bump
+        run: |
+          git config --global user.name 'VersionBumper'
+          git config --global user.email 'mverleg.noreply@gmail.com'
+          git commit -am "Bump java-result version"
+          git push
+#      - name: Push
+#        uses: peter-evans/create-pull-request@v3
+#        if: ${{ steps.is_changed.outputs.IS_CHANGED == '1' }}
+#        with:
+#          token: ${{ steps.generate_token.outputs.token }}
+#          commit-message: "Automatic version bump ${{ steps.date.outputs.DATE_NAME }}"
+#          title: "Automatic version bump ${{ steps.date.outputs.DATE_NAME }}"
+#          body: "Created by Github Action to bump Docker and Cargo versions"
+#          author: "DependencyBumper <mverleg.noreply@gmail.com>"
+#          committer: "DependencyBumper <mverleg.noreply@gmail.com>"
+#          branch: "bump-${{ steps.date.outputs.DATE_CODE }}"
+#          assignees: "mverleg"
+#          delete-branch: true
