@@ -31,11 +31,14 @@ def main():
     base_version = extract_version(base_pom)
     head_version = extract_version(head_pom)
 
-    if base_version >= head_version:
-        stderr.write(f'version should be bumped, currently {head_version}, while base is {base_version}\n')
+    if base_version < head_version:
+        return
 
     version_parts = split_version(base_version)
     next_version = fmt_version((version_parts[0], version_parts[1] + 1, version_parts[2]))
+
+    print(f"::set-output name=BUMP_DESC::{head_version} -> {next_version}")
+    stderr.write(f'version should be bumped, currently {head_version}, while base is {base_version}\n')
 
     new_pom = head_pom.replace(f'<version>{base_version}</version>', f'<version>{next_version}</version>', 1)
     with open('pom.xml', 'w') as fh:
