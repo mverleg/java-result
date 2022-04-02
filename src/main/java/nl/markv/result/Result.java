@@ -30,7 +30,7 @@ import static java.util.Objects.requireNonNull;
  * For example:
  * <pre>
  * var result = aFallibleMethode();
- * if (result instanceof Ok<List<Integer>, String> ok) {
+ * if (result instanceof Ok&lt;List&lt;Integer&gt;, String&gt; ok) {
  *     var value = ok.get();
  * }
  * </pre>
@@ -60,7 +60,7 @@ import static java.util.Objects.requireNonNull;
  * {@link #contains(T)}, {@link #matches(Predicate)}), converting types into others
  * ({@link #map(Function)}, {@link #okOr(Supplier)}, {@link #recover(Function)}, {@link #adaptErr()}),
  * or combining multiple optionals ({@link #and(Supplier)}, {@link #or(Result)}, {@link ResultCollector}).
- * Creation is easy ({@link #ok(T)}, {@link #err(E)}, {@link #attempt(Attempt)},
+ * Creation is easy ({@link #ok(Object)}, {@link #err(Object)}, {@link #attempt(Attempt)},
  * {@link #from(Optional)}) and it integrates with {@link Stream}, {@link Iterable<T>} and collections
  * (e.g. {@link #transpose(List)}).
  *
@@ -128,7 +128,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * Note that it may be better to get the okay value without chance of exceptions:
 	 * <br/>
 	 * <pre>
-	 * if (result instanceof Ok<List<Integer>, String> ok) {
+	 * if (result instanceof Ok&lt;List&lt;Integer&gt;, String&gt; ok) {
 	 *     var value = ok.get();
 	 * }
 	 * </pre>
@@ -418,13 +418,13 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 
 	/**
 	 * Drop the {@link Err} value, replacing {@link Err} by {@link Optional#empty()} and replacing
-	 * {@link Ok} by {@link Optional#of(T)}.
+	 * {@link Ok} by {@link Optional#of(Object)}.
 	 */
 	@Nonnull
 	Optional<T> withoutErr();
 
 	/**
-	 * Drop the {@link Ok} value, replacing {@link Err} by {@link Optional#of(E)} and replacing
+	 * Drop the {@link Ok} value, replacing {@link Err} by {@link Optional#of(Object)} and replacing
 	 * {@link Ok} by {@link Optional#empty()}.
 	 */
 	@Nonnull

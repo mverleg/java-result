@@ -28,7 +28,7 @@ public final class Ok<T, E> implements Result<T, E> {
 	}
 
 	/**
-	 * Create a new, successful {@link Result}. Same as {@link Result#ok(T)}.
+	 * Create a new, successful {@link Result}. Same as {@link Result#ok(Object)}.
 	 */
 	@Nonnull
 	public static <T, E> Ok<T, E> of(@Nonnull T value) {
