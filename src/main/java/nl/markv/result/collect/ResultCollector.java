@@ -22,7 +22,7 @@ public class ResultCollector {
 	/**
 	 * Collector to collect a stream of {@link Result}s to a list. If any of the items is unsuccessful,
 	 * the collection is stopped (if serial) and the error is returned. Otherwise, all the stream's {@link Ok}
-	 * items are collected to an unmodifiable list.
+	 * items are collected to an <strong>unmodifiable</strong> list.
 	 */
 	@Nonnull
 	public static <T, E> ResultListCollector<T, E> toList() {
@@ -41,12 +41,14 @@ public class ResultCollector {
 	}
 
 	/**
-	 * Returns any failure or a list of all okay values. Like {@link #toList()}, but uses an unmodifiable, unordered set.
+	 * Collector to collect a stream of {@link Result}s to a set. If any of the items is unsuccessful,
+	 * the collection is stopped (if serial) and the error is returned. Otherwise, all the stream's {@link Ok}
+	 * items are collected to an <strong>unmodifiable</strong>, unordered set.
 	 */
 	@Nonnull
 	public static <T, E> ResultSetCollector<T, E> toSet() {
 		return new ResultSetCollector<>(
-				LinkedHashSet::new,
+				HashSet::new,
 				builder -> builder.build().branch(
 						set -> Ok.of(unmodifiableSet(set)),
 						Err::of));
@@ -61,7 +63,7 @@ public class ResultCollector {
 	}
 
 	/**
-	 * Returns any failure or a list of all okay values. Like {@link #toList()}, but uses an ordered set.
+	 * Returns any failure or a list of all okay values. Like {@link #toSet()}, but uses an ordered set.
 	 */
 	@Nonnull
 	public static <T, E> ResultSetCollector<T, E> toOrderedSet() {
