@@ -15,11 +15,11 @@ Java-result is feature-complete and can be used in Java 15+. It has extensive un
 
 ## Install
 
-Result is available on Central: [nl.markv.result](https://search.maven.org/artifact/nl.markv/result).
+Java-result is available on Central: [nl.markv.result](https://search.maven.org/artifact/nl.markv/result).
 
 ### Maven
 
-For maven 17+, add this dependency:
+Add this dependency:
 
 ```
 <dependency>
@@ -29,17 +29,17 @@ For maven 17+, add this dependency:
 </dependency>
 ```
 
-For older Java versions, see [these instructions](./JAVA_PREVIEW.md).
+For Java 15/16 this uses preview features. Java 14 and below are not supported.
 
 ### Gradle
 
-For Java 17+, add this dependency:
+For Java 15+, add this dependency:
 
 ```
 implementation 'nl.markv:result:1.1.0'
 ```
 
-For older Java versions, see [these instructions](./JAVA_PREVIEW.md).
+For Java 15/16 this uses preview features. Java 14 and below are not supported.
 
 ## Sealed types in Java
 
