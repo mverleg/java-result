@@ -95,7 +95,33 @@ public static Result<Integer, DivError> divide(@Nullable Integer numerator, @Nul
    }
    ```
 
+* **Keep only success** results, because `Result.stream` contains only the success value or nothing:
 
+   ```java
+   List<Result<Integer, String>> list = List.of(ok(1), ok(2), err("problem"), ok(4));
+   List<Integer> successesOnly = list.stream()
+       .flatMap(Result::stream).toList();
+   // [1, 2, 4]
+   ```
+
+* Get all success values if all results are all successful, or the first error otherwise:
+
+   ```java
+   List<Result<Integer, String>> list = List.of(ok(1), ok(2), err("problem"), ok(4));
+   Result<List<Integer>, String> listResult = Result.transpose(list);
+   // Err(problem)
+   ```
+  
+   There is also a `Stream` collector that does the same thing, but stops the stream after the first error:
+
+   ```java
+   Result<List<Integer>, DivError> streamResult = Stream.of(2, 1, 0, -1, -2)
+       .map(nr -> divide(10, nr))
+       .collect(ResultCollector.toList());
+   // Err(DIVISOR_ZERO)
+   ```
+
+There is a lot more, [have a look at the source](src/main/java/nl/markv/result/Result.java).
 
 ## Install
 
