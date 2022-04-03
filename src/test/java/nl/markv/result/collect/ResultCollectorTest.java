@@ -3,6 +3,7 @@ package nl.markv.result.collect;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -77,6 +78,18 @@ class ResultCollectorTest {
 			var resultList = Stream.<Result<Integer, Integer>>of(ok(2), ok(4), err(8)).collect(toList());
 			assert resultList.isErr();
 			assert resultList.getErrOrThrow() == 8;
+		}
+
+		@Test
+		void stopsOnError() {
+			Supplier<Result<Integer, String>> safe = () -> ok(1);
+			Supplier<Result<Integer, String>> warning = () -> err("warning sign");
+			Supplier<Result<Integer, String>> bomb = () -> {
+				throw new RuntimeException("bomb! (should have stopped after the warning))");
+			};
+			@SuppressWarnings("unused") var ignored = Stream.of(safe, safe, warning, bomb)
+					.map(Supplier::get)
+					.collect(toList());
 		}
 
 		@Test
