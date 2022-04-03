@@ -11,6 +11,56 @@ Java-result is feature-complete and can be used in Java 15+. It has extensive un
 
 ## Examples
 
+Functions can return `Result` to indicate whether they failed and why:
+
+```java
+@Nonnull
+public static Result<Integer, DivError> divide(@Nullable Integer numerator, @Nullable Integer divisor) {
+    if (null == numerator) {
+        return Result.err(DivError.NUMERATOR_NULL);
+    }
+    if (null == divisor) {
+        return Result.err(DivError.DIVISOR_NULL);
+    }
+    if (0 == divisor) {
+        return Result.err(DivError.DIVISOR_ZERO);
+    }
+    return Result.ok(numerator / divisor);
+}
+```
+
+* Only use the value **if successful**
+  
+   ```java
+   Result<Integer, DivError> costPerPerson = divide(cost, people);
+   if (costPerPerson.isOk()) {
+	   sendMessage("You need to pay " + costPerPerson.get());
+   }
+   ```
+
+   or more tersely:
+
+   ```java
+   divide(cost, people)
+        .ifOk(costPerPerson -> sendMessage("You need to pay " + costPerPerson));
+   ```
+
+* **Chain operations**, transforming the results only if it is successful:
+
+   ```java
+   divide(9, 0).map(result -> result / 2)
+   // Err(DIVISOR_ZERO)
+   ```
+   
+   of if the transformation can also fail:
+
+   ```java
+   divide(8, 2).flatMap(res -> divide(res, 2))
+   // Ok(2)
+   ```
+
+
+
 
 
 ## Install
@@ -21,7 +71,7 @@ Java-result is available on Central: [nl.markv.result](https://search.maven.org/
 
 Add this dependency:
 
-```
+```xml
 <dependency>
     <groupId>nl.markv</groupId>
     <artifactId>result</artifactId>
@@ -35,7 +85,7 @@ For Java 15/16 this uses preview features. Java 14 and below are not supported.
 
 For Java 15+, add this dependency:
 
-```
+```groovy
 implementation 'nl.markv:result:1.1.0'
 ```
 
