@@ -81,7 +81,7 @@ class ResultCollectorTest {
 		}
 
 		@Test
-		void stopsOnError() {
+		void stopsOnListError() {
 			Supplier<Result<Integer, String>> safe = () -> ok(1);
 			Supplier<Result<Integer, String>> warning = () -> err("warning sign");
 			Supplier<Result<Integer, String>> bomb = () -> {
@@ -205,6 +205,18 @@ class ResultCollectorTest {
 			var resultSet = Stream.<Result<Integer, Integer>>of(ok(2), err(4), ok(8)).collect(toSet());
 			assert resultSet.isErr();
 			assert resultSet.getErrOrThrow() == 4;
+		}
+
+		@Test
+		void stopsOnListError() {
+			Supplier<Result<Integer, String>> safe = () -> ok(1);
+			Supplier<Result<Integer, String>> warning = () -> err("warning sign");
+			Supplier<Result<Integer, String>> bomb = () -> {
+				throw new RuntimeException("bomb! (should have stopped after the warning))");
+			};
+			@SuppressWarnings("unused") var ignored = Stream.of(safe, safe, warning, bomb)
+					.map(Supplier::get)
+					.collect(toSet());
 		}
 
 		@Test
