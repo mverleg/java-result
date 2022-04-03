@@ -1,17 +1,7 @@
 
-# Java `Result` type
+# Java 15/16
 
-`Result` is a value that can be either `Ok` or `Err`, to signal whether an operation succeeded or failed. Each variant can contain data, e.g. `Result<User, ErrMsg>` contains a `User` if ok, and `ErrMsg` when it fails.
-
-It can be used as a return value from functions to indicate if they succeeded or failed, similar to `Optional`, but with data about _why_ it failed.
-
-## Project status
-
-Java-result is feature-complete and can be used in Java 15+. It has extensive unit test coverage, but limited real-world testing.
-
-## Examples
-
-
+These instructions are only needed for Java 15 or 16. Java 14 or below is not supported, and Java 17+ is more easy as described in [README](./README.md).
 
 ## Install
 
@@ -19,7 +9,7 @@ Result is available on Central: [nl.markv.result](https://search.maven.org/artif
 
 ### Maven
 
-For maven 17+, add this dependency:
+Add this dependency:
 
 ```
 <dependency>
@@ -29,7 +19,22 @@ For maven 17+, add this dependency:
 </dependency>
 ```
 
-For older Java versions, see [these instructions](./JAVA_PREVIEW.md).
+If you are using Java 15 or 16, enable preview features:
+
+```
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <version>3.8.1</version>
+    <configuration>
+        <source>15</source>
+        <target>15</target>
+        <compilerArgs>--enable-preview</compilerArgs>
+    </configuration>
+</plugin>
+```
+
+Maven 14 or earlier is not supported (because it does not support sealed types).
 
 ### Gradle
 
@@ -38,8 +43,6 @@ For Java 17+, add this dependency:
 ```
 implementation 'nl.markv:result:1.1.0'
 ```
-
-For older Java versions, see [these instructions](./JAVA_PREVIEW.md).
 
 ## Sealed types in Java
 
