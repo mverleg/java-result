@@ -34,7 +34,7 @@ public static Result<Integer, DivError> divide(@Nullable Integer numerator, @Nul
    ```java
    Result<Integer, DivError> costPerPerson = divide(cost, people);
    if (costPerPerson.isOk()) {
-	   sendMessage("You need to pay " + costPerPerson.get());
+       sendMessage("You need to pay " + costPerPerson.get());
    }
    ```
 
@@ -59,7 +59,41 @@ public static Result<Integer, DivError> divide(@Nullable Integer numerator, @Nul
    // Ok(2)
    ```
 
+* **Fallback** to a default in case of failure:
 
+   ```java
+   divide(8, 0).withoutErr().orElse(1)
+   // Ok(1)
+   divide(8, 0).withoutErr().orElseGet(() -> calculateFallback())
+   // calculateFallback() computed only if failed
+   divide(8, 0).withoutErr().recover(err -> calculateFallback2(err))
+   // calculateFallback2(err) computed only if failed
+   ```
+
+* **From exception** to `Result`:
+
+   ```java
+   Result<String, Exception> userName = Result.attempt(() -> findUserName());
+   ```
+
+* If you have decided to **not handle errors**:
+
+   ```java
+   divide(8, divisor).getOrThrow("if you see this, sorry...")
+   // throws
+   ```
+  
+* Handle success result or **adjust type**:
+
+   ```java
+   Result<String, Exception> userNameResult = Result.attempt(() -> findUserName());
+   if (userNameResult instanceof Ok<String, Exception> userName) {
+       return doSomethingWithUsername(userName.get());
+   } else {
+       return userNameResult.adaptOk();
+       // Changes the ok type, which is safe because this is a failed Tesult
+   }
+   ```
 
 
 

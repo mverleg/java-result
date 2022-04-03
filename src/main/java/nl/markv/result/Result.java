@@ -57,7 +57,7 @@ import static java.util.Objects.requireNonNull;
  * non-ok path.
  *	<p>
  * {@link Result} has many useful methods: doing things conditionally ({@link #ifOk(Consumer)},
- * {@link #contains(T)}, {@link #matches(Predicate)}), converting types into others
+ * {@link #contains(Object)}, {@link #matches(Predicate)}), converting types into others
  * ({@link #map(Function)}, {@link #okOr(Supplier)}, {@link #recover(Function)}, {@link #adaptErr()}),
  * or combining multiple optionals ({@link #and(Supplier)}, {@link #or(Result)}, {@link ResultCollector}).
  * Creation is easy ({@link #ok(Object)}, {@link #err(Object)}, {@link #attempt(Attempt)},
@@ -287,7 +287,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * <p>
 	 * If the functions return nothing, use {@link #ifEither(Consumer, Consumer)} instead.
 	 * <p>
-	 * Also called: fold
+	 * Also known as: {@code fold}.
 	 *
 	 * @throws NullPointerException if either converter is called and returns {@code null}.
 	 * @see #ifEither(Consumer, Consumer)
@@ -304,7 +304,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	 * <p>
 	 * If the content of {@link Err} is not needed to produce an alternative value, use {@link #okOr(Supplier)} instead.
 	 * <p>
-	 * Also called: recover
+	 * Also known as: {@code recover}
 	 *
 	 * @param errToOkConverter Function that takes the type of {@link Err} and returns the type of {@link Ok}.
 	 * @throws NullPointerException if the converter is called and returns {@code null}.
@@ -317,7 +317,7 @@ public sealed interface Result<T, E> extends Iterable<T> permits Ok, Err {
 	T recover(@Nonnull Function<E, T> errToOkConverter);
 
 	/**
-	 * Like {@link #okOrNullable(T)}, but does not allow null input or output.
+	 * Like {@link #okOrNullable(Object)}, but does not allow null input or output.
 	 */
 	@Nonnull
 	T okOr(@Nonnull T alternative);
