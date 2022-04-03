@@ -48,7 +48,7 @@ public class ResultCollector {
 	@Nonnull
 	public static <T, E> ResultSetCollector<T, E> toSet() {
 		return new ResultSetCollector<>(
-				HashSet::new,
+				false,
 				builder -> builder.build().branch(
 						set -> Ok.of(unmodifiableSet(set)),
 						Err::of));
@@ -59,7 +59,7 @@ public class ResultCollector {
 	 */
 	@Nonnull
 	public static <T, E> ResultSetCollector<T, E> toMutableSet() {
-		return new ResultSetCollector<>(HashSet::new, ResultBuilder::build);
+		return new ResultSetCollector<>(false, ResultBuilder::build);
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class ResultCollector {
 	@Nonnull
 	public static <T, E> ResultSetCollector<T, E> toOrderedSet() {
 		return new ResultSetCollector<>(
-				LinkedHashSet::new,
+				true,
 				builder -> builder.build().branch(
 						set -> Ok.of(unmodifiableSet(set)),
 						Err::of));

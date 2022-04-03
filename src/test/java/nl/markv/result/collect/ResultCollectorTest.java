@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -250,6 +251,15 @@ class ResultCollectorTest {
 			assert iter.next() == 8;
 			assert iter.next() == 16;
 			assert iter.next() == 32;
+		}
+
+		@Test
+		void unorderedCharacteristic() {
+			var orderedCollector = new ResultSetCollector<>(true, ResultBuilder::build);
+			assert orderedCollector.characteristics().isEmpty();
+			var unorderedCollector = new ResultSetCollector<>(false, ResultBuilder::build);
+			assert unorderedCollector.characteristics().size() == 1;
+			assert unorderedCollector.characteristics().contains(Collector.Characteristics.UNORDERED);
 		}
 
 		@Nested

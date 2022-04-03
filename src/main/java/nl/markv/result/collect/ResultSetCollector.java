@@ -1,5 +1,7 @@
 package nl.markv.result.collect;
 
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
@@ -13,25 +15,25 @@ import nl.markv.result.Err;
 import nl.markv.result.Result;
 
 import static java.util.Collections.emptySet;
+import static java.util.Collections.singleton;
 import static java.util.Objects.requireNonNull;
 
 public class ResultSetCollector<T, E> implements Collector<Result<T, E>, ResultBuilder<Set<T>, E>, Result<Set<T>, E>> {
 
-	private final @Nonnull Supplier<Set<T>> setCreator;
+	private final boolean isOrdered;
 	private final @Nonnull Function<ResultBuilder<Set<T>, E>, Result<Set<T>, E>> finisher;
 
 	public ResultSetCollector(
-			@Nonnull Supplier<Set<T>> setCreator,
+			boolean isOrdered,
 			@Nonnull Function<ResultBuilder<Set<T>, E>, Result<Set<T>, E>> finisher) {
-		requireNonNull(setCreator);
 		requireNonNull(finisher);
-		this.setCreator = setCreator;
+		this.isOrdered = isOrdered;
 		this.finisher = finisher;
 	}
 
 	@Nonnull
 	private ResultBuilder<Set<T>, E> supplierImpl() {
-		return ResultBuilder.ok(setCreator.get());
+		return ResultBuilder.ok(isOrdered ? new LinkedHashSet<>() : new HashSet<>());
 	}
 
 	private void accumulatorImpl(@Nonnull ResultBuilder<Set<T>, E> currentList, @Nonnull Result<T, E> newResult) {
@@ -84,6 +86,6 @@ public class ResultSetCollector<T, E> implements Collector<Result<T, E>, ResultB
 	@Override
 	@Nonnull
 	public Set<Characteristics> characteristics() {
-		return emptySet();
+		return isOrdered ? emptySet() : singleton(Characteristics.UNORDERED);
 	}
 }
