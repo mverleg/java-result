@@ -3,9 +3,12 @@ package nl.markv.result.collect;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -77,6 +80,19 @@ class ResultCollectorTest {
 			var resultList = Stream.<Result<Integer, Integer>>of(ok(2), ok(4), err(8)).collect(toList());
 			assert resultList.isErr();
 			assert resultList.getErrOrThrow() == 8;
+		}
+
+		@Test
+		@Disabled("Hard to fix, see issue #7")
+		void stopsOnListError() {
+			Supplier<Result<Integer, String>> safe = () -> ok(1);
+			Supplier<Result<Integer, String>> warning = () -> err("warning sign");
+			Supplier<Result<Integer, String>> bomb = () -> {
+				throw new RuntimeException("bomb! (should have stopped after the warning))");
+			};
+			@SuppressWarnings("unused") var ignored = Stream.of(safe, safe, warning, bomb)
+					.map(Supplier::get)
+					.collect(toList());
 		}
 
 		@Test
@@ -195,6 +211,19 @@ class ResultCollectorTest {
 		}
 
 		@Test
+		@Disabled("Hard to fix, see issue #7")
+		void stopsOnListError() {
+			Supplier<Result<Integer, String>> safe = () -> ok(1);
+			Supplier<Result<Integer, String>> warning = () -> err("warning sign");
+			Supplier<Result<Integer, String>> bomb = () -> {
+				throw new RuntimeException("bomb! (should have stopped after the warning))");
+			};
+			@SuppressWarnings("unused") var ignored = Stream.of(safe, safe, warning, bomb)
+					.map(Supplier::get)
+					.collect(toSet());
+		}
+
+		@Test
 		void multipleErrs() {
 			// Cannot know which error will be returned in this case
 			var resultSet = Stream.of(err(2), err(4), err(8)).collect(toSet());
@@ -225,6 +254,15 @@ class ResultCollectorTest {
 			assert iter.next() == 8;
 			assert iter.next() == 16;
 			assert iter.next() == 32;
+		}
+
+		@Test
+		void unorderedCharacteristic() {
+			var orderedCollector = new ResultSetCollector<>(true, ResultBuilder::build);
+			assert orderedCollector.characteristics().isEmpty();
+			var unorderedCollector = new ResultSetCollector<>(false, ResultBuilder::build);
+			assert unorderedCollector.characteristics().size() == 1;
+			assert unorderedCollector.characteristics().contains(Collector.Characteristics.UNORDERED);
 		}
 
 		@Nested
