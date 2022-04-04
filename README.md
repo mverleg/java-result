@@ -112,7 +112,7 @@ public static Result<Integer, DivError> divide(@Nullable Integer numerator, @Nul
    // Err(problem)
    ```
   
-   There is also a `Stream` collector that does the same thing, but stops the stream after the first error:
+   There is also a `Stream` collector that does the same thing:
 
    ```java
    Result<List<Integer>, DivError> streamResult = Stream.of(2, 1, 0, -1, -2)
