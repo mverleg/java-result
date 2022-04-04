@@ -29,7 +29,7 @@ public final class Err<T, E> implements Result<T, E> {
 	}
 
 	/**
-	 * Create a new, unsuccessful {@link Result}. Same as {@link Result#err(E)}.
+	 * Create a new, unsuccessful {@link Result}. Same as {@link Result#err(Object)}.
 	 */
 	@Nonnull
 	public static <T, E> Err<T, E> of(@Nonnull E value) {

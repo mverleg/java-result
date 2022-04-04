@@ -1,0 +1,42 @@
+
+name: Publish package to the Maven Central Repository
+on:
+  workflow_dispatch:
+#  push:
+#    branches:
+#      - main
+
+jobs:
+  release:
+    name: Release with jars
+    runs-on: ubuntu-latest
+    steps:
+    # https://trstringer.com/github-actions-create-release-upload-artifacts/:
+    - name: Build fat
+      run: |
+        mvn clean package -DskipTests -Pfat-jar
+        bash ci/merge_jar_sources.sh result-fat
+    - name: Build skinny
+      run: |
+        mvn clean package -DskipTests
+        bash ci/merge_jar_sources.sh result
+
+  publish:
+    name: Publish package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Maven Central Repository
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+      - name: Deploy package
+        run: mvn --batch-mode deploy
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+
