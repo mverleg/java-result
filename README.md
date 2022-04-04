@@ -1,4 +1,9 @@
 
+[![javadoc](https://javadoc.io/badge2/nl.markv/result/javadoc.svg)](https://javadoc.io/doc/nl.markv/result/latest/nl/markv/result/Result.html)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/nl.markv/result/badge.svg)](https://search.maven.org/artifact/nl.markv/result)
+[![Unit tests](https://github.com/mverleg/java-result/actions/workflows/test.yml/badge.svg)](https://github.com/mverleg/java-result/actions/workflows/test.yml)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](./LICENSE.txt)
+
 # Java `Result` type
 
 `Result` is a value that can be either `Ok` or `Err`, to signal whether an operation succeeded or failed. Each variant can contain data, e.g. `Result<User, ErrMsg>` contains a `User` if ok, and `ErrMsg` when it fails.
